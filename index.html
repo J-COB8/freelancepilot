@@ -1,88 +1,251 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FreelancePilot — AI Financial Advisor</title>
+    <title>FreelancePilot — AI Financial Co-Pilot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-
 <body>
+    <div class="bg-grid"></div>
+    <header>
+        <div class="logo">FREELANCEPILOT</div>
+    </header>
 
-    <nav>
-        <div class="logo">FreelancePilot</div>
-        <span class="tagline">AI Financial Co-Pilot for Entrepreneurs</span>
-    </nav>
+    <main id="app-container">
+        <!-- Multi-Step Form Section -->
+        <section id="form-section" class="active-section">
+            <h1 class="main-heading">Is your business actually making money?</h1>
+            <p class="sub-heading">Or are you just busy? Let's find out.</p>
 
-    <!-- STEP 1: Input Form -->
-    <section id="form-section">
-        <h1>Is your business actually profitable?</h1>
-        <p class="subtitle">Enter your numbers. Your AI advisor will tell you the truth.</p>
+            <div class="form-card">
+                <div class="progress-bar-container">
+                    <div id="progress-bar"></div>
+                </div>
 
-        <div class="form-card">
-            <div class="input-group">
-                <label>Monthly Revenue (total income this month)</label>
-                <input type="number" id="revenue" placeholder="e.g. 3000">
+                <!-- Step 1 -->
+                <div class="form-step active" data-step="1">
+                    <h2>What kind of freelance or business work do you do?</h2>
+                    <div class="input-wrapper">
+                        <input type="text" id="input-business" placeholder="e.g. Graphic Designer, Web Developer..." autofocus>
+                        <span class="error-msg">Please tell us what you do.</span>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="form-step" data-step="2">
+                    <h2>What was your total revenue this month?</h2>
+                    <div class="input-wrapper">
+                        <span class="currency-symbol">$</span>
+                        <input type="number" id="input-revenue" class="with-symbol" placeholder="0.00">
+                        <span class="error-msg">Please enter a valid amount.</span>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="form-step" data-step="3">
+                    <h2>What were your total business expenses?</h2>
+                    <p class="field-hint">Tools, rent, subscriptions, materials, etc.</p>
+                    <div class="input-wrapper">
+                        <span class="currency-symbol">$</span>
+                        <input type="number" id="input-expenses" class="with-symbol" placeholder="0.00">
+                        <span class="error-msg">Please enter a valid amount.</span>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="form-step" data-step="4">
+                    <h2>How many hours did you work this month?</h2>
+                    <div class="input-wrapper">
+                        <input type="number" id="input-hours" placeholder="e.g. 160">
+                        <span class="error-msg">Please enter your total hours.</span>
+                    </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="form-step" data-step="5">
+                    <h2>How many active clients did you have?</h2>
+                    <div class="input-wrapper">
+                        <input type="number" id="input-clients" placeholder="e.g. 4">
+                        <span class="error-msg">Please enter the number of clients.</span>
+                    </div>
+                </div>
+
+                <!-- Step 6 -->
+                <div class="form-step" data-step="6">
+                    <h2>What is your biggest expense category?</h2>
+                    <div class="input-wrapper tile-group" id="input-expense-category-tiles">
+                        <button class="tile-btn" data-value="Software/Tools">Software/Tools</button>
+                        <button class="tile-btn" data-value="Rent/Office">Rent/Office</button>
+                        <button class="tile-btn" data-value="Marketing">Marketing</button>
+                        <button class="tile-btn" data-value="Materials">Materials</button>
+                        <button class="tile-btn" data-value="Other">Other</button>
+                        <input type="hidden" id="input-expense-category" value="">
+                        <span class="error-msg">Please select an expense category.</span>
+                    </div>
+                </div>
+
+                <!-- Step 7 -->
+                <div class="form-step" data-step="7">
+                    <h2>Where are you based?</h2>
+                    <p class="field-hint">We use this to estimate your tax reserve.</p>
+                    <div class="input-wrapper tile-group countries-grid" id="input-country-tiles">
+                        <button class="tile-btn" data-value="US">United States</button>
+                        <button class="tile-btn" data-value="Mexico">Mexico</button>
+                        <button class="tile-btn" data-value="India">India</button>
+                        <button class="tile-btn" data-value="UK">United Kingdom</button>
+                        <button class="tile-btn" data-value="Canada">Canada</button>
+                        <button class="tile-btn" data-value="Brazil">Brazil</button>
+                        <button class="tile-btn" data-value="Argentina">Argentina</button>
+                        <button class="tile-btn" data-value="Colombia">Colombia</button>
+                        <button class="tile-btn" data-value="Spain">Spain</button>
+                        <button class="tile-btn" data-value="Other">Other</button>
+                        <input type="hidden" id="input-country" value="">
+                        <span class="error-msg">Please select your country.</span>
+                    </div>
+                </div>
+
+                <!-- Step 8 -->
+                <div class="form-step" data-step="8">
+                    <h2>What's your primary financial goal right now?</h2>
+                    <div class="input-wrapper radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="goal" value="Save more money">
+                            <span class="radio-custom"></span>
+                            Save more money
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="goal" value="Invest for the future">
+                            <span class="radio-custom"></span>
+                            Invest for the future
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="goal" value="Pay off debt">
+                            <span class="radio-custom"></span>
+                            Pay off debt
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="goal" value="Grow my business">
+                            <span class="radio-custom"></span>
+                            Grow my business
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="goal" value="All of the above">
+                            <span class="radio-custom"></span>
+                            All of the above
+                        </label>
+                        <span class="error-msg" id="goal-error">Please select a financial goal.</span>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn-secondary" id="btn-back" style="visibility: hidden;">Back</button>
+                    <button class="btn-primary" id="btn-next">Next</button>
+                    <button class="btn-primary" id="btn-submit" style="display: none;">Analyze My Finances</button>
+                </div>
             </div>
-            <div class="input-group">
-                <label>Monthly Expenses (rent, tools, subscriptions, etc.)</label>
-                <input type="number" id="expenses" placeholder="e.g. 1800">
-            </div>
-            <div class="input-group">
-                <label>Hours Worked This Month</label>
-                <input type="number" id="hours" placeholder="e.g. 120">
-            </div>
-            <div class="input-group">
-                <label>Your Main Business Type</label>
-                <input type="text" id="business" placeholder="e.g. freelance design, dropshipping, bakery">
-            </div>
-            <button id="analyze-btn" onclick="analyze()">Analyze My Finances →</button>
-        </div>
-    </section>
+        </section>
 
-    <!-- STEP 2: Results -->
-    <section id="results-section" style="display:none;">
-        <h2>Your Financial Analysis</h2>
-
-        <div class="stats-row">
-            <div class="stat-card">
-                <div class="stat-label">NET PROFIT</div>
-                <div class="stat-value" id="stat-profit">—</div>
+        <!-- Loading Section -->
+        <section id="loading-section" class="hidden-section">
+            <div class="loader">
+                <div class="dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+                <h2 class="pulsing-text">Analyzing your finances...</h2>
             </div>
-            <div class="stat-card">
-                <div class="stat-label">EFFECTIVE HOURLY RATE</div>
-                <div class="stat-value" id="stat-rate">—</div>
+        </section>
+
+        <!-- Results Section -->
+        <section id="results-section" class="hidden-section">
+            <div class="results-header">
+                <h2>Your Financial Truth</h2>
             </div>
-            <div class="stat-card">
-                <div class="stat-label">TAX TO RESERVE</div>
-                <div class="stat-value" id="stat-tax">—</div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <p class="stat-title">Net Profit</p>
+                    <h3 class="stat-value" id="val-net-profit">--</h3>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-title">Effective Hourly Rate</p>
+                    <h3 class="stat-value" id="val-hourly-rate">--</h3>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-title">Tax to Reserve <span id="val-tax-country"></span></p>
+                    <h3 class="stat-value" id="val-tax-reserve">--</h3>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-title">Financial Health Score</p>
+                    <h3 class="stat-value"><span id="val-health-score" class="health-badge">--</span></h3>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-title">Profit Margin</p>
+                    <h3 class="stat-value" id="val-profit-margin">--</h3>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-title">Revenue Per Client</p>
+                    <h3 class="stat-value" id="val-rev-per-client">--</h3>
+                </div>
             </div>
-        </div>
 
-        <div class="chart-container">
-            <canvas id="myChart"></canvas>
-        </div>
-
-        <div class="ai-box">
-            <div class="ai-label">🤖 AI ADVISOR SAYS</div>
-            <div id="ai-response">Analyzing your data...</div>
-        </div>
-
-        <div class="followup-box" id="followup-box" style="display:none;">
-            <div class="ai-label">💬 FOLLOW-UP QUESTION</div>
-            <div id="followup-question"></div>
-            <div class="input-group" style="margin-top:16px;">
-                <input type="text" id="followup-input" placeholder="Your answer...">
-                <button onclick="sendFollowup()">Send →</button>
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3>Financial Overview</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3>Income Allocation</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="doughnutChart"></canvas>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <button class="reset-btn" onclick="reset()">← Start Over</button>
-    </section>
+            <div class="ai-advisor-card">
+                <div class="ai-header">
+                    <span class="ai-icon">⚡️</span>
+                    <h3>CFO Advisor</h3>
+                    <div id="ai-loading-indicator" class="pulsing-indicator hidden">Still thinking...</div>
+                </div>
+                <div id="ai-response-content" class="ai-content"></div>
+                
+                <div id="followup-container" class="hidden">
+                    <div class="followup-question" id="followup-question-text"></div>
+                    <div class="followup-input-group">
+                        <input type="text" id="input-followup" placeholder="Type your response...">
+                        <button id="btn-send-followup" class="btn-primary">Send</button>
+                    </div>
+                    <p id="followup-limit-msg" class="limit-msg hidden">Your session is complete. Great chat!</p>
+                </div>
+            </div>
+
+            <!-- Waitlist Section -->
+            <div class="waitlist-section">
+                <h2>FreelancePilot is launching soon. Get early access.</h2>
+                <p>Join the waitlist and be first to know when we launch the full product.</p>
+                <div class="waitlist-form">
+                    <input type="email" id="input-waitlist-email" placeholder="Your email address">
+                    <button class="btn-primary" id="btn-join-waitlist">Join Waitlist</button>
+                </div>
+                <p id="waitlist-success-msg" class="success-msg hidden">You're on the list. We'll reach out soon.</p>
+                <p class="waitlist-counter"><span id="waitlist-count"></span> people have already joined</p>
+            </div>
+            
+            <div class="restart-action">
+                <button id="btn-restart" class="btn-secondary">Start Over</button>
+            </div>
+        </section>
+    </main>
 
     <script src="script.js"></script>
 </body>
-
 </html>
