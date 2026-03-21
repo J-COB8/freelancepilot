@@ -147,6 +147,23 @@ if (btnBack) {
 if (btnSubmit) {
     btnSubmit.addEventListener('click', () => {
         if (validateStep()) {
+            // Hide heading, subheading, and form card
+            const heading = document.querySelector('.main-heading');
+            const subheading = document.querySelector('.sub-heading');
+            const formCard = document.querySelector('.form-card');
+            if (heading) heading.style.display = 'none';
+            if (subheading) subheading.style.display = 'none';
+            if (formCard) formCard.style.display = 'none';
+
+            // Show the analyzing indicator and the pinned back button
+            const indicator = document.getElementById('analyzing-indicator');
+            if (indicator) indicator.classList.add('visible');
+            const backBtn = document.getElementById('analyze-back-btn');
+            if (backBtn) backBtn.style.display = 'inline-flex';
+
+            // Immediately scroll to loading section
+            window.scrollTo({ top: document.getElementById('loading-section').offsetTop, behavior: 'smooth' });
+
             submitAnalysis();
         }
     });
@@ -232,8 +249,7 @@ function parseAIResponse(fullText) {
 }
 
 async function submitAnalysis() {
-    formSection.classList.remove('active-section');
-    formSection.classList.add('hidden-section');
+    // Form section stays visible (showing the analyzing indicator) while loading
     loadingSection.classList.remove('hidden-section');
     loadingSection.classList.add('active-section');
 
@@ -254,6 +270,9 @@ Please analyze this.`;
     const aiMessage = await callAPI();
     chatHistory.push({ role: 'assistant', content: aiMessage });
 
+    // Results ready — hide form section (with indicator) and loading, show results
+    formSection.classList.remove('active-section');
+    formSection.classList.add('hidden-section');
     loadingSection.classList.remove('active-section');
     loadingSection.classList.add('hidden-section');
     resultsSection.classList.remove('hidden-section');

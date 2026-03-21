@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ClearLedger — AI Financial Co-Pilot</title>
+  <title>FounderLytics — AI Financial Co-Pilot</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -121,6 +121,7 @@
       align-items: center;
       justify-content: center;
       padding: 60px 28px 80px;
+      position: relative;
     }
 
     .main-heading {
@@ -685,14 +686,15 @@
       font-family: var(--font);
       font-size: 14px;
       color: #fff;
-      background: rgba(255,255,255,0.08);
-      border: 1.5px solid rgba(255,255,255,0.15);
+      -webkit-text-fill-color: #fff;
+      background: rgba(255,255,255,0.12);
+      border: 1.5px solid rgba(255,255,255,0.25);
       border-radius: var(--radius-pill);
       padding: 12px 20px;
       outline: none;
       transition: border-color var(--transition);
     }
-    .waitlist-form input::placeholder { color: rgba(255,255,255,0.35); }
+    .waitlist-form input::placeholder { color: rgba(255,255,255,0.55); }
     .waitlist-form input:focus { border-color: var(--accent); }
 
     .success-msg {
@@ -712,6 +714,88 @@
     .restart-action {
       text-align: center;
       padding: 16px 0;
+    }
+
+    /* ─── Analyzing indicator ────────────────────────────────────── */
+    #analyzing-indicator {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 560px;
+      gap: 0;
+    }
+    #analyzing-indicator.visible { display: flex; }
+
+    .analyze-back {
+      position: absolute;
+      top: 24px;
+      left: 28px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: color var(--transition), border-color var(--transition);
+      z-index: 10;
+    }
+    .analyze-back:hover {
+      color: var(--text);
+      border-color: #d1d5db;
+    }
+
+    .analyze-arrow-wrap {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .analyze-glow {
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      background: radial-gradient(circle, rgba(79,70,229,0.13) 0%, transparent 68%);
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .analyze-arrow-svg {
+      width: 160px;
+      height: 160px;
+      color: var(--accent);
+      animation: big-bounce 1.4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+      filter: drop-shadow(0 6px 20px rgba(79,70,229,0.28));
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes big-bounce {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(22px); }
+    }
+
+    .analyze-label {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: -0.01em;
+      text-align: center;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .analyze-arrow-svg { animation: none; }
     }
 
     /* ─── Utility ────────────────────────────────────────────────── */
@@ -753,7 +837,7 @@
   <!-- Nav -->
   <header class="site-nav">
     <div class="nav-inner">
-      <a href="index.html" class="logo">ClearLedger<span class="logo-dot">●</span></a>
+      <a href="index.html" class="logo">FounderLytics<span class="logo-dot">●</span></a>
       <a href="app.html" class="btn-primary nav-cta">Try for Free →</a>
     </div>
   </header>
@@ -764,6 +848,21 @@
     <section id="form-section" class="active-section">
       <h1 class="main-heading">Is your business actually making money?</h1>
       <p class="sub-heading">Or are you just busy? Let's find out.</p>
+
+      <!-- Back button — shown when analyzing, pinned top-left of section -->
+      <button id="analyze-back-btn" class="analyze-back" onclick="location.reload()" style="display:none">← Back to answers</button>
+
+      <!-- Analyzing indicator — replaces heading when form submits -->
+      <div id="analyzing-indicator">
+        <div class="analyze-arrow-wrap">
+          <div class="analyze-glow"></div>
+          <svg class="analyze-arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="3" x2="12" y2="21"/>
+            <polyline points="6 15 12 21 18 15"/>
+          </svg>
+          <p class="analyze-label">Analyzing your finances...</p>
+        </div>
+      </div>
 
       <div class="form-card">
 
@@ -977,7 +1076,7 @@
 
         <!-- Waitlist -->
         <div class="waitlist-section">
-          <h2>ClearLedger is launching soon. Get early access.</h2>
+          <h2>FounderLytics is launching soon. Get early access.</h2>
           <p>Join the waitlist and be first to know when we launch the full product.</p>
           <div class="waitlist-form">
             <input type="email" id="input-waitlist-email" placeholder="Your email address">
