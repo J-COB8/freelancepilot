@@ -96,6 +96,52 @@
     }
     .nav-links a:hover { color: #111827; }
 
+    .nav-coming-soon {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #fef3c7;
+      color: #92400e !important;
+      font-size: 13px !important;
+      font-weight: 700 !important;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1.5px solid #fcd34d;
+      cursor: pointer;
+      transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease !important;
+      white-space: nowrap;
+    }
+    .nav-coming-soon:hover {
+      background: #fde68a !important;
+      color: #78350f !important;
+      box-shadow: 0 2px 8px rgba(184,150,12,0.25);
+      transform: translateY(-1px);
+    }
+    .nav-coming-soon:active { transform: scale(0.96) !important; }
+
+    .ai-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      font-size: inherit;
+      font-weight: 800;
+      padding: 1px 8px 2px;
+      border-radius: 6px;
+      border: 1.5px solid #bfdbfe;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+      vertical-align: middle;
+    }
+    .ai-chip:hover {
+      background: #dbeafe;
+      box-shadow: 0 2px 8px rgba(29,78,216,0.18);
+      transform: translateY(-1px);
+    }
+    .ai-chip:active { transform: scale(0.96); }
+
     .nav-cta {
       display: inline-flex;
       align-items: center;
@@ -421,10 +467,16 @@
     .problem-card {
       background: #fafafa;
     }
-    .problem-card .emoji {
-      font-size: 30px;
-      display: block;
+    .card-icon {
+      width: 44px; height: 44px;
+      background: #f3f4f6;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #374151;
       margin-bottom: 18px;
+      flex-shrink: 0;
     }
     .problem-card h3 {
       font-size: 17px;
@@ -535,9 +587,8 @@
       gap: 20px;
     }
 
-    .feat-card .feat-emoji {
-      font-size: 26px;
-      display: block;
+    .feat-card .card-icon {
+      width: 40px; height: 40px;
       margin-bottom: 16px;
     }
     .feat-card h3 {
@@ -700,7 +751,7 @@
       gap: 10px;
     }
     .price-list li:last-child { border-bottom: none; }
-    .check { color: #B8960C; font-weight: 700; flex-shrink: 0; }
+    .check { color: #B8960C; flex-shrink: 0; display: flex; align-items: center; }
     .price-card .btn-primary,
     .price-card .btn-outline { width: 100%; justify-content: center; }
 
@@ -709,9 +760,10 @@
     /* WAITLIST                                                          */
     /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
     .waitlist {
-      background: #111827;
+      background: #ffffff;
       padding: 96px 0;
       text-align: center;
+      border-top: 1px solid #f3f4f6;
     }
 
     .waitlist-inner {
@@ -720,18 +772,18 @@
       padding: 0 24px;
     }
 
-    .waitlist .label { color: rgba(255,255,255,0.35); }
+    .waitlist .label { color: #9ca3af; }
 
     .waitlist h2 {
       font-size: clamp(32px, 5vw, 52px);
       font-weight: 800;
       letter-spacing: -0.02em;
-      color: #ffffff;
+      color: #111827;
       margin-bottom: 16px;
     }
     .waitlist-sub {
       font-size: 16px;
-      color: rgba(255,255,255,0.5);
+      color: #6b7280;
       line-height: 1.75;
       margin-bottom: 44px;
     }
@@ -739,8 +791,152 @@
     .tally-wrapper {
       max-width: 440px;
       margin: 0 auto;
+      background: #f9fafb;
+      border-radius: 16px;
+      border: 1px solid #e5e7eb;
+      padding: 28px 24px 16px;
     }
 
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    /* TOOLS PREVIEW                                                     */
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .tool-tab {
+      background: #f4f4f5;
+      border: 1px solid #e5e7eb;
+      color: #6b7280;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px 24px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s ease;
+    }
+    .tool-tab.active, .tool-tab:hover {
+      background: #111827;
+      color: white;
+      border-color: #111827;
+    }
+    .tool-panel { display: block; }
+    .tool-panel.hidden { display: none; }
+    .tool-mockup {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+    .mockup-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .mockup-title { font-size: 16px; font-weight: 700; color: #111827; }
+    .mockup-badge {
+      background: #f0fdf4;
+      color: #16a34a;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      letter-spacing: 0.05em;
+    }
+    .mockup-cta {
+      text-align: center;
+      font-size: 12px;
+      color: #9ca3af;
+      margin-top: 16px;
+      font-style: italic;
+    }
+    .mentor-cards { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+    .mentor-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+    }
+    .mentor-avatar {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+      color: #374151;
+      flex-shrink: 0;
+    }
+    .mentor-name { font-size: 14px; font-weight: 700; color: #111827; }
+    .mentor-role { font-size: 12px; color: #6b7280; margin: 2px 0 6px; }
+    .mentor-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tag {
+      background: #f3f4f6;
+      color: #374151;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+    .btn-book {
+      margin-left: auto;
+      background: #111827;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      font-family: 'Inter', sans-serif;
+      flex-shrink: 0;
+    }
+    .mockup-search { margin-bottom: 16px; }
+    .filter-chip {
+      background: #f4f4f5;
+      border: 1px solid #e5e7eb;
+      color: #6b7280;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .filter-chip.active { background: #111827; color: white; border-color: #111827; }
+    .supplier-list { display: flex; flex-direction: column; gap: 10px; }
+    .supplier-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+    }
+    .supplier-name { font-size: 14px; font-weight: 700; color: #111827; }
+    .supplier-meta { font-size: 12px; color: #6b7280; margin-top: 2px; }
+    .supplier-margin { font-size: 14px; font-weight: 700; }
+    .supplier-rating { font-size: 12px; color: #6b7280; margin-top: 2px; }
+    .investor-stat {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 14px;
+      text-align: center;
+    }
+    .investor-stat-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #9ca3af; margin-bottom: 6px; }
+    .investor-stat-value { font-size: 22px; font-weight: 800; color: #111827; letter-spacing: -0.02em; }
+    .investor-stat-delta { font-size: 11px; font-weight: 700; margin-top: 4px; }
+    .investor-stat-delta.positive { color: #16a34a; }
+    .investor-stat-delta.neutral { color: #6b7280; }
 
     /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
     /* FOOTER                                                            */
@@ -777,6 +973,7 @@
     /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
     @media (max-width: 768px) {
       .nav-links { display: none; }
+      .why-ai-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
 
       .hero { padding: 110px 0 60px; }
 
@@ -850,8 +1047,9 @@
         <li><a href="#how-it-works">How it works</a></li>
         <li><a href="#features">Features</a></li>
         <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#tools-preview" class="nav-coming-soon">Coming Soon ✦</a></li>
       </ul>
-      <a href="app.html" class="nav-cta">Try for Free →</a>
+      <a href="#" onclick="openOnboardingModal(); return false;" class="nav-cta">Try for Free →</a>
     </div>
   </nav>
 
@@ -860,19 +1058,19 @@
   <section class="hero">
     <div class="wrap" style="max-width: 720px;">
       <div class="hero-eyebrow">
-        <span class="pill"><span class="pill-dot"></span>AI-Powered Financial Advisor</span>
+        <span class="pill"><span class="pill-dot"></span>Know Your Numbers. Own Your Future.</span>
       </div>
 
       <h1>Stop guessing. Start knowing if your business is <span class="hero-accent">profitable.</span></h1>
 
-      <p class="hero-sub">FounderLytics gives freelancers and early entrepreneurs the financial clarity they never had — in 60 seconds.</p>
+      <p class="hero-sub">Most freelancers end the month not knowing if they actually made money. FounderLytics changes that — with AI that understands your specific business, not a generic template.</p>
 
       <div class="hero-ctas">
-        <a href="app.html" class="btn-primary">Analyze My Finances →</a>
+        <a href="#" onclick="openOnboardingModal(); return false;" class="btn-primary">Get My Financial Truth →</a>
         <a href="#how-it-works" class="btn-outline">See How It Works</a>
       </div>
 
-      <p class="hero-proof">Join 900+ freelancers already using FounderLytics</p>
+      <p class="hero-proof">900+ entrepreneurs already know their numbers</p>
     </div>
 
     <div class="wrap" style="max-width: 1100px;">
@@ -916,21 +1114,34 @@
       </div>
       <div class="problem-cards" data-stagger>
         <div class="card problem-card" data-animate>
-          <span class="emoji">⏱️</span>
-          <h3>You don't know your real hourly rate</h3>
-          <p>After expenses, taxes, and unpaid admin hours — what do you actually take home? Most freelancers have no idea.</p>
+          <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M9 3h6"/><path d="M12 3v2"/></svg></div>
+          <h3>You don't know what you actually earn per hour</h3>
+          <p>Add up your revenue, subtract your expenses, divide by hours worked. That number is almost always lower than what you think. Most freelancers have never calculated it.</p>
         </div>
         <div class="card problem-card" data-animate>
-          <span class="emoji">💸</span>
+          <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
           <h3>You spend everything you earn</h3>
-          <p>Tax season hits and the money is gone. No reserve, no plan — just stress. It happens every year.</p>
+          <p>Tax season arrives and the money is gone. No reserve, no plan — just a number you owe and no way to pay it. It happens to 63% of freelancers every single year.</p>
         </div>
         <div class="card problem-card" data-animate>
-          <span class="emoji">📉</span>
-          <h3>You have no investment plan</h3>
-          <p>Inflation quietly erodes your savings while you're focused on landing the next client. A plan would take 60 seconds.</p>
+          <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg></div>
+          <h3>Your savings are losing value right now</h3>
+          <p>While you're focused on the next client, inflation is quietly eating your idle savings. Money sitting in a bank account loses purchasing power every month. A 60-second analysis could change that.</p>
         </div>
       </div>
+    </div>
+  </section>
+
+
+  <!-- ── QUOTE ────────────────────────────────────────────────────── -->
+  <section style="padding: 96px 0; background: white;">
+    <div style="max-width: 680px; margin: 0 auto; padding: 0 24px; text-align: center;" data-animate>
+      <p style="font-size: clamp(22px, 4vw, 36px); font-weight: 800; color: #111827; line-height: 1.3; letter-spacing: -0.03em; margin-bottom: 24px;">
+        "The entrepreneur in you isn't missing —<br>it's just buried under financial pressure."
+      </p>
+      <p style="font-size: 17px; color: #6b7280; line-height: 1.7; max-width: 520px; margin: 0 auto;">
+        Start small. Start scared. Just start — but this time, start with the numbers on your side.
+      </p>
     </div>
   </section>
 
@@ -945,19 +1156,78 @@
       <div class="steps" data-stagger>
         <div class="step" data-animate>
           <div class="step-num">1</div>
-          <h3>Enter your numbers</h3>
-          <p>Revenue, expenses, hours, clients — a quick 8-step guided form. No spreadsheets, no jargon.</p>
+          <h3>Answer a few questions</h3>
+          <p>The AI asks only what's relevant to your type of business. No generic forms. No spreadsheets. Takes under 3 minutes.</p>
         </div>
         <div class="step" data-animate>
           <div class="step-num">2</div>
-          <h3>AI analyzes your data</h3>
-          <p>Claude by Anthropic processes your numbers instantly — the same AI used by thousands of businesses.</p>
+          <h3><a href="#why-ai" class="ai-chip">AI ↗</a> analyzes your data</h3>
+          <p>Claude by Anthropic cross-references your numbers, identifies patterns, and calculates metrics most freelancers never see — in seconds.</p>
         </div>
         <div class="step" data-animate>
           <div class="step-num">3</div>
           <h3>Get your financial truth</h3>
           <p>Charts, scores, and a personalized action plan. Ask follow-up questions like you have a CFO on speed dial.</p>
         </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ── WHY AI? ──────────────────────────────────────────────────── -->
+  <section id="why-ai" style="padding: 96px 0; background: #f9fafb;">
+    <div style="max-width: 1100px; margin: 0 auto; padding: 0 24px;">
+
+      <div class="why-ai-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;">
+
+        <div data-animate>
+          <span style="font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#9ca3af;">WHY AI?</span>
+          <h2 style="font-size: clamp(28px, 4vw, 42px); font-weight: 800; color: #111827; letter-spacing: -0.03em; line-height: 1.2; margin: 16px 0 20px;">
+            We didn't add AI because it's trendy. We added it because nothing else could solve this.
+          </h2>
+          <p style="font-size: 16px; color: #6b7280; line-height: 1.8; margin-bottom: 20px;">
+            Financial confusion isn't a knowledge problem. It's a time, access, and context problem. A freelancer at 11pm after a long day doesn't need a textbook — they need someone who knows their specific numbers and tells them exactly what to do.
+          </p>
+          <p style="font-size: 16px; color: #6b7280; line-height: 1.8; margin-bottom: 20px;">
+            The answer is simple: your financial situation is unique. A dropshipper and a freelance designer have completely different problems. A generic calculator can't tell them apart. AI can — and does, every single time.
+          </p>
+          <p style="font-size: 15px; font-weight: 600; color: #111827; line-height: 1.7; padding: 20px; background: white; border: 1px solid #e5e7eb; border-radius: 12px; border-left: 4px solid #111827;">
+            "Pick a problem that matters. Understand it deeply. Ask yourself — why does this need AI?" This is the question we started with. Seventy million freelancers with no financial clarity. The answer wrote itself.
+          </p>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 16px;" data-animate>
+          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 14px; padding: 24px;">
+            <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+              <div style="width:36px;height:36px;background:#f4f4f5;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </div>
+              <h4 style="font-size:15px;font-weight:700;color:#111827;">This isn't a niche problem</h4>
+            </div>
+            <p style="font-size:14px;color:#6b7280;line-height:1.6;">63% of freelancers report financial stress as their #1 challenge. Not finding clients. Not motivation. Money clarity.</p>
+          </div>
+
+          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 14px; padding: 24px;">
+            <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+              <div style="width:36px;height:36px;background:#f4f4f5;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 1 4 4v1h1a3 3 0 0 1 0 6h-1v1a4 4 0 0 1-8 0v-1H7a3 3 0 0 1 0-6h1V6a4 4 0 0 1 4-4z"/></svg>
+              </div>
+              <h4 style="font-size:15px;font-weight:700;color:#111827;">Why not a spreadsheet?</h4>
+            </div>
+            <p style="font-size:14px;color:#6b7280;line-height:1.6;">A spreadsheet records what happened. AI reasons about your specific situation and tells you what to do next — adapted to your business, your country, your goals.</p>
+          </div>
+
+          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 14px; padding: 24px;">
+            <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+              <div style="width:36px;height:36px;background:#f4f4f5;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+              </div>
+              <h4 style="font-size:15px;font-weight:700;color:#111827;">What makes this different from ChatGPT?</h4>
+            </div>
+            <p style="font-size:14px;color:#6b7280;line-height:1.6;">ChatGPT gives generic advice. FounderLytics knows your revenue, your expenses, your country, your business type, and your goals — then gives you specific numbers, specific recommendations, and specific next steps. That's the difference between a search engine and an advisor.</p>
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
@@ -972,42 +1242,225 @@
       </div>
       <div class="features-grid" data-stagger>
         <div class="card feat-card" data-animate>
-          <span class="feat-emoji">📊</span>
+          <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></div>
           <h3>Real Profitability Analysis</h3>
           <p>Know exactly if you're making money or just staying busy. See net profit, margins, and what's eating your income.</p>
           <span class="feat-tag">Core</span>
         </div>
         <div class="card feat-card" data-animate>
-          <span class="feat-emoji">⏰</span>
+          <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
           <h3>Effective Hourly Rate</h3>
           <p>Discover what you actually earn per hour after all costs. The number that changes how you price everything.</p>
           <span class="feat-tag">Core</span>
         </div>
         <div class="card feat-card" data-animate>
-          <span class="feat-emoji">🧾</span>
+          <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/><line x1="9" y1="11" x2="15" y2="11"/></svg></div>
           <h3>Auto Tax Calculator</h3>
           <p>Never be surprised at tax season again. We calculate exactly what to set aside based on your country.</p>
           <span class="feat-tag">Core</span>
         </div>
         <div class="card feat-card" data-animate>
-          <span class="feat-emoji">💯</span>
+          <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
           <h3>Financial Health Score</h3>
           <p>A single score from 0–100 that tells you where you stand — and exactly what to improve first.</p>
           <span class="feat-tag">Core</span>
         </div>
         <div class="card feat-card" data-animate>
-          <span class="feat-emoji">🚀</span>
+          <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
           <h3>Investment Roadmap</h3>
           <p>AI tells you exactly how much to invest and where — index funds, emergency fund, business growth, or debt payoff.</p>
           <span class="feat-tag">AI</span>
         </div>
         <div class="card feat-card" data-animate>
-          <span class="feat-emoji">🤖</span>
+          <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
           <h3>AI Follow-up Advisor</h3>
           <p>Ask follow-up questions and get personalized CFO-level advice. Up to 10 messages per session, free.</p>
           <span class="feat-tag">AI</span>
         </div>
       </div>
+    </div>
+  </section>
+
+
+  <!-- ── TOOLS PREVIEW ───────────────────────────────────────────── -->
+  <section id="tools-preview" style="padding: 96px 0; background: #f9fafb;">
+    <div style="max-width:1100px; margin:0 auto; padding:0 24px;">
+
+      <div style="text-align:center; margin-bottom:48px;" data-animate>
+        <span style="font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#9ca3af;">COMING SOON</span>
+        <h2 style="font-size:clamp(32px,5vw,48px); font-weight:800; color:#111827; letter-spacing:-0.03em; margin-top:12px;">The FounderLytics Suite</h2>
+        <p style="font-size:17px; color:#6b7280; margin-top:12px; max-width:520px; margin-left:auto; margin-right:auto;">Three powerful tools launching soon. Built for the way real entrepreneurs work.</p>
+      </div>
+
+      <!-- Tool tabs -->
+      <div style="display:flex; gap:8px; justify-content:center; margin-bottom:32px; flex-wrap:wrap;" data-animate>
+        <button class="tool-tab active" onclick="switchTool('mentors')" id="tab-mentors">Find a Mentor</button>
+        <button class="tool-tab" onclick="switchTool('suppliers')" id="tab-suppliers">Find Suppliers</button>
+        <button class="tool-tab" onclick="switchTool('investors')" id="tab-investors">Investor Dashboard</button>
+      </div>
+
+      <!-- TOOL 1: Mentors -->
+      <div class="tool-panel" id="panel-mentors" data-animate>
+        <div class="tool-mockup">
+          <div class="mockup-header">
+            <span class="mockup-title">Mentor Marketplace</span>
+            <span class="mockup-badge">Beta Access</span>
+          </div>
+          <div class="mockup-search">
+            <input type="text" placeholder="Search mentors by industry, expertise..." readonly style="width:100%;padding:12px 16px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:14px;color:#9ca3af;background:#f9fafb;font-family:'Inter',sans-serif;outline:none;">
+          </div>
+          <div class="mentor-cards">
+            <div class="mentor-card">
+              <div class="mentor-avatar" style="background:#dbeafe;">SL</div>
+              <div>
+                <div class="mentor-name">Sarah L.</div>
+                <div class="mentor-role">Freelance Design → $180k/yr</div>
+                <div class="mentor-tags"><span class="tag">Pricing</span><span class="tag">Clients</span><span class="tag">Scaling</span></div>
+              </div>
+              <button class="btn-book">Book 1:1 →</button>
+            </div>
+            <div class="mentor-card">
+              <div class="mentor-avatar" style="background:#dcfce7;">MR</div>
+              <div>
+                <div class="mentor-name">Marco R.</div>
+                <div class="mentor-role">Dropshipping → $2M revenue</div>
+                <div class="mentor-tags"><span class="tag">Sourcing</span><span class="tag">Ads</span><span class="tag">Margins</span></div>
+              </div>
+              <button class="btn-book">Book 1:1 →</button>
+            </div>
+            <div class="mentor-card">
+              <div class="mentor-avatar" style="background:#fef3c7;">AP</div>
+              <div>
+                <div class="mentor-name">Ana P.</div>
+                <div class="mentor-role">SaaS Founder → Series A</div>
+                <div class="mentor-tags"><span class="tag">Fundraising</span><span class="tag">Growth</span></div>
+              </div>
+              <button class="btn-book">Book 1:1 →</button>
+            </div>
+          </div>
+          <div class="mockup-cta">Matched to your business type and goals by AI</div>
+        </div>
+      </div>
+
+      <!-- TOOL 2: Suppliers -->
+      <div class="tool-panel hidden" id="panel-suppliers" data-animate>
+        <div class="tool-mockup">
+          <div class="mockup-header">
+            <span class="mockup-title">Supplier Finder</span>
+            <span class="mockup-badge">Beta Access</span>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+            <div class="filter-chip active">All Categories</div>
+            <div class="filter-chip">Electronics</div>
+            <div class="filter-chip">Clothing</div>
+            <div class="filter-chip">Home & Garden</div>
+            <div class="filter-chip">Beauty</div>
+            <div class="filter-chip">Sports</div>
+          </div>
+          <div class="supplier-list">
+            <div class="supplier-row">
+              <div>
+                <div class="supplier-name">TechSource Pro</div>
+                <div class="supplier-meta">Electronics · MOQ: 50 units · Ships from: Shenzhen</div>
+              </div>
+              <div style="text-align:right;">
+                <div class="supplier-margin" style="color:#16a34a;">+42% avg margin</div>
+                <div class="supplier-rating">★★★★★ 4.9</div>
+              </div>
+            </div>
+            <div class="supplier-row">
+              <div>
+                <div class="supplier-name">StyleVault Direct</div>
+                <div class="supplier-meta">Clothing · MOQ: 20 units · Ships from: Vietnam</div>
+              </div>
+              <div style="text-align:right;">
+                <div class="supplier-margin" style="color:#16a34a;">+58% avg margin</div>
+                <div class="supplier-rating">★★★★☆ 4.6</div>
+              </div>
+            </div>
+            <div class="supplier-row">
+              <div>
+                <div class="supplier-name">HomeGoods Hub</div>
+                <div class="supplier-meta">Home & Garden · MOQ: 30 units · Ships from: Turkey</div>
+              </div>
+              <div style="text-align:right;">
+                <div class="supplier-margin" style="color:#16a34a;">+35% avg margin</div>
+                <div class="supplier-rating">★★★★★ 4.8</div>
+              </div>
+            </div>
+          </div>
+          <div class="mockup-cta">Ranked by profit margin for your specific business</div>
+        </div>
+      </div>
+
+      <!-- TOOL 3: Investor Dashboard -->
+      <div class="tool-panel hidden" id="panel-investors" data-animate>
+        <div class="tool-mockup">
+          <div class="mockup-header">
+            <span class="mockup-title">Investor-Ready Dashboard</span>
+            <span class="mockup-badge">Beta Access</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;">
+            <div class="investor-stat">
+              <div class="investor-stat-label">MRR</div>
+              <div class="investor-stat-value">$3,200</div>
+              <div class="investor-stat-delta positive">+12%</div>
+            </div>
+            <div class="investor-stat">
+              <div class="investor-stat-label">Runway</div>
+              <div class="investor-stat-value">8 mo</div>
+              <div class="investor-stat-delta neutral">stable</div>
+            </div>
+            <div class="investor-stat">
+              <div class="investor-stat-label">Burn Rate</div>
+              <div class="investor-stat-value">$800</div>
+              <div class="investor-stat-delta positive">-5%</div>
+            </div>
+            <div class="investor-stat">
+              <div class="investor-stat-label">Growth</div>
+              <div class="investor-stat-value">18%</div>
+              <div class="investor-stat-delta positive">MoM</div>
+            </div>
+          </div>
+          <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:16px;margin-bottom:12px;">
+            <div style="font-size:12px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px;">Revenue vs Expenses — Last 6 Months</div>
+            <div style="display:flex;align-items:flex-end;gap:8px;height:90px;">
+              <div style="flex:1;display:flex;flex-direction:column;gap:2px;align-items:center;">
+                <div style="width:100%;background:#111827;border-radius:3px 3px 0 0;height:60px;"></div>
+                <div style="width:100%;background:#e5e7eb;border-radius:3px 3px 0 0;height:35px;margin-top:2px;"></div>
+                <span style="font-size:10px;color:#9ca3af;margin-top:4px;">Oct</span>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:2px;align-items:center;">
+                <div style="width:100%;background:#111827;border-radius:3px 3px 0 0;height:65px;"></div>
+                <div style="width:100%;background:#e5e7eb;border-radius:3px 3px 0 0;height:38px;margin-top:2px;"></div>
+                <span style="font-size:10px;color:#9ca3af;margin-top:4px;">Nov</span>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:2px;align-items:center;">
+                <div style="width:100%;background:#111827;border-radius:3px 3px 0 0;height:55px;"></div>
+                <div style="width:100%;background:#e5e7eb;border-radius:3px 3px 0 0;height:32px;margin-top:2px;"></div>
+                <span style="font-size:10px;color:#9ca3af;margin-top:4px;">Dec</span>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:2px;align-items:center;">
+                <div style="width:100%;background:#111827;border-radius:3px 3px 0 0;height:70px;"></div>
+                <div style="width:100%;background:#e5e7eb;border-radius:3px 3px 0 0;height:40px;margin-top:2px;"></div>
+                <span style="font-size:10px;color:#9ca3af;margin-top:4px;">Jan</span>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:2px;align-items:center;">
+                <div style="width:100%;background:#111827;border-radius:3px 3px 0 0;height:75px;"></div>
+                <div style="width:100%;background:#e5e7eb;border-radius:3px 3px 0 0;height:42px;margin-top:2px;"></div>
+                <span style="font-size:10px;color:#9ca3af;margin-top:4px;">Feb</span>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:2px;align-items:center;">
+                <div style="width:100%;background:#16a34a;border-radius:3px 3px 0 0;height:80px;"></div>
+                <div style="width:100%;background:#e5e7eb;border-radius:3px 3px 0 0;height:44px;margin-top:2px;"></div>
+                <span style="font-size:10px;color:#9ca3af;font-weight:700;margin-top:4px;">Mar</span>
+              </div>
+            </div>
+          </div>
+          <div class="mockup-cta">Auto-generated from your FounderLytics data. Export as PDF.</div>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -1046,13 +1499,13 @@
           <p class="price-amount">$0</p>
           <p class="price-tagline">Try it now, no credit card needed.</p>
           <ul class="price-list">
-            <li><span class="check">✓</span> 1 full financial analysis</li>
-            <li><span class="check">✓</span> 10 AI follow-up messages</li>
-            <li><span class="check">✓</span> All 6 stat cards + charts</li>
-            <li><span class="check">✓</span> Tax reserve calculator</li>
-            <li><span class="check">✓</span> Financial health score</li>
+            <li><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> 1 full financial analysis</li>
+            <li><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> 10 AI follow-up messages</li>
+            <li><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> All 6 stat cards + charts</li>
+            <li><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Tax reserve calculator</li>
+            <li><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Financial health score</li>
           </ul>
-          <a href="app.html" class="btn-primary">Start for Free →</a>
+          <a href="#" onclick="openOnboardingModal(); return false;" class="btn-primary">Start for Free →</a>
         </div>
         <div class="price-card featured" data-animate>
           <span class="price-badge">Coming Soon</span>
@@ -1060,11 +1513,11 @@
           <p class="price-amount">$9<span class="per">/mo</span></p>
           <p class="price-tagline">Full access for serious freelancers.</p>
           <ul class="price-list">
-            <li><span class="check">✓</span> Unlimited analyses</li>
-            <li><span class="check">✓</span> Unlimited AI messages</li>
-            <li><span class="check">✓</span> Monthly financial reports</li>
-            <li><span class="check">✓</span> Investment portfolio tracking</li>
-            <li><span class="check">✓</span> Priority support</li>
+            <li><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Unlimited analyses</li>
+            <li><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Unlimited AI messages</li>
+            <li><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Monthly financial reports</li>
+            <li><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Investment portfolio tracking</li>
+            <li><span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span> Priority support</li>
           </ul>
           <a href="#waitlist" class="btn-outline">Join Waitlist →</a>
         </div>
@@ -1089,9 +1542,26 @@
   </section>
 
 
+  <!-- ── ONBOARDING MODAL ─────────────────────────────────────────── -->
+  <div id="onboarding-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center; padding:24px;">
+    <div style="background:white; border-radius:20px; padding:40px; max-width:520px; width:100%; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.2);">
+      <button onclick="closeOnboardingModal()" style="position:absolute; top:16px; right:16px; background:none; border:none; font-size:20px; cursor:pointer; color:#6b7280;">×</button>
+      <h3 style="font-size:22px; font-weight:800; color:#111827; margin-bottom:8px; letter-spacing:-0.02em;">Before we start</h3>
+      <p style="font-size:14px; color:#6b7280; margin-bottom:24px;">Tell us a bit about yourself so we can personalize your experience.</p>
+      <iframe data-tally-src="https://tally.so/embed/Pd0qr5?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" loading="lazy" width="100%" height="447" frameborder="0" marginheight="0" marginwidth="0" title="Join the FounderLytics waitlist"></iframe>
+      <script>var d=document,w="https://tally.so/widgets/embed.js",v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};if("undefined"!=typeof Tally)v();else if(d.querySelector('script[src="'+w+'"]')==null){var s=d.createElement("script");s.src=w,s.onload=v,s.onerror=v,d.body.appendChild(s);}</script>
+      <div style="margin-top:20px; text-align:center;">
+        <button onclick="proceedToApp()" style="background:#111827; color:white; border:none; padding:14px 32px; border-radius:999px; font-size:15px; font-weight:700; cursor:pointer; font-family:'Inter',sans-serif;">Continue to FounderLytics →</button>
+        <p style="font-size:12px; color:#9ca3af; margin-top:10px;">Your information is private and never shared.</p>
+      </div>
+    </div>
+  </div>
+
+
   <!-- ── FOOTER ───────────────────────────────────────────────────── -->
   <footer class="footer">
     <div class="wrap">
+      <p style="text-align:center; font-size:13px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#9ca3af; margin-bottom:32px;">Made by entrepreneurs, for entrepreneurs.</p>
       <div class="footer-inner">
         <div class="footer-logo">Founder<span class="logo-gold">Lytics</span></div>
         <p class="footer-center">Built at TETR Startup Hackathon · March 2026</p>
@@ -1154,6 +1624,35 @@
       });
     }, { threshold: 0.5 });
     document.querySelectorAll('[data-count-to]').forEach(el => countObs.observe(el));
+
+    // ── Onboarding modal ────────────────────────────────────────────
+    function openOnboardingModal() {
+      document.getElementById('onboarding-modal').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      if (typeof Tally !== 'undefined') Tally.loadEmbeds();
+    }
+
+    function closeOnboardingModal() {
+      document.getElementById('onboarding-modal').style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    function proceedToApp() {
+      window.location.href = 'app.html';
+    }
+
+    // Close modal on backdrop click
+    document.getElementById('onboarding-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeOnboardingModal();
+    });
+
+    // ── Tools preview tab switching ─────────────────────────────────
+    function switchTool(tool) {
+      document.querySelectorAll('.tool-panel').forEach(p => p.classList.add('hidden'));
+      document.querySelectorAll('.tool-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById(`panel-${tool}`).classList.remove('hidden');
+      document.getElementById(`tab-${tool}`).classList.add('active');
+    }
 
     // ── Smooth scroll to waitlist ───────────────────────────────────
     document.querySelectorAll('a[href="#waitlist"]').forEach(link => {

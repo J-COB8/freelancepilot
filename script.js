@@ -1,7 +1,22 @@
+// ====== ICONS ======
+const ICONS = {
+    stats: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="18" y="3" width="4" height="18"/><rect x="10" y="8" width="4" height="13"/><rect x="2" y="13" width="4" height="8"/></svg>`,
+    charts: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>`,
+    scenarios: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>`,
+    ai: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 1 4 4v1h1a3 3 0 0 1 0 6h-1v1a4 4 0 0 1-8 0v-1H7a3 3 0 0 1 0-6h1V6a4 4 0 0 1 4-4z"/></svg>`,
+    tools: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>`,
+    projection: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>`,
+    investment: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>`,
+    optimizer: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v12"/><path d="M18 9v12"/><path d="M3 9h6"/><path d="M15 3h6"/><path d="M3 15h18"/></svg>`,
+    check: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+    tip: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+    cfo: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>`
+};
+
 // ====== CONSTANTS & STATE ======
 let conversationHistory = [];
 let collectedData = {};
-let currentStep = 'initial';
+let currentStep = 'name';
 let questionCount = 0;
 
 let chatHistory = [];
@@ -39,6 +54,7 @@ if (btnBack) {
 
 if (btnRestart) {
     btnRestart.addEventListener('click', () => {
+        sessionStorage.clear();
         location.reload();
     });
 }
@@ -53,15 +69,61 @@ document.addEventListener('keypress', (e) => {
 // ====== NEXT BUTTON HANDLER ======
 if (btnNext) {
     btnNext.addEventListener('click', async () => {
-        if (currentStep === 'initial') {
+        if (currentStep === 'name') {
+            const name = document.getElementById('input-user-name').value.trim();
+            if (!name) {
+                document.querySelector('#step-name .input-wrapper').classList.add('error');
+                return;
+            }
+            window.userName = name;
+            localStorage.setItem('fl_username', name);
+            conversationHistory.push({ role: 'user', content: `My name is ${name}` });
+            const heading = document.querySelector('.main-heading');
+            if (heading) heading.textContent = `Let's look at your numbers, ${name}.`;
+            document.getElementById('step-name').style.display = 'none';
+            document.getElementById('step-name').classList.remove('active');
+            const stepInitial = document.getElementById('step-initial');
+            stepInitial.style.display = 'block';
+            stepInitial.classList.add('active');
+            currentStep = 'initial';
+            if (btnBack) btnBack.style.visibility = 'visible';
+            updateProgressBar();
+            setTimeout(() => document.getElementById('input-business-type').focus(), 100);
+
+        } else if (currentStep === 'initial') {
             const val = document.getElementById('input-business-type').value.trim();
             if (!val) {
                 document.querySelector('#step-initial .input-wrapper').classList.add('error');
                 return;
             }
-            currentStep = 'dynamic';
             collectedData.businessType = val;
             conversationHistory.push({ role: 'user', content: `My business type: ${val}` });
+            document.getElementById('step-initial').style.display = 'none';
+            updateProgressBar();
+            showCurrencyStep();
+
+        } else if (currentStep === 'currency') {
+            const currencyVal = document.getElementById('input-currency').value;
+            if (!currencyVal) {
+                document.getElementById('currency-tiles').classList.add('error');
+                return;
+            }
+
+            if (currencyVal === 'other') {
+                const otherVal = document.getElementById('input-currency-other').value.trim();
+                if (!otherVal) return;
+                window.userCurrency = otherVal;
+                window.userCurrencyLabel = otherVal;
+            }
+
+            collectedData.currency = window.userCurrencyLabel || window.userCurrency;
+            conversationHistory.push({
+                role: 'user',
+                content: `My currency: ${collectedData.currency}`
+            });
+
+            document.getElementById('step-currency').style.display = 'none';
+            currentStep = 'dynamic';
             await getNextQuestion();
 
         } else if (currentStep === 'dynamic') {
@@ -77,6 +139,7 @@ if (btnNext) {
             collectedData[`q${questionCount}`] = { question, answer };
             conversationHistory.push({ role: 'assistant', content: JSON.stringify({ action: 'ask', question }) });
             conversationHistory.push({ role: 'user', content: answer });
+            saveSession();
 
             await getNextQuestion();
         }
@@ -136,6 +199,9 @@ async function getNextQuestion() {
     if (btnBack) btnBack.style.visibility = 'hidden';
 
     const systemPrompt = `You are a smart financial data collector for FounderLytics, an AI financial advisor for freelancers and entrepreneurs.
+
+The user works in: ${window.userCurrencyLabel || 'USD'}. Use appropriate currency context when asking about amounts.
+The user's name is: ${window.userName || 'there'}. Address them by name naturally — not in every single message, but occasionally to keep it personal. For example: "Nice, ${window.userName || 'there'} — now tell me..." or just use it in the first question naturally.
 
 Your job is to ask the RIGHT questions to collect enough financial data to give this person a meaningful analysis.
 
@@ -233,6 +299,22 @@ If you have enough data:
     }
 }
 
+function isMoneyQuestion(questionText) {
+    const moneyKeywords = [
+        'spend', 'earn', 'make', 'revenue', 'income', 'expense', 'cost',
+        'charge', 'pay', 'salary', 'profit', 'budget', 'price', 'rate',
+        'investment', 'save', 'money', 'dollar', 'peso', 'amount',
+        'monthly', 'annual', 'weekly', 'total'
+    ];
+    const countKeywords = [
+        'how many', 'number of', 'count', 'clients', 'customers', 'orders',
+        'projects', 'hours', 'employees', 'people', 'products', 'items', 'weeks'
+    ];
+    const lowerQ = questionText.toLowerCase();
+    if (countKeywords.some(kw => lowerQ.includes(kw))) return false;
+    return moneyKeywords.some(kw => lowerQ.includes(kw));
+}
+
 function renderDynamicQuestion(q) {
     document.getElementById('step-initial').style.display = 'none';
     const dynamicStep = document.getElementById('dynamic-step');
@@ -260,10 +342,18 @@ function renderDynamicQuestion(q) {
             });
         });
     } else if (q.inputType === 'number') {
-        wrapper.innerHTML = `
-          <span class="currency-symbol">$</span>
-          <input type="number" id="dynamic-input-value" class="with-symbol" placeholder="0.00" autofocus>
-          <span class="error-msg">Please enter a valid number.</span>`;
+        const showCurrency = isMoneyQuestion(q.question);
+        const currencySymbol = window.userCurrency || '$';
+        if (showCurrency) {
+            wrapper.innerHTML = `
+              <span class="currency-symbol">${currencySymbol}</span>
+              <input type="number" id="dynamic-input-value" class="with-symbol" placeholder="0.00" autofocus>
+              <span class="error-msg">Please enter a valid amount.</span>`;
+        } else {
+            wrapper.innerHTML = `
+              <input type="number" id="dynamic-input-value" placeholder="Enter a number..." autofocus>
+              <span class="error-msg">Please enter a valid number.</span>`;
+        }
     } else if (q.inputType === 'freetext') {
         wrapper.innerHTML = `
           <textarea
@@ -294,8 +384,8 @@ function renderDynamicQuestion(q) {
         });
 
         const hint = document.createElement('p');
-        hint.style.cssText = 'font-size:12px; color:#9ca3af; margin-top:8px;';
-        hint.textContent = '💡 Tip: The more detail you give, the better your analysis will be.';
+        hint.style.cssText = 'font-size:12px; color:#9ca3af; margin-top:8px; display:flex; align-items:center; gap:5px;';
+        hint.innerHTML = `${ICONS.tip} Tip: The more detail you give, the better your analysis will be.`;
         wrapper.appendChild(hint);
 
         setTimeout(() => textarea.focus(), 100);
@@ -319,7 +409,10 @@ function renderDynamicQuestion(q) {
 }
 
 // ====== ANALYSIS SYSTEM PROMPT ======
-const ANALYSIS_SYSTEM_PROMPT = `You are FounderLytics — a sharp, direct AI financial advisor for freelancers and early entrepreneurs. You have just finished collecting financial data through a conversation.
+function getAnalysisSystemPrompt() {
+    return `You are FounderLytics — a sharp, direct AI financial advisor for freelancers and early entrepreneurs. You have just finished collecting financial data through a conversation.
+
+The user's currency is: ${window.userCurrencyLabel || '$'}. Use this currency symbol in all monetary values in your analysis and JSON.
 
 Analyze everything the user told you and provide a complete financial picture. Be brutally honest but constructive. Be SPECIFIC to their business type — a dropshipper and a freelancer need completely different insights.
 
@@ -358,6 +451,7 @@ The JSON must contain:
 
 After the |||JSON block, write 3-4 paragraphs of honest, specific analysis. No markdown formatting. Jump straight into the analysis — no greetings.
 End with: FOLLOWUP: one specific follow-up question`;
+}
 
 // ====== API CALL (for followup chat) ======
 async function callAPI() {
@@ -366,7 +460,7 @@ async function callAPI() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                system: ANALYSIS_SYSTEM_PROMPT,
+                system: getAnalysisSystemPrompt(),
                 messages: chatHistory
             })
         });
@@ -415,12 +509,14 @@ async function submitAnalysis() {
         }
     ];
 
+    incrementUsage();
+
     try {
         const response = await fetch('/api/analyze', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                system: ANALYSIS_SYSTEM_PROMPT,
+                system: getAnalysisSystemPrompt(),
                 messages: analysisMessages
             })
         });
@@ -443,6 +539,7 @@ async function submitAnalysis() {
 
         progressBar.style.width = '100%';
         processDisplayResults(aiMessage);
+        saveSession();
 
     } catch (err) {
         console.error(err);
@@ -1017,11 +1114,10 @@ function renderFounderLyticsTools(jsonData) {
     const blockTools = document.getElementById('block-tools');
     if (blockTools) blockTools.classList.remove('hidden');
 
-    const icons = ['✅', '📊', '🎯', '💡', '🛡️', '📈'];
     const helpList = document.getElementById('how-we-help-list');
-    helpList.innerHTML = jsonData.founderlytics_help.map((item, i) => `
+    helpList.innerHTML = jsonData.founderlytics_help.map((item) => `
         <div class="help-item">
-          <span class="help-item-icon">${icons[i] || '✅'}</span>
+          <span class="help-item-icon">${ICONS.check}</span>
           <span class="help-item-text">${item}</span>
         </div>
     `).join('');
@@ -1069,6 +1165,128 @@ function switchScenario(panel) {
     if (tabs[tabMap[panel]]) tabs[tabMap[panel]].classList.add('active');
 }
 
+// ====== SESSION PERSISTENCE ======
+function saveSession() {
+    sessionStorage.setItem('fl_history', JSON.stringify(conversationHistory));
+    sessionStorage.setItem('fl_data', JSON.stringify(collectedData));
+    sessionStorage.setItem('fl_step', currentStep);
+    sessionStorage.setItem('fl_qcount', questionCount);
+    if (window.userCurrency) sessionStorage.setItem('fl_currency', window.userCurrency);
+    if (window.userCurrencyLabel) sessionStorage.setItem('fl_currencyLabel', window.userCurrencyLabel);
+    if (window.analysisData) sessionStorage.setItem('fl_analysis', JSON.stringify(window.analysisData));
+}
+
+function loadSession() {
+    const history = sessionStorage.getItem('fl_history');
+    const data = sessionStorage.getItem('fl_data');
+    const step = sessionStorage.getItem('fl_step');
+    const qcount = sessionStorage.getItem('fl_qcount');
+    const currency = sessionStorage.getItem('fl_currency');
+    const currencyLabel = sessionStorage.getItem('fl_currencyLabel');
+    const analysis = sessionStorage.getItem('fl_analysis');
+
+    if (history) conversationHistory = JSON.parse(history);
+    if (data) collectedData = JSON.parse(data);
+    if (step) currentStep = step;
+    if (qcount) questionCount = parseInt(qcount);
+    if (currency) window.userCurrency = currency;
+    if (currencyLabel) window.userCurrencyLabel = currencyLabel;
+    if (analysis) {
+        window.analysisData = JSON.parse(analysis);
+        return true;
+    }
+    return false;
+}
+
+function showCurrencyStep() {
+    const stepCurrency = document.getElementById('step-currency');
+    stepCurrency.style.display = 'block';
+    stepCurrency.classList.add('active');
+    currentStep = 'currency';
+    if (btnBack) btnBack.style.visibility = 'visible';
+    updateProgressBar();
+
+    document.querySelectorAll('.currency-tile').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.currency-tile').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            document.getElementById('input-currency').value = btn.dataset.value;
+
+            const otherWrapper = document.getElementById('currency-other-wrapper');
+            if (btn.dataset.value === 'other') {
+                otherWrapper.style.display = 'block';
+                document.getElementById('input-currency-other').focus();
+            } else {
+                otherWrapper.style.display = 'none';
+                window.userCurrency = btn.dataset.value;
+                window.userCurrencyLabel = btn.dataset.label;
+            }
+        });
+    });
+}
+
+// ====== USAGE LIMIT ======
+function checkUsageLimit() {
+    const uses = parseInt(localStorage.getItem('fl_uses') || '0');
+    if (uses >= 3) {
+        document.getElementById('form-section').innerHTML = `
+          <div style="text-align:center; max-width:480px; margin:0 auto; padding:60px 24px;">
+            <div style="width:56px;height:56px;background:#f4f4f5;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <h2 style="font-size:26px;font-weight:800;color:#111827;letter-spacing:-0.02em;margin-bottom:12px;">You've used your 3 free analyses</h2>
+            <p style="font-size:15px;color:#6b7280;line-height:1.7;margin-bottom:32px;">Join the waitlist to get unlimited access when FounderLytics Pro launches. Early members get a lifetime discount.</p>
+            <iframe data-tally-src="https://tally.so/embed/Pd0qr5?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" loading="lazy" width="100%" height="300" frameborder="0"></iframe>
+            <script>var d=document,w="https://tally.so/widgets/embed.js",v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};if("undefined"!=typeof Tally)v();else if(d.querySelector('script[src="'+w+'"]')==null){var s=d.createElement("script");s.src=w,s.onload=v,s.onerror=v,d.body.appendChild(s);}<\/script>
+          </div>
+        `;
+        return false;
+    }
+    return true;
+}
+
+function incrementUsage() {
+    const uses = parseInt(localStorage.getItem('fl_uses') || '0');
+    localStorage.setItem('fl_uses', uses + 1);
+}
+
 // ====== INITIALIZE ======
 if (btnBack) btnBack.style.visibility = 'hidden';
 progressBar.style.width = '0%';
+
+window.addEventListener('load', () => {
+    if (!checkUsageLimit()) return;
+
+    const hasSession = loadSession();
+    if (hasSession && window.analysisData) {
+        document.getElementById('form-section').classList.add('hidden-section');
+        document.getElementById('form-section').classList.remove('active-section');
+        document.getElementById('results-section').classList.remove('hidden-section');
+        document.getElementById('results-section').classList.add('active-section');
+        updateStats(window.analysisData.stats);
+        updateCharts(window.analysisData.stats);
+        initInteractiveCharts();
+        renderFounderLyticsTools(window.analysisData);
+        toggleBlock('block-stats');
+        const dateEl = document.getElementById('results-date');
+        if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        progressBar.style.width = '100%';
+    } else {
+        // No saved analysis — reset state to ensure a clean form
+        conversationHistory = [];
+        collectedData = {};
+        questionCount = 0;
+        const storedName = localStorage.getItem('fl_username');
+        if (storedName) {
+            window.userName = storedName;
+            currentStep = 'initial';
+            document.getElementById('step-name').style.display = 'none';
+            document.getElementById('step-name').classList.remove('active');
+            document.getElementById('step-initial').style.display = 'block';
+            document.getElementById('step-initial').classList.add('active');
+            setTimeout(() => document.getElementById('input-business-type').focus(), 100);
+        } else {
+            currentStep = 'name';
+        }
+    }
+});

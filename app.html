@@ -706,6 +706,27 @@
     }
 
     /* ─── Waitlist section (in results) ─────────────────────────── */
+    .waitlist-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.7);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 999px;
+      margin-bottom: 16px;
+    }
+
+    .waitlist-cta-text {
+      font-size: 14px;
+      color: #a5b4fc;
+      margin-bottom: 24px;
+      font-weight: 500;
+    }
+
     .waitlist-section {
       background: #111827;
       border-radius: 20px;
@@ -1053,7 +1074,17 @@
     }
 
     .help-item:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
-    .help-item-icon { font-size: 18px; flex-shrink: 0; }
+    .help-item-icon {
+      width: 28px;
+      height: 28px;
+      background: #f4f4f5;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #374151;
+      flex-shrink: 0;
+    }
 
     .help-item-text {
       font-size: 13px;
@@ -1151,7 +1182,17 @@
       gap: 14px;
     }
 
-    .result-block-icon { font-size: 22px; flex-shrink: 0; }
+    .result-block-icon {
+      width: 36px;
+      height: 36px;
+      background: #f4f4f5;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #374151;
+      flex-shrink: 0;
+    }
 
     .result-block-title {
       font-size: 16px;
@@ -1209,6 +1250,9 @@
     }
 
     .scenario-tab {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       background: #f4f4f5;
       border: 1px solid #e5e7eb;
       color: #6b7280;
@@ -1235,6 +1279,29 @@
       font-size: 13px;
       color: #9ca3af;
       margin-top: 4px;
+    }
+
+    /* ─── Currency step tiles ───────────────────────────────────── */
+    .currency-tile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 16px 12px;
+    }
+
+    .currency-tile-symbol {
+      font-size: 22px;
+      font-weight: 800;
+      color: #111827;
+      line-height: 1;
+    }
+
+    .currency-tile-name {
+      font-size: 11px;
+      color: #6b7280;
+      font-weight: 500;
+      text-align: center;
     }
 
     /* ─── Utility ────────────────────────────────────────────────── */
@@ -1311,13 +1378,60 @@
 
       <div class="form-card">
 
-        <!-- Step 1 — always fixed -->
-        <div class="form-step active" id="step-initial">
+        <!-- Step 1 — name collection -->
+        <div id="step-name" class="form-step active">
+          <h2>What's your name?</h2>
+          <p class="field-hint">We'll use it to make this feel less like a form and more like a conversation.</p>
+          <div class="input-wrapper">
+            <input type="text" id="input-user-name" placeholder="Your first name..." autofocus>
+            <span class="error-msg">Please tell us your name.</span>
+          </div>
+        </div>
+
+        <!-- Step 2 — business type -->
+        <div class="form-step" id="step-initial" style="display:none;">
           <h2>What type of business do you run?</h2>
           <p class="field-hint">Be specific — e.g. "freelance graphic designer", "dropshipping store", "local bakery", "SaaS startup"</p>
           <div class="input-wrapper">
-            <input type="text" id="input-business-type" placeholder="Describe your business..." autofocus>
+            <input type="text" id="input-business-type" placeholder="Describe your business...">
             <span class="error-msg">Please tell us what you do.</span>
+          </div>
+        </div>
+
+        <!-- Step 3 — currency selection -->
+        <div id="step-currency" class="form-step" style="display:none;">
+          <h2>What currency do you work in?</h2>
+          <p class="field-hint">We'll use this for all your financial calculations.</p>
+          <div class="input-wrapper tile-group" id="currency-tiles">
+            <button class="tile-btn currency-tile" data-value="$" data-label="US Dollar (USD)">
+              <span class="currency-tile-symbol">$</span>
+              <span class="currency-tile-name">US Dollar</span>
+            </button>
+            <button class="tile-btn currency-tile" data-value="$" data-label="Mexican Peso (MXN)">
+              <span class="currency-tile-symbol">$</span>
+              <span class="currency-tile-name">Mexican Peso</span>
+            </button>
+            <button class="tile-btn currency-tile" data-value="₹" data-label="Indian Rupee (INR)">
+              <span class="currency-tile-symbol">₹</span>
+              <span class="currency-tile-name">Indian Rupee</span>
+            </button>
+            <button class="tile-btn currency-tile" data-value="£" data-label="British Pound (GBP)">
+              <span class="currency-tile-symbol">£</span>
+              <span class="currency-tile-name">British Pound</span>
+            </button>
+            <button class="tile-btn currency-tile" data-value="€" data-label="Euro (EUR)">
+              <span class="currency-tile-symbol">€</span>
+              <span class="currency-tile-name">Euro</span>
+            </button>
+            <button class="tile-btn currency-tile" data-value="other" data-label="Other">
+              <span class="currency-tile-symbol">?</span>
+              <span class="currency-tile-name">Other</span>
+            </button>
+            <input type="hidden" id="input-currency" value="">
+            <span class="error-msg">Please select your currency.</span>
+          </div>
+          <div id="currency-other-wrapper" class="input-wrapper" style="display:none; margin-top:16px;">
+            <input type="text" id="input-currency-other" placeholder="e.g. CAD, BRL, COP...">
           </div>
         </div>
 
@@ -1368,7 +1482,7 @@
         <div class="result-block" id="block-stats">
           <div class="result-block-header" onclick="toggleBlock('block-stats')">
             <div class="result-block-header-left">
-              <span class="result-block-icon">📊</span>
+              <span class="result-block-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="18" y="3" width="4" height="18"/><rect x="10" y="8" width="4" height="13"/><rect x="2" y="13" width="4" height="8"/></svg></span>
               <div>
                 <h3 class="result-block-title">Your Numbers</h3>
                 <p class="result-block-subtitle">Your financial snapshot for this period</p>
@@ -1410,7 +1524,7 @@
         <div class="result-block" id="block-charts">
           <div class="result-block-header" onclick="toggleBlock('block-charts')">
             <div class="result-block-header-left">
-              <span class="result-block-icon">📈</span>
+              <span class="result-block-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></span>
               <div>
                 <h3 class="result-block-title">Financial Breakdown</h3>
                 <p class="result-block-subtitle">Where your money is going and how it's distributed</p>
@@ -1438,7 +1552,7 @@
         <div class="result-block" id="block-interactive">
           <div class="result-block-header" onclick="toggleBlock('block-interactive')">
             <div class="result-block-header-left">
-              <span class="result-block-icon">🎛️</span>
+              <span class="result-block-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></span>
               <div>
                 <h3 class="result-block-title">Explore Scenarios</h3>
                 <p class="result-block-subtitle">Simulate changes and see the impact in real time</p>
@@ -1449,9 +1563,9 @@
           <div class="result-block-content hidden" id="content-block-interactive">
 
             <div class="scenario-tabs">
-              <button class="scenario-tab active" onclick="switchScenario('projection')">📈 Revenue Growth</button>
-              <button class="scenario-tab" onclick="switchScenario('compound')">💰 Investment</button>
-              <button class="scenario-tab" onclick="switchScenario('optimizer')">✂️ Cut Expenses</button>
+              <button class="scenario-tab active" onclick="switchScenario('projection')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>Revenue Growth</button>
+              <button class="scenario-tab" onclick="switchScenario('compound')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Investment</button>
+              <button class="scenario-tab" onclick="switchScenario('optimizer')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v12"/><path d="M18 9v12"/><path d="M3 9h6"/><path d="M15 3h6"/><path d="M3 15h18"/></svg>Cut Expenses</button>
             </div>
 
             <!-- Panel: Revenue Projection -->
@@ -1461,7 +1575,7 @@
                   <h4>Revenue Projection</h4>
                   <p class="card-subtitle">What if your business grows every month?</p>
                 </div>
-                <span class="card-icon">📈</span>
+                <span class="card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span>
               </div>
               <div class="slider-control">
                 <div class="slider-control-top">
@@ -1481,7 +1595,7 @@
                   <h4>Investment Growth Calculator</h4>
                   <p class="card-subtitle">See how compound interest works for you</p>
                 </div>
-                <span class="card-icon">💰</span>
+                <span class="card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span>
               </div>
               <div class="extra-fields-row">
                 <div class="extra-field">
@@ -1511,7 +1625,7 @@
                   <h4>Expense Optimizer</h4>
                   <p class="card-subtitle">What happens to your profit if you cut costs?</p>
                 </div>
-                <span class="card-icon">✂️</span>
+                <span class="card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v12"/><path d="M18 9v12"/><path d="M3 9h6"/><path d="M15 3h6"/><path d="M3 15h18"/></svg></span>
               </div>
               <div class="slider-control">
                 <div class="slider-control-top">
@@ -1531,7 +1645,7 @@
         <div class="result-block" id="block-ai">
           <div class="result-block-header" onclick="toggleBlock('block-ai')">
             <div class="result-block-header-left">
-              <span class="result-block-icon">⚡️</span>
+              <span class="result-block-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg></span>
               <div>
                 <h3 class="result-block-title">Your CFO Report</h3>
                 <p class="result-block-subtitle">Personalized advice based on your specific numbers</p>
@@ -1542,7 +1656,7 @@
           <div class="result-block-content hidden" id="content-block-ai">
             <div class="ai-advisor-card">
               <div class="ai-header">
-                <span class="ai-icon">⚡️</span>
+                <span class="ai-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg></span>
                 <h3>CFO Advisor</h3>
                 <div id="ai-loading-indicator" class="pulsing-indicator hidden">Still thinking...</div>
               </div>
@@ -1563,7 +1677,7 @@
         <div class="result-block hidden" id="block-tools">
           <div class="result-block-header" onclick="toggleBlock('block-tools')">
             <div class="result-block-header-left">
-              <span class="result-block-icon">🚀</span>
+              <span class="result-block-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span>
               <div>
                 <h3 class="result-block-title">How FounderLytics Helps You</h3>
                 <p class="result-block-subtitle">Tools and strategies built for your business type</p>
@@ -1584,8 +1698,10 @@
 
         <!-- Waitlist -->
         <div class="waitlist-section">
-          <h2>FounderLytics is launching soon.</h2>
-          <p>Join the waitlist and be first to know when we launch.</p>
+          <div class="waitlist-badge">Preview Mode</div>
+          <h2>You just saw an early preview.</h2>
+          <p>FounderLytics hasn't launched yet. What you experienced is a working prototype — the full product will include unlimited analyses, investment tracking, monthly reports, and much more.</p>
+          <p class="waitlist-cta-text">Join the waitlist to get early access and a lifetime discount when we launch.</p>
           <iframe data-tally-src="https://tally.so/embed/Pd0qr5?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" loading="lazy" width="100%" height="177" frameborder="0" marginheight="0" marginwidth="0" title="Join the FounderLytics waitlist"></iframe>
           <script>var d=document,w="https://tally.so/widgets/embed.js",v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};if("undefined"!=typeof Tally)v();else if(d.querySelector('script[src="'+w+'"]')==null){var s=d.createElement("script");s.src=w,s.onload=v,s.onerror=v,d.body.appendChild(s);}</script>
         </div>
