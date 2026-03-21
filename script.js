@@ -66,12 +66,13 @@ if (btnNext) {
 
         } else if (currentStep === 'dynamic') {
             const input = document.getElementById('dynamic-input-value');
-            if (!input || !input.value.trim()) {
+            const value = input && input.tagName === 'TEXTAREA' ? input.value.trim() : (input ? input.value.trim() : '');
+            if (!value) {
                 document.getElementById('dynamic-input-wrapper').classList.add('error');
                 return;
             }
             const question = document.getElementById('dynamic-question-text').textContent;
-            const answer = input.value.trim();
+            const answer = value;
 
             collectedData[`q${questionCount}`] = { question, answer };
             conversationHistory.push({ role: 'assistant', content: JSON.stringify({ action: 'ask', question }) });
@@ -80,6 +81,52 @@ if (btnNext) {
             await getNextQuestion();
         }
     });
+}
+
+// ====== KEYWORD HIGHLIGHTING ======
+function highlightKeyWords(text) {
+    const fixedKeywords = [
+        'monthly expenses', 'monthly revenue', 'total income', 'net profit',
+        'hourly rate', 'hours worked', 'number of clients', 'biggest expense',
+        'monthly profit', 'cost of goods', 'ad spend', 'profit margin',
+        'monthly sales', 'fixed costs', 'variable costs', 'take home',
+        'gastos del mes', 'ingresos', 'ganancias', 'clientes'
+    ];
+
+    const commonWords = new Set([
+        'the', 'your', 'what', 'this', 'that', 'have', 'does', 'did', 'you',
+        'how', 'much', 'many', 'last', 'for', 'from', 'with', 'when', 'are',
+        'was', 'were', 'will', 'been', 'being', 'and', 'but', 'not', 'any',
+        'all', 'each', 'per', 'its', 'our', 'their', 'them', 'they', 'make',
+        'earn', 'spend', 'paid', 'pay', 'get', 'got', 'just', 'about', 'over',
+        'than', 'into', 'out', 'more', 'most', 'long', 'such', 'month', 'week',
+        'year', 'day', 'time', 'also', 'like', 'would', 'could', 'should',
+        'typically', 'usually', 'often', 'might', 'can', 'do', 'in', 'on',
+        'at', 'by', 'an', 'a', 'is', 'it', 'of', 'to', 'up', 'or', 'if',
+        'so', 'us', 'we', 'me', 'my', 'he', 'she', 'his', 'her', 'who',
+        'which', 'work', 'used', 'use', 'take', 'give', 'put', 'set', 'run',
+        'lot', 'new', 'old', 'own', 'off', 'too', 'only', 'very', 'well',
+        'then', 'now', 'here', 'there', 'no', 'yes', 'one', 'two', 'total',
+        'include', 'including', 'example', 'describe', 'please', 'tell'
+    ]);
+
+    let result = text;
+
+    // First pass: fixed keyword phrases (multi-word first to avoid partial matches)
+    const sortedFixed = [...fixedKeywords].sort((a, b) => b.length - a.length);
+    sortedFixed.forEach(kw => {
+        const regex = new RegExp(`(${kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+        result = result.replace(regex, '<mark class="question-highlight">$1</mark>');
+    });
+
+    // Second pass: dynamic — words longer than 6 chars not in common list, not already highlighted
+    result = result.replace(/(?<!<[^>]*)\b([A-Za-z]{7,})\b(?![^<]*>)/g, (match) => {
+        if (commonWords.has(match.toLowerCase())) return match;
+        if (result.includes(`>${match}<`) || result.includes(`>${match} `)) return match;
+        return `<mark class="question-highlight">${match}</mark>`;
+    });
+
+    return result;
 }
 
 // ====== AI CONVERSATION ======
@@ -102,6 +149,35 @@ You need to collect at minimum: revenue, expenses, and at least 2-3 business-spe
 
 After 4-7 questions, if you have enough data for a solid analysis, signal that you're done.
 
+LANGUAGE RULES — strictly follow these:
+- Write like you're talking to a smart 15-year-old who just started their first business
+- Never use: "revenue", "expenditure", "remuneration", "fiscal", "gross", "net" alone without explaining it
+- Instead use: "money you made", "money you spent", "what you take home", "before taxes"
+- Always give an example in the hint field: "e.g. rent, phone bill, Netflix, software"
+- Keep questions under 12 words
+- Hints should be one friendly sentence with a real example
+- If asking about money, always clarify the time period: "this month" or "last month"
+
+GOOD examples:
+- "How much money did you make this month?" hint: "Add up all payments you received, even small ones"
+- "What did you spend money on this month?" hint: "Rent, phone, apps, materials — everything counts"
+- "How many hours did you actually work?" hint: "Think about a typical week and multiply by 4"
+
+BAD examples (never do this):
+- "What is your monthly gross revenue?"
+- "Please specify your total expenditure"
+- "What is your effective hourly remuneration?"
+
+INPUT TYPE RULES:
+- Use "number" ONLY when you need a precise dollar amount or count
+- Use "freetext" when the user might want to describe a situation, like listing multiple expenses, explaining irregular income, or describing their business model
+- Use "select" for categories or yes/no choices
+- Never force a number when a description would give you MORE useful information
+
+Example of when to use freetext:
+Q: "What are your main monthly expenses?" → freetext (they might say "I pay $200 rent, $50 phone, sometimes $100 for materials")
+Q: "How much did you make last month?" → number (you need the exact figure)
+
 ALWAYS respond with ONLY a valid JSON object, no other text:
 
 If you need more data:
@@ -109,7 +185,7 @@ If you need more data:
   "action": "ask",
   "question": "Your question here",
   "hint": "Optional clarifying hint or leave empty string",
-  "inputType": "number" or "text" or "select",
+  "inputType": "number" or "text" or "select" or "freetext",
   "options": ["Option 1", "Option 2"]
 }
 
@@ -163,7 +239,7 @@ function renderDynamicQuestion(q) {
     dynamicStep.style.display = 'block';
     dynamicStep.classList.add('active');
 
-    document.getElementById('dynamic-question-text').textContent = q.question;
+    document.getElementById('dynamic-question-text').innerHTML = highlightKeyWords(q.question);
     document.getElementById('dynamic-question-hint').textContent = q.hint || '';
 
     const wrapper = document.getElementById('dynamic-input-wrapper');
@@ -188,6 +264,42 @@ function renderDynamicQuestion(q) {
           <span class="currency-symbol">$</span>
           <input type="number" id="dynamic-input-value" class="with-symbol" placeholder="0.00" autofocus>
           <span class="error-msg">Please enter a valid number.</span>`;
+    } else if (q.inputType === 'freetext') {
+        wrapper.innerHTML = `
+          <textarea
+            id="dynamic-input-value"
+            placeholder="Describe it in your own words..."
+            rows="3"
+            style="width:100%; background:var(--surface); border:1.5px solid var(--border);
+                   border-radius:10px; padding:14px 16px; font-family:var(--font);
+                   font-size:15px; color:var(--text); outline:none; resize:none;
+                   line-height:1.6; transition:border-color 0.2s, box-shadow 0.2s;"
+          ></textarea>
+          <span class="error-msg">Please describe your situation.</span>`;
+
+        const textarea = document.getElementById('dynamic-input-value');
+        textarea.addEventListener('focus', () => {
+            textarea.style.borderColor = 'var(--accent)';
+            textarea.style.boxShadow = '0 0 0 3px rgba(79,70,229,0.12)';
+        });
+        textarea.addEventListener('blur', () => {
+            textarea.style.borderColor = 'var(--border)';
+            textarea.style.boxShadow = 'none';
+        });
+        textarea.addEventListener('input', () => {
+            wrapper.classList.remove('error');
+        });
+        textarea.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) btnNext.click();
+        });
+
+        const hint = document.createElement('p');
+        hint.style.cssText = 'font-size:12px; color:#9ca3af; margin-top:8px;';
+        hint.textContent = '💡 Tip: The more detail you give, the better your analysis will be.';
+        wrapper.appendChild(hint);
+
+        setTimeout(() => textarea.focus(), 100);
+        return;
     } else {
         wrapper.innerHTML = `
           <input type="text" id="dynamic-input-value" placeholder="Your answer..." autofocus>
@@ -352,10 +464,18 @@ function processDisplayResults(fullResponse) {
     const { jsonData, cleanText, followUpQ } = parseAIResponse(fullResponse);
 
     if (jsonData) {
+        window.analysisData = jsonData; // store globally for interactive charts
         const stats = jsonData.stats || jsonData;
         updateStats(stats);
         updateCharts(stats);
+        initInteractiveCharts();
+        renderFounderLyticsTools(jsonData);
     }
+
+    // Auto-open stats block and set date
+    toggleBlock('block-stats');
+    const dateEl = document.getElementById('results-date');
+    if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
     // Type out the AI text
     typeText(cleanText, 'ai-response-content', () => {
@@ -411,15 +531,51 @@ function updateStats(data) {
 function updateCharts(data) {
     if (typeof Chart === 'undefined') return;
 
-    Chart.defaults.color = '#666666';
-    Chart.defaults.font.family = "'Inter', sans-serif";
+    Chart.defaults.font.family = 'Inter, system-ui, sans-serif';
+    Chart.defaults.font.size = 12;
+    Chart.defaults.color = '#9ca3af';
+
+    const sharedPlugins = {
+        legend: {
+            position: 'bottom',
+            labels: {
+                padding: 16,
+                usePointStyle: true,
+                pointStyleWidth: 8,
+                font: { size: 11, weight: '600' }
+            }
+        },
+        tooltip: {
+            backgroundColor: '#111827',
+            titleColor: '#f9fafb',
+            bodyColor: '#d1d5db',
+            padding: 12,
+            cornerRadius: 10,
+            borderColor: 'rgba(255,255,255,0.1)',
+            borderWidth: 1,
+            callbacks: {
+                label: (ctx) => ` $${ctx.parsed.y?.toLocaleString() ?? ctx.parsed.toLocaleString()}`
+            }
+        }
+    };
+
+    const sharedScales = {
+        y: {
+            grid: { color: 'rgba(0,0,0,0.04)', drawBorder: false },
+            border: { display: false },
+            ticks: { padding: 8, callback: v => `$${v.toLocaleString()}` }
+        },
+        x: {
+            grid: { display: false },
+            border: { display: false },
+            ticks: { padding: 8 }
+        }
+    };
 
     const commonOptions = {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: {
-            legend: { position: 'bottom', labels: { color: '#111111', boxWidth: 12 } }
-        }
+        plugins: sharedPlugins
     };
 
     const revenue = data.monthlyRevenue || 0;
@@ -439,20 +595,17 @@ function updateCharts(data) {
                     label: 'Monthly Financials ($)',
                     data: [revenue, expenses, data.taxReserve || 0, data.netProfit || 0],
                     backgroundColor: [
-                        'rgba(255, 255, 255, 0.8)',
-                        'rgba(255, 74, 74, 0.8)',
-                        'rgba(255, 204, 0, 0.8)',
-                        'rgba(125, 249, 166, 0.8)'
+                        'rgba(17,24,39,0.85)',
+                        'rgba(220,38,38,0.7)',
+                        'rgba(217,119,6,0.7)',
+                        'rgba(22,163,74,0.85)'
                     ],
-                    borderRadius: 4
+                    borderRadius: 6
                 }]
             },
             options: {
                 ...commonOptions,
-                scales: {
-                    y: { grid: { color: 'rgba(0, 0, 0, 0.06)' } },
-                    x: { grid: { display: false } }
-                }
+                scales: sharedScales
             }
         });
     }
@@ -478,11 +631,11 @@ function updateCharts(data) {
                         Math.max(0, available)
                     ],
                     backgroundColor: [
-                        '#ff4a4a',
-                        '#ffcc00',
-                        '#4a90e2',
-                        '#bd10e0',
-                        '#7DF9A6'
+                        '#ef4444',
+                        '#f59e0b',
+                        '#6b7280',
+                        '#374151',
+                        '#22c55e'
                     ],
                     borderWidth: 0,
                     hoverOffset: 4
@@ -688,6 +841,232 @@ if (countEl) {
             }
         });
     }
+}
+
+// ====== INTERACTIVE CHARTS ======
+let projectionChartInst = null;
+let compoundChartInst = null;
+let optimizerChartInst = null;
+
+function initInteractiveCharts() {
+    const baseProfit = window.analysisData?.projectionBase || window.analysisData?.stats?.netProfit || 1000;
+    const baseExpenses = window.analysisData?.stats?.monthlyExpenses || 2000;
+    const baseRevenue = window.analysisData?.stats?.monthlyRevenue || 3000;
+
+    function renderProjectionChart() {
+        const growthRate = parseFloat(document.getElementById('slider-growth').value) / 100;
+        document.getElementById('growth-rate-label').textContent = `${Math.round(growthRate * 100)}%`;
+
+        const months = Array.from({length: 12}, (_, i) => `Month ${i + 1}`);
+        const values = months.map((_, i) => Math.round(baseProfit * Math.pow(1 + growthRate, i)));
+        const year1Total = values.reduce((a, b) => a + b, 0);
+
+        const ctx = document.getElementById('projectionChart').getContext('2d');
+        if (projectionChartInst) projectionChartInst.destroy();
+        projectionChartInst = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'Monthly Profit ($)',
+                    data: values,
+                    borderColor: '#111827',
+                    backgroundColor: 'rgba(17,24,39,0.05)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 3,
+                    pointBackgroundColor: '#111827'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: {
+                        grid: { color: 'rgba(0,0,0,0.04)' },
+                        ticks: { callback: v => `$${v.toLocaleString()}` }
+                    },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+        document.getElementById('projection-summary').textContent =
+            `At ${Math.round(growthRate * 100)}% monthly growth, you'd earn $${year1Total.toLocaleString()} in total over 12 months.`;
+    }
+
+    function renderCompoundChart() {
+        const monthly = parseFloat(document.getElementById('input-monthly-investment').value) || 200;
+        const annualRate = parseFloat(document.getElementById('input-return-rate').value) || 8;
+        const years = parseFloat(document.getElementById('slider-years').value) || 5;
+        const monthlyRate = annualRate / 100 / 12;
+        const totalMonths = years * 12;
+
+        document.getElementById('years-label').textContent = `${years} year${years > 1 ? 's' : ''}`;
+
+        const labels = Array.from({length: years}, (_, i) => `Year ${i + 1}`);
+        const values = labels.map((_, i) => {
+            const n = (i + 1) * 12;
+            return Math.round(monthly * ((Math.pow(1 + monthlyRate, n) - 1) / monthlyRate));
+        });
+        const totalInvested = monthly * totalMonths;
+        const finalValue = values[values.length - 1];
+        const gains = finalValue - totalInvested;
+
+        const ctx = document.getElementById('compoundChart').getContext('2d');
+        if (compoundChartInst) compoundChartInst.destroy();
+        compoundChartInst = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: 'Total Value',
+                        data: values,
+                        backgroundColor: 'rgba(17,24,39,0.8)',
+                        borderRadius: 6
+                    },
+                    {
+                        label: 'Amount Invested',
+                        data: labels.map((_, i) => monthly * (i + 1) * 12),
+                        backgroundColor: 'rgba(17,24,39,0.15)',
+                        borderRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom', labels: { font: { size: 12 } } } },
+                scales: {
+                    y: {
+                        grid: { color: 'rgba(0,0,0,0.04)' },
+                        ticks: { callback: v => `$${v.toLocaleString()}` }
+                    },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+        document.getElementById('compound-summary').textContent =
+            `Investing $${monthly}/mo at ${annualRate}% return — after ${years} years: $${finalValue.toLocaleString()} total ($${gains.toLocaleString()} in gains).`;
+    }
+
+    function renderOptimizerChart() {
+        const cutPercent = parseFloat(document.getElementById('slider-expense-cut').value);
+        document.getElementById('expense-cut-label').textContent = `${cutPercent}%`;
+
+        const newExpenses = baseExpenses * (1 - cutPercent / 100);
+        const newProfit = baseRevenue - newExpenses;
+        const profitIncrease = newProfit - baseProfit;
+
+        const ctx = document.getElementById('optimizerChart').getContext('2d');
+        if (optimizerChartInst) optimizerChartInst.destroy();
+        optimizerChartInst = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Current', `After ${cutPercent}% Cut`],
+                datasets: [
+                    {
+                        label: 'Expenses',
+                        data: [baseExpenses, Math.round(newExpenses)],
+                        backgroundColor: ['rgba(220,38,38,0.7)', 'rgba(220,38,38,0.3)'],
+                        borderRadius: 6
+                    },
+                    {
+                        label: 'Net Profit',
+                        data: [baseProfit, Math.round(newProfit)],
+                        backgroundColor: ['rgba(22,163,74,0.5)', 'rgba(22,163,74,0.9)'],
+                        borderRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom' } },
+                scales: {
+                    y: {
+                        grid: { color: 'rgba(0,0,0,0.04)' },
+                        ticks: { callback: v => `$${v.toLocaleString()}` }
+                    },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+        document.getElementById('optimizer-summary').textContent =
+            `Cutting expenses by ${cutPercent}% would increase your monthly profit by $${Math.round(profitIncrease).toLocaleString()}.`;
+    }
+
+    // Initial renders
+    renderProjectionChart();
+    renderCompoundChart();
+    renderOptimizerChart();
+
+    // Event listeners
+    document.getElementById('slider-growth').addEventListener('input', renderProjectionChart);
+    document.getElementById('slider-years').addEventListener('input', renderCompoundChart);
+    document.getElementById('input-monthly-investment').addEventListener('input', renderCompoundChart);
+    document.getElementById('input-return-rate').addEventListener('input', renderCompoundChart);
+    document.getElementById('slider-expense-cut').addEventListener('input', renderOptimizerChart);
+}
+
+// ====== FOUNDERLYTICS TOOLS SECTION ======
+function renderFounderLyticsTools(jsonData) {
+    if (!jsonData || !jsonData.founderlytics_help) return;
+
+    const blockTools = document.getElementById('block-tools');
+    if (blockTools) blockTools.classList.remove('hidden');
+
+    const icons = ['✅', '📊', '🎯', '💡', '🛡️', '📈'];
+    const helpList = document.getElementById('how-we-help-list');
+    helpList.innerHTML = jsonData.founderlytics_help.map((item, i) => `
+        <div class="help-item">
+          <span class="help-item-icon">${icons[i] || '✅'}</span>
+          <span class="help-item-text">${item}</span>
+        </div>
+    `).join('');
+
+    if (jsonData.tools && jsonData.tools.length > 0) {
+        const toolsGrid = document.getElementById('tools-grid');
+        toolsGrid.innerHTML = jsonData.tools.map(tool => `
+            <div class="tool-card-mini">
+              <span class="coming-soon-badge">Soon</span>
+              <h5>${tool.name}</h5>
+              <p>${tool.description}</p>
+            </div>
+        `).join('');
+    }
+}
+
+// ====== ACCORDION + SCENARIO TABS ======
+function toggleBlock(blockId) {
+    const content = document.getElementById(`content-${blockId}`);
+    const toggle = document.getElementById(`toggle-${blockId}`);
+
+    const isOpen = !content.classList.contains('hidden');
+
+    if (isOpen) {
+        content.classList.add('hidden');
+        if (toggle) { toggle.textContent = 'Show →'; toggle.classList.remove('open'); }
+    } else {
+        content.classList.remove('hidden');
+        if (toggle) { toggle.textContent = 'Hide ↑'; toggle.classList.add('open'); }
+    }
+}
+
+function switchScenario(panel) {
+    document.querySelectorAll('.scenario-panel').forEach(p => {
+        p.classList.remove('active');
+        p.style.display = 'none';
+    });
+    document.querySelectorAll('.scenario-tab').forEach(t => t.classList.remove('active'));
+
+    const target = document.getElementById(`panel-${panel}`);
+    if (target) { target.style.display = 'block'; target.classList.add('active'); }
+
+    const tabs = document.querySelectorAll('.scenario-tab');
+    const tabMap = { projection: 0, compound: 1, optimizer: 2 };
+    if (tabs[tabMap[panel]]) tabs[tabMap[panel]].classList.add('active');
 }
 
 // ====== INITIALIZE ======
