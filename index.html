@@ -6,14 +6,18 @@
     <title>FreelancePilot — AI Financial Co-Pilot</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="bg-grid"></div>
-    <header>
-        <div class="logo">FREELANCEPILOT</div>
+
+    <header class="site-nav">
+        <div class="nav-inner">
+            <div class="logo">FreelancePilot</div>
+            <a href="#" class="btn-primary nav-cta">Try for Free →</a>
+        </div>
     </header>
 
     <main id="app-container">
@@ -164,84 +168,87 @@
 
         <!-- Results Section -->
         <section id="results-section" class="hidden-section">
-            <div class="results-header">
-                <h2>Your Financial Truth</h2>
-            </div>
+            <div class="results-wrapper">
+                <div class="results-header">
+                    <h2>Your Financial Truth</h2>
+                    <div class="msg-limit-badge" id="msg-limit-badge">0 / 10 messages used</div>
+                </div>
 
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <p class="stat-title">Net Profit</p>
-                    <h3 class="stat-value" id="val-net-profit">--</h3>
-                </div>
-                <div class="stat-card">
-                    <p class="stat-title">Effective Hourly Rate</p>
-                    <h3 class="stat-value" id="val-hourly-rate">--</h3>
-                </div>
-                <div class="stat-card">
-                    <p class="stat-title">Tax to Reserve <span id="val-tax-country"></span></p>
-                    <h3 class="stat-value" id="val-tax-reserve">--</h3>
-                </div>
-                <div class="stat-card">
-                    <p class="stat-title">Financial Health Score</p>
-                    <h3 class="stat-value"><span id="val-health-score" class="health-badge">--</span></h3>
-                </div>
-                <div class="stat-card">
-                    <p class="stat-title">Profit Margin</p>
-                    <h3 class="stat-value" id="val-profit-margin">--</h3>
-                </div>
-                <div class="stat-card">
-                    <p class="stat-title">Revenue Per Client</p>
-                    <h3 class="stat-value" id="val-rev-per-client">--</h3>
-                </div>
-            </div>
-
-            <div class="charts-grid">
-                <div class="chart-card">
-                    <h3>Financial Overview</h3>
-                    <div class="chart-wrapper">
-                        <canvas id="barChart"></canvas>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <p class="stat-title">Net Profit</p>
+                        <h3 class="stat-value" id="val-net-profit">--</h3>
+                    </div>
+                    <div class="stat-card">
+                        <p class="stat-title">Effective Hourly Rate</p>
+                        <h3 class="stat-value" id="val-hourly-rate">--</h3>
+                    </div>
+                    <div class="stat-card">
+                        <p class="stat-title">Tax to Reserve <span id="val-tax-country"></span></p>
+                        <h3 class="stat-value" id="val-tax-reserve">--</h3>
+                    </div>
+                    <div class="stat-card">
+                        <p class="stat-title">Financial Health Score</p>
+                        <h3 class="stat-value"><span id="val-health-score" class="health-badge">--</span></h3>
+                    </div>
+                    <div class="stat-card">
+                        <p class="stat-title">Profit Margin</p>
+                        <h3 class="stat-value" id="val-profit-margin">--</h3>
+                    </div>
+                    <div class="stat-card">
+                        <p class="stat-title">Revenue Per Client</p>
+                        <h3 class="stat-value" id="val-rev-per-client">--</h3>
                     </div>
                 </div>
-                <div class="chart-card">
-                    <h3>Income Allocation</h3>
-                    <div class="chart-wrapper">
-                        <canvas id="doughnutChart"></canvas>
+
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3>Financial Overview</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="barChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Income Allocation</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="doughnutChart"></canvas>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="ai-advisor-card">
-                <div class="ai-header">
-                    <span class="ai-icon">⚡️</span>
-                    <h3>CFO Advisor</h3>
-                    <div id="ai-loading-indicator" class="pulsing-indicator hidden">Still thinking...</div>
-                </div>
-                <div id="ai-response-content" class="ai-content"></div>
-                
-                <div id="followup-container" class="hidden">
-                    <div class="followup-question" id="followup-question-text"></div>
-                    <div class="followup-input-group">
-                        <input type="text" id="input-followup" placeholder="Type your response...">
-                        <button id="btn-send-followup" class="btn-primary">Send</button>
+                <div class="ai-advisor-card">
+                    <div class="ai-header">
+                        <span class="ai-icon">⚡️</span>
+                        <h3>CFO Advisor</h3>
+                        <div id="ai-loading-indicator" class="pulsing-indicator hidden">Still thinking...</div>
                     </div>
-                    <p id="followup-limit-msg" class="limit-msg hidden">Your session is complete. Great chat!</p>
-                </div>
-            </div>
+                    <div id="ai-response-content" class="ai-content"></div>
 
-            <!-- Waitlist Section -->
-            <div class="waitlist-section">
-                <h2>FreelancePilot is launching soon. Get early access.</h2>
-                <p>Join the waitlist and be first to know when we launch the full product.</p>
-                <div class="waitlist-form">
-                    <input type="email" id="input-waitlist-email" placeholder="Your email address">
-                    <button class="btn-primary" id="btn-join-waitlist">Join Waitlist</button>
+                    <div id="followup-container" class="hidden">
+                        <div class="followup-question" id="followup-question-text"></div>
+                        <div class="followup-input-group">
+                            <input type="text" id="input-followup" placeholder="Type your response...">
+                            <button id="btn-send-followup" class="btn-primary">Send</button>
+                        </div>
+                        <p id="followup-limit-msg" class="limit-msg hidden">Your session is complete. Great chat!</p>
+                    </div>
                 </div>
-                <p id="waitlist-success-msg" class="success-msg hidden">You're on the list. We'll reach out soon.</p>
-                <p class="waitlist-counter"><span id="waitlist-count"></span> people have already joined</p>
-            </div>
-            
-            <div class="restart-action">
-                <button id="btn-restart" class="btn-secondary">Start Over</button>
+
+                <!-- Waitlist Section -->
+                <div class="waitlist-section">
+                    <h2>FreelancePilot is launching soon. Get early access.</h2>
+                    <p>Join the waitlist and be first to know when we launch the full product.</p>
+                    <div class="waitlist-form">
+                        <input type="email" id="input-waitlist-email" placeholder="Your email address">
+                        <button class="btn-primary" id="btn-join-waitlist">Join Waitlist</button>
+                    </div>
+                    <p id="waitlist-success-msg" class="success-msg hidden">You're on the list. We'll reach out soon.</p>
+                    <p class="waitlist-counter"><span id="waitlist-count"></span> people have already joined</p>
+                </div>
+
+                <div class="restart-action">
+                    <button id="btn-restart" class="btn-secondary">Start Over</button>
+                </div>
             </div>
         </section>
     </main>

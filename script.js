@@ -328,14 +328,14 @@ function updateStats(data) {
 function updateCharts(data) {
     if (typeof Chart === 'undefined') return;
 
-    Chart.defaults.color = '#a1a1aa';
-    Chart.defaults.font.family = "'Outfit', sans-serif";
+    Chart.defaults.color = '#666666';
+    Chart.defaults.font.family = "'DM Sans', sans-serif";
 
     const commonOptions = {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-            legend: { position: 'bottom', labels: { color: '#ffffff', boxWidth: 12 } }
+            legend: { position: 'bottom', labels: { color: '#111111', boxWidth: 12 } }
         }
     };
 
@@ -364,7 +364,7 @@ function updateCharts(data) {
             options: {
                 ...commonOptions,
                 scales: {
-                    y: { grid: { color: 'rgba(255, 255, 255, 0.05)' } },
+                    y: { grid: { color: 'rgba(0, 0, 0, 0.06)' } },
                     x: { grid: { display: false } }
                 }
             }
