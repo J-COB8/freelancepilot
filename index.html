@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreelancePilot — AI Financial Advisor</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <nav>
+        <div class="logo">FreelancePilot</div>
+        <span class="tagline">AI Financial Co-Pilot for Entrepreneurs</span>
+    </nav>
+
+    <!-- STEP 1: Input Form -->
+    <section id="form-section">
+        <h1>Is your business actually profitable?</h1>
+        <p class="subtitle">Enter your numbers. Your AI advisor will tell you the truth.</p>
+
+        <div class="form-card">
+            <div class="input-group">
+                <label>Monthly Revenue (total income this month)</label>
+                <input type="number" id="revenue" placeholder="e.g. 3000">
+            </div>
+            <div class="input-group">
+                <label>Monthly Expenses (rent, tools, subscriptions, etc.)</label>
+                <input type="number" id="expenses" placeholder="e.g. 1800">
+            </div>
+            <div class="input-group">
+                <label>Hours Worked This Month</label>
+                <input type="number" id="hours" placeholder="e.g. 120">
+            </div>
+            <div class="input-group">
+                <label>Your Main Business Type</label>
+                <input type="text" id="business" placeholder="e.g. freelance design, dropshipping, bakery">
+            </div>
+            <button id="analyze-btn" onclick="analyze()">Analyze My Finances →</button>
+        </div>
+    </section>
+
+    <!-- STEP 2: Results -->
+    <section id="results-section" style="display:none;">
+        <h2>Your Financial Analysis</h2>
+
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-label">NET PROFIT</div>
+                <div class="stat-value" id="stat-profit">—</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">EFFECTIVE HOURLY RATE</div>
+                <div class="stat-value" id="stat-rate">—</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">TAX TO RESERVE</div>
+                <div class="stat-value" id="stat-tax">—</div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="myChart"></canvas>
+        </div>
+
+        <div class="ai-box">
+            <div class="ai-label">🤖 AI ADVISOR SAYS</div>
+            <div id="ai-response">Analyzing your data...</div>
+        </div>
+
+        <div class="followup-box" id="followup-box" style="display:none;">
+            <div class="ai-label">💬 FOLLOW-UP QUESTION</div>
+            <div id="followup-question"></div>
+            <div class="input-group" style="margin-top:16px;">
+                <input type="text" id="followup-input" placeholder="Your answer...">
+                <button onclick="sendFollowup()">Send →</button>
+            </div>
+        </div>
+
+        <button class="reset-btn" onclick="reset()">← Start Over</button>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
