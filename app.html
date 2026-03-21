@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="assets/icon.png" type="image/png">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
@@ -21,10 +22,10 @@
       --text:         #111827;
       --text-body:    #374151;
       --text-muted:   #6b7280;
-      --accent:       #4f46e5;
-      --accent-bg:    #eef2ff;
-      --accent-border:#c7d2fe;
-      --accent-dark:  #4338ca;
+      --accent:       #B8960C;
+      --accent-bg:    #F5E9A0;
+      --accent-border:#e8d47a;
+      --accent-dark:  #8A6E09;
       --dark:         #111827;
       --dark-2:       #1f2937;
       --error:        #ef4444;
@@ -95,17 +96,16 @@
     }
 
     .logo {
-      font-family: var(--font);
-      font-weight: 700;
-      font-size: 16px;
-      color: var(--text);
       text-decoration: none;
-      letter-spacing: -0.01em;
       display: flex;
       align-items: center;
-      gap: 3px;
+      flex-shrink: 0;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #111827;
     }
-    .logo-dot { color: var(--accent); font-size: 11px; line-height: 1; }
+    .logo .logo-gold { color: #B8960C; }
 
     /* ─── Sections ───────────────────────────────────────────────── */
     #app-container { padding-top: 0; }
@@ -202,7 +202,7 @@
 
     .input-wrapper input:focus {
       border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(79,70,229,0.12);
+      box-shadow: 0 0 0 3px rgba(184,150,12,0.15);
       background: var(--bg);
     }
 
@@ -346,7 +346,7 @@
       transition: all var(--transition);
       white-space: nowrap;
     }
-    .btn-primary:hover { background: var(--dark-2); }
+    .btn-primary:hover { background: var(--dark-2); box-shadow: 0 0 0 2px #B8960C; }
     .btn-primary:active { transform: scale(0.97); }
 
     /* Secondary = ghost text */
@@ -643,7 +643,7 @@
     }
     .followup-input-group input:focus {
       border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(79,70,229,0.12);
+      box-shadow: 0 0 0 3px rgba(184,150,12,0.15);
     }
     .followup-input-group input::placeholder { color: #9ca3af; }
 
@@ -763,7 +763,7 @@
       position: absolute;
       width: 260px;
       height: 260px;
-      background: radial-gradient(circle, rgba(79,70,229,0.13) 0%, transparent 68%);
+      background: radial-gradient(circle, rgba(184,150,12,0.12) 0%, transparent 68%);
       border-radius: 50%;
       top: 50%;
       left: 50%;
@@ -776,7 +776,7 @@
       height: 160px;
       color: var(--accent);
       animation: big-bounce 1.4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
-      filter: drop-shadow(0 6px 20px rgba(79,70,229,0.28));
+      filter: drop-shadow(0 6px 20px rgba(184,150,12,0.30));
       position: relative;
       z-index: 1;
     }
@@ -837,7 +837,7 @@
   <!-- Nav -->
   <header class="site-nav">
     <div class="nav-inner">
-      <a href="index.html" class="logo">FounderLytics<span class="logo-dot">●</span></a>
+      <a href="index.html" class="logo">Founder<span class="logo-gold">Lytics</span></a>
       <a href="app.html" class="btn-primary nav-cta">Try for Free →</a>
     </div>
   </header>
@@ -866,118 +866,22 @@
 
       <div class="form-card">
 
-        <!-- Step 1 -->
-        <div class="form-step active" data-step="1">
-          <h2>What kind of freelance or business work do you do?</h2>
+        <!-- Step 1 — always fixed -->
+        <div class="form-step active" id="step-initial">
+          <h2>What type of business do you run?</h2>
+          <p class="field-hint">Be specific — e.g. "freelance graphic designer", "dropshipping store", "local bakery", "SaaS startup"</p>
           <div class="input-wrapper">
-            <input type="text" id="input-business" placeholder="e.g. Graphic Designer, Web Developer..." autofocus>
+            <input type="text" id="input-business-type" placeholder="Describe your business..." autofocus>
             <span class="error-msg">Please tell us what you do.</span>
           </div>
         </div>
 
-        <!-- Step 2 -->
-        <div class="form-step" data-step="2">
-          <h2>What was your total revenue this month?</h2>
-          <div class="input-wrapper">
-            <span class="currency-symbol">$</span>
-            <input type="number" id="input-revenue" class="with-symbol" placeholder="0.00">
-            <span class="error-msg">Please enter a valid amount.</span>
-          </div>
-        </div>
-
-        <!-- Step 3 -->
-        <div class="form-step" data-step="3">
-          <h2>What were your total business expenses?</h2>
-          <p class="field-hint">Tools, rent, subscriptions, materials, etc.</p>
-          <div class="input-wrapper">
-            <span class="currency-symbol">$</span>
-            <input type="number" id="input-expenses" class="with-symbol" placeholder="0.00">
-            <span class="error-msg">Please enter a valid amount.</span>
-          </div>
-        </div>
-
-        <!-- Step 4 -->
-        <div class="form-step" data-step="4">
-          <h2>How many hours did you work this month?</h2>
-          <div class="input-wrapper">
-            <input type="number" id="input-hours" placeholder="e.g. 160">
-            <span class="error-msg">Please enter your total hours.</span>
-          </div>
-        </div>
-
-        <!-- Step 5 -->
-        <div class="form-step" data-step="5">
-          <h2>How many active clients did you have?</h2>
-          <div class="input-wrapper">
-            <input type="number" id="input-clients" placeholder="e.g. 4">
-            <span class="error-msg">Please enter the number of clients.</span>
-          </div>
-        </div>
-
-        <!-- Step 6 -->
-        <div class="form-step" data-step="6">
-          <h2>What is your biggest expense category?</h2>
-          <div class="input-wrapper tile-group" id="input-expense-category-tiles">
-            <button class="tile-btn" data-value="Software/Tools">Software / Tools</button>
-            <button class="tile-btn" data-value="Rent/Office">Rent / Office</button>
-            <button class="tile-btn" data-value="Marketing">Marketing</button>
-            <button class="tile-btn" data-value="Materials">Materials</button>
-            <button class="tile-btn" data-value="Other">Other</button>
-            <input type="hidden" id="input-expense-category" value="">
-            <span class="error-msg">Please select an expense category.</span>
-          </div>
-        </div>
-
-        <!-- Step 7 -->
-        <div class="form-step" data-step="7">
-          <h2>Where are you based?</h2>
-          <p class="field-hint">We use this to estimate your tax reserve.</p>
-          <div class="input-wrapper tile-group countries-grid" id="input-country-tiles">
-            <button class="tile-btn" data-value="US">United States</button>
-            <button class="tile-btn" data-value="Mexico">Mexico</button>
-            <button class="tile-btn" data-value="India">India</button>
-            <button class="tile-btn" data-value="UK">United Kingdom</button>
-            <button class="tile-btn" data-value="Canada">Canada</button>
-            <button class="tile-btn" data-value="Brazil">Brazil</button>
-            <button class="tile-btn" data-value="Argentina">Argentina</button>
-            <button class="tile-btn" data-value="Colombia">Colombia</button>
-            <button class="tile-btn" data-value="Spain">Spain</button>
-            <button class="tile-btn" data-value="Other">Other</button>
-            <input type="hidden" id="input-country" value="">
-            <span class="error-msg">Please select your country.</span>
-          </div>
-        </div>
-
-        <!-- Step 8 -->
-        <div class="form-step" data-step="8">
-          <h2>What's your primary financial goal right now?</h2>
-          <div class="input-wrapper radio-group">
-            <label class="radio-label">
-              <input type="radio" name="goal" value="Save more money">
-              <span class="radio-custom"></span>
-              Save more money
-            </label>
-            <label class="radio-label">
-              <input type="radio" name="goal" value="Invest for the future">
-              <span class="radio-custom"></span>
-              Invest for the future
-            </label>
-            <label class="radio-label">
-              <input type="radio" name="goal" value="Pay off debt">
-              <span class="radio-custom"></span>
-              Pay off debt
-            </label>
-            <label class="radio-label">
-              <input type="radio" name="goal" value="Grow my business">
-              <span class="radio-custom"></span>
-              Grow my business
-            </label>
-            <label class="radio-label">
-              <input type="radio" name="goal" value="All of the above">
-              <span class="radio-custom"></span>
-              All of the above
-            </label>
-            <span class="error-msg" id="goal-error">Please select a financial goal.</span>
+        <!-- Dynamic steps — generated by AI -->
+        <div id="dynamic-step" class="form-step" style="display:none;">
+          <h2 id="dynamic-question-text"></h2>
+          <p class="field-hint" id="dynamic-question-hint"></p>
+          <div class="input-wrapper" id="dynamic-input-wrapper">
+            <!-- Input rendered dynamically by JS -->
           </div>
         </div>
 

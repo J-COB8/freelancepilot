@@ -1,17 +1,8 @@
 // ====== CONSTANTS & STATE ======
-const TOTAL_STEPS = 8;
-let currentStep = 1;
-
-let formData = {
-    business: '',
-    revenue: 0,
-    expenses: 0,
-    hours: 0,
-    clients: 0,
-    expenseCategory: '',
-    country: '',
-    goal: ''
-};
+let conversationHistory = [];
+let collectedData = {};
+let currentStep = 'initial';
+let questionCount = 0;
 
 let chatHistory = [];
 let followupCount = 0;
@@ -32,140 +23,17 @@ const btnNext = document.getElementById('btn-next');
 const btnSubmit = document.getElementById('btn-submit');
 const btnRestart = document.getElementById('btn-restart');
 
-// ====== FORM NAVIGATION & VALIDATION ======
-
-function updateFormView() {
-    // 1. Update progress bar
-    progressBar.style.width = `${(currentStep / TOTAL_STEPS) * 100}%`;
-
-    // 2. Show/hide steps
-    document.querySelectorAll('.form-step').forEach(step => {
-        step.classList.remove('active');
-        if (parseInt(step.dataset.step) === currentStep) {
-            step.classList.add('active');
-        }
-    });
-
-    // 3. Update buttons
-    btnBack.style.visibility = currentStep === 1 ? 'hidden' : 'visible';
-
-    if (currentStep === TOTAL_STEPS) {
-        btnNext.style.display = 'none';
-        btnSubmit.style.display = 'block';
-    } else {
-        btnNext.style.display = 'block';
-        btnSubmit.style.display = 'none';
-    }
-
-    // 4. Autofocus primary input for the step
-    setTimeout(() => {
-        const activeStepEl = document.querySelector(`.form-step[data-step="${currentStep}"]`);
-        if (activeStepEl) {
-            const firstInput = activeStepEl.querySelector('input:not([type="hidden"]), select, textarea');
-            if (firstInput) firstInput.focus();
-        }
-    }, 100);
+// ====== PROGRESS BAR ======
+function updateProgressBar() {
+    const maxQuestions = 7;
+    const progress = Math.min((questionCount / maxQuestions) * 100, 90);
+    progressBar.style.width = `${progress}%`;
 }
 
-function validateStep() {
-    const stepEl = document.querySelector(`.form-step[data-step="${currentStep}"]`);
-    let isValid = true;
-
-    // Clear previous errors
-    const wrapperSelector = currentStep === 8 ? '.radio-group' : '.input-wrapper';
-    const wrapper = stepEl.querySelector(wrapperSelector);
-    wrapper.classList.remove('invalid', 'shake');
-
-    if (currentStep === 1) {
-        const val = document.getElementById('input-business').value.trim();
-        isValid = val.length > 0;
-        if (isValid) formData.business = val;
-    } else if (currentStep === 2) {
-        const val = parseFloat(document.getElementById('input-revenue').value);
-        isValid = !isNaN(val) && val >= 0;
-        if (isValid) formData.revenue = val;
-    } else if (currentStep === 3) {
-        const val = parseFloat(document.getElementById('input-expenses').value);
-        isValid = !isNaN(val) && val >= 0;
-        if (isValid) formData.expenses = val;
-    } else if (currentStep === 4) {
-        const val = parseFloat(document.getElementById('input-hours').value);
-        isValid = !isNaN(val) && val > 0;
-        if (isValid) formData.hours = val;
-    } else if (currentStep === 5) {
-        const val = parseInt(document.getElementById('input-clients').value);
-        isValid = !isNaN(val) && val >= 0;
-        if (isValid) formData.clients = val;
-    } else if (currentStep === 6) {
-        const val = document.getElementById('input-expense-category').value;
-        isValid = val !== '';
-        if (isValid) formData.expenseCategory = val;
-    } else if (currentStep === 7) {
-        const val = document.getElementById('input-country').value;
-        isValid = val !== '';
-        if (isValid) formData.country = val;
-    } else if (currentStep === 8) {
-        const checked = document.querySelector('input[name="goal"]:checked');
-        isValid = checked !== null;
-        if (isValid) formData.goal = checked.value;
-    }
-
-    if (!isValid) {
-        // Trigger reflow to restart animation
-        void wrapper.offsetWidth;
-        wrapper.classList.add('invalid', 'shake');
-    }
-
-    return isValid;
-}
-
-if (btnNext) {
-    btnNext.addEventListener('click', () => {
-        if (validateStep()) {
-            currentStep++;
-            updateFormView();
-        }
-    });
-}
-
-// Also allow Enter key
-document.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter' && currentStep < TOTAL_STEPS && formSection && formSection.classList.contains('active-section')) {
-        if (btnNext) btnNext.click();
-    }
-});
-
+// ====== BACK & RESTART ======
 if (btnBack) {
     btnBack.addEventListener('click', () => {
-        if (currentStep > 1) {
-            currentStep--;
-            updateFormView();
-        }
-    });
-}
-
-if (btnSubmit) {
-    btnSubmit.addEventListener('click', () => {
-        if (validateStep()) {
-            // Hide heading, subheading, and form card
-            const heading = document.querySelector('.main-heading');
-            const subheading = document.querySelector('.sub-heading');
-            const formCard = document.querySelector('.form-card');
-            if (heading) heading.style.display = 'none';
-            if (subheading) subheading.style.display = 'none';
-            if (formCard) formCard.style.display = 'none';
-
-            // Show the analyzing indicator and the pinned back button
-            const indicator = document.getElementById('analyzing-indicator');
-            if (indicator) indicator.classList.add('visible');
-            const backBtn = document.getElementById('analyze-back-btn');
-            if (backBtn) backBtn.style.display = 'inline-flex';
-
-            // Immediately scroll to loading section
-            window.scrollTo({ top: document.getElementById('loading-section').offsetTop, behavior: 'smooth' });
-
-            submitAnalysis();
-        }
+        location.reload();
     });
 }
 
@@ -175,32 +43,218 @@ if (btnRestart) {
     });
 }
 
-// ====== API & AI LOGIC ======
-const SYSTEM_PROMPT = `You are a sharp, direct financial advisor - acting like a brutally honest CFO friend for a freelancer or early entrepreneur.
-Your job is to analyze their financial data and tell them the truth: Are they making money or just busy?
-Provide specific, personalized advice based on their numbers, business type, country and goals. NOT generic. Brutally honest but constructive.
+// Global Enter key — triggers Continue when form section is active
+document.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && formSection && formSection.classList.contains('active-section')) {
+        if (btnNext && !btnNext.disabled) btnNext.click();
+    }
+});
 
-Calculate metrics based on the provided inputs and return a structured JSON block wrapped EXACTLY in |||JSON and ||| delimiters. No text inside the |||JSON block except the raw JSON.
-Required JSON keys (all Numbers):
-- netProfit (revenue - expenses - tax)
-- hourlyRate (profit divided by hours)
-- taxReserve (percentage of revenue based on country: US=25%, Mexico=16%, India=18%, UK=20%, others=20%) (return the actual numerical value of tax, not the percent)
-- profitMargin (percentage, 0-100)
-- revenuePerClient
-- financialHealthScore (0-100)
-- savingsRecommendation (numerical amount they should save from profit)
-- investmentRecommendation (numerical amount they should invest from profit)
+// ====== NEXT BUTTON HANDLER ======
+if (btnNext) {
+    btnNext.addEventListener('click', async () => {
+        if (currentStep === 'initial') {
+            const val = document.getElementById('input-business-type').value.trim();
+            if (!val) {
+                document.querySelector('#step-initial .input-wrapper').classList.add('error');
+                return;
+            }
+            currentStep = 'dynamic';
+            collectedData.businessType = val;
+            conversationHistory.push({ role: 'user', content: `My business type: ${val}` });
+            await getNextQuestion();
 
-After the JSON block, write 3-4 paragraphs of text analysis specific to them. Do not include markdown formatting like ** or *. Do not use generic greetings. Just jump straight into the analysis.
-End with ONE specific follow-up question to learn more, prefixed exactly with FOLLOWUP: on a new line.`;
+        } else if (currentStep === 'dynamic') {
+            const input = document.getElementById('dynamic-input-value');
+            if (!input || !input.value.trim()) {
+                document.getElementById('dynamic-input-wrapper').classList.add('error');
+                return;
+            }
+            const question = document.getElementById('dynamic-question-text').textContent;
+            const answer = input.value.trim();
 
+            collectedData[`q${questionCount}`] = { question, answer };
+            conversationHistory.push({ role: 'assistant', content: JSON.stringify({ action: 'ask', question }) });
+            conversationHistory.push({ role: 'user', content: answer });
+
+            await getNextQuestion();
+        }
+    });
+}
+
+// ====== AI CONVERSATION ======
+async function getNextQuestion() {
+    btnNext.textContent = 'Thinking...';
+    btnNext.disabled = true;
+    if (btnBack) btnBack.style.visibility = 'hidden';
+
+    const systemPrompt = `You are a smart financial data collector for FounderLytics, an AI financial advisor for freelancers and entrepreneurs.
+
+Your job is to ask the RIGHT questions to collect enough financial data to give this person a meaningful analysis.
+
+Based on their business type and previous answers, decide what to ask next. Ask questions that are SPECIFIC to their business type. For example:
+- Freelancers: hourly rate, number of clients, billable hours, main expense
+- Dropshippers: revenue, cost of goods, ad spend, number of orders, profit margin per product
+- Local businesses: monthly revenue, fixed costs, variable costs, number of customers
+- SaaS/Digital products: MRR, churn, CAC, hosting costs
+
+You need to collect at minimum: revenue, expenses, and at least 2-3 business-specific metrics.
+
+After 4-7 questions, if you have enough data for a solid analysis, signal that you're done.
+
+ALWAYS respond with ONLY a valid JSON object, no other text:
+
+If you need more data:
+{
+  "action": "ask",
+  "question": "Your question here",
+  "hint": "Optional clarifying hint or leave empty string",
+  "inputType": "number" or "text" or "select",
+  "options": ["Option 1", "Option 2"]
+}
+
+If you have enough data:
+{
+  "action": "analyze",
+  "summary": "One sentence summary of what you collected"
+}`;
+
+    try {
+        const response = await fetch('/api/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                system: systemPrompt,
+                messages: conversationHistory
+            })
+        });
+
+        const data = await response.json();
+        const text = data.content?.[0]?.text || '';
+
+        let parsed;
+        try {
+            parsed = JSON.parse(text.trim());
+        } catch (e) {
+            const match = text.match(/\{[\s\S]*\}/);
+            parsed = match ? JSON.parse(match[0]) : { action: 'analyze' };
+        }
+
+        if (parsed.action === 'analyze') {
+            await submitAnalysis();
+        } else {
+            renderDynamicQuestion(parsed);
+            questionCount++;
+            updateProgressBar();
+            btnNext.textContent = 'Continue →';
+            btnNext.disabled = false;
+            if (btnBack) btnBack.style.visibility = 'visible';
+        }
+    } catch (err) {
+        console.error(err);
+        btnNext.textContent = 'Continue →';
+        btnNext.disabled = false;
+    }
+}
+
+function renderDynamicQuestion(q) {
+    document.getElementById('step-initial').style.display = 'none';
+    const dynamicStep = document.getElementById('dynamic-step');
+    dynamicStep.style.display = 'block';
+    dynamicStep.classList.add('active');
+
+    document.getElementById('dynamic-question-text').textContent = q.question;
+    document.getElementById('dynamic-question-hint').textContent = q.hint || '';
+
+    const wrapper = document.getElementById('dynamic-input-wrapper');
+    wrapper.classList.remove('error');
+
+    if (q.inputType === 'select' && q.options) {
+        wrapper.innerHTML = `<div class="tile-group" id="dynamic-tiles">
+          ${q.options.map(opt => `<button class="tile-btn" data-value="${opt}">${opt}</button>`).join('')}
+          <input type="hidden" id="dynamic-input-value" value="">
+          <span class="error-msg">Please select an option.</span>
+        </div>`;
+        wrapper.querySelectorAll('.tile-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                wrapper.querySelectorAll('.tile-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                document.getElementById('dynamic-input-value').value = btn.dataset.value;
+                wrapper.classList.remove('error');
+            });
+        });
+    } else if (q.inputType === 'number') {
+        wrapper.innerHTML = `
+          <span class="currency-symbol">$</span>
+          <input type="number" id="dynamic-input-value" class="with-symbol" placeholder="0.00" autofocus>
+          <span class="error-msg">Please enter a valid number.</span>`;
+    } else {
+        wrapper.innerHTML = `
+          <input type="text" id="dynamic-input-value" placeholder="Your answer..." autofocus>
+          <span class="error-msg">Please enter your answer.</span>`;
+    }
+
+    const input = document.getElementById('dynamic-input-value');
+    if (input && input.tagName === 'INPUT') {
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') btnNext.click();
+        });
+        input.addEventListener('input', () => {
+            wrapper.classList.remove('error');
+        });
+        setTimeout(() => input.focus(), 100);
+    }
+}
+
+// ====== ANALYSIS SYSTEM PROMPT ======
+const ANALYSIS_SYSTEM_PROMPT = `You are FounderLytics — a sharp, direct AI financial advisor for freelancers and early entrepreneurs. You have just finished collecting financial data through a conversation.
+
+Analyze everything the user told you and provide a complete financial picture. Be brutally honest but constructive. Be SPECIFIC to their business type — a dropshipper and a freelancer need completely different insights.
+
+Return ONLY a valid JSON object wrapped EXACTLY between |||JSON and ||| delimiters, followed by 3-4 paragraphs of plain text analysis, followed by a follow-up question prefixed with FOLLOWUP:
+
+The JSON must contain:
+{
+  "stats": {
+    "netProfit": number,
+    "hourlyRate": number or null if not applicable,
+    "taxReserve": number (25% of profit for US, 16% Mexico, 18% India, 20% others),
+    "profitMargin": number (percentage 0-100),
+    "revenuePerClient": number or null,
+    "financialHealthScore": number (0-100),
+    "savingsRecommendation": number,
+    "investmentRecommendation": number,
+    "monthlyRevenue": number,
+    "monthlyExpenses": number
+  },
+  "businessType": "freelancer" or "dropshipping" or "local_business" or "saas" or "other",
+  "projectionBase": number (monthly net profit to use for projections),
+  "founderlytics_help": [
+    "Specific way 1 FounderLytics helps THIS business type",
+    "Specific way 2",
+    "Specific way 3",
+    "Specific way 4"
+  ],
+  "tools": [
+    {
+      "name": "Tool name relevant to their business",
+      "description": "What it does for them specifically",
+      "status": "coming_soon"
+    }
+  ]
+}
+
+After the |||JSON block, write 3-4 paragraphs of honest, specific analysis. No markdown formatting. Jump straight into the analysis — no greetings.
+End with: FOLLOWUP: one specific follow-up question`;
+
+// ====== API CALL (for followup chat) ======
 async function callAPI() {
     try {
         const response = await fetch('/api/analyze', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                system: SYSTEM_PROMPT,
+                system: ANALYSIS_SYSTEM_PROMPT,
                 messages: chatHistory
             })
         });
@@ -210,7 +264,6 @@ async function callAPI() {
         }
 
         const data = await response.json();
-        // Fallback for Vercel/Claude format if needed
         if (data.content && data.content[0] && data.content[0].text) {
             return data.content[0].text;
         }
@@ -221,76 +274,87 @@ async function callAPI() {
     }
 }
 
-function parseAIResponse(fullText) {
-    let jsonMatch = fullText.match(/\|\|\|JSON\s*([\s\S]*?)\s*\|\|\|/);
-    let jsonData = null;
-    let cleanText = fullText;
-
-    if (jsonMatch && jsonMatch[1]) {
-        try {
-            jsonData = JSON.parse(jsonMatch[1]);
-            // Remove the JSON block from text
-            cleanText = fullText.replace(/\|\|\|JSON\s*[\s\S]*?\s*\|\|\|/, '').trim();
-        } catch (e) {
-            console.error('Failed to parse JSON out of Claude response', e);
-        }
-    }
-
-    // Extract follow-up question
-    let followUpQ = null;
-    let followUpMatch = cleanText.match(/FOLLOWUP:\s*(.*)/i);
-    if (followUpMatch && followUpMatch[1]) {
-        followUpQ = followUpMatch[1].trim();
-        // Remove follow-up from main text
-        cleanText = cleanText.replace(/FOLLOWUP:\s*(.*)/i, '').trim();
-    }
-
-    return { jsonData, cleanText, followUpQ };
-}
-
+// ====== SUBMIT ANALYSIS ======
 async function submitAnalysis() {
-    // Form section stays visible (showing the analyzing indicator) while loading
+    // Hide heading, subheading, and form card
+    const heading = document.querySelector('.main-heading');
+    const subheading = document.querySelector('.sub-heading');
+    const formCard = document.querySelector('.form-card');
+    if (heading) heading.style.display = 'none';
+    if (subheading) subheading.style.display = 'none';
+    if (formCard) formCard.style.display = 'none';
+
+    // Show the analyzing indicator
+    const indicator = document.getElementById('analyzing-indicator');
+    if (indicator) indicator.classList.add('visible');
+
+    // Show loading section
     loadingSection.classList.remove('hidden-section');
     loadingSection.classList.add('active-section');
 
-    const promptText = `Here is my financial data:
-- Business: ${formData.business}
-- Monthly Revenue: $${formData.revenue}
-- Monthly Expenses: $${formData.expenses}
-- Hours Worked: ${formData.hours}
-- Clients: ${formData.clients}
-- Main Expense Category: ${formData.expenseCategory}
-- Country: ${formData.country}
-- Primary Goal: ${formData.goal}
+    window.scrollTo({ top: loadingSection.offsetTop, behavior: 'smooth' });
 
-Please analyze this.`;
+    // Build final analysis messages from the full conversation
+    const analysisMessages = [
+        ...conversationHistory,
+        {
+            role: 'user',
+            content: 'Based on everything I told you, please give me my full financial analysis now.'
+        }
+    ];
 
-    chatHistory.push({ role: 'user', content: promptText });
+    try {
+        const response = await fetch('/api/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                system: ANALYSIS_SYSTEM_PROMPT,
+                messages: analysisMessages
+            })
+        });
 
-    const aiMessage = await callAPI();
-    chatHistory.push({ role: 'assistant', content: aiMessage });
+        if (!response.ok) throw new Error(`API error: ${response.status}`);
 
-    // Results ready — hide form section (with indicator) and loading, show results
-    formSection.classList.remove('active-section');
-    formSection.classList.add('hidden-section');
-    loadingSection.classList.remove('active-section');
-    loadingSection.classList.add('hidden-section');
-    resultsSection.classList.remove('hidden-section');
-    resultsSection.classList.add('active-section');
+        const data = await response.json();
+        const aiMessage = data.content?.[0]?.text || data.response || data.text || '';
 
-    processDisplayResults(aiMessage);
+        // Seed chatHistory for followup chat
+        chatHistory = [...analysisMessages, { role: 'assistant', content: aiMessage }];
+
+        // Transition to results
+        formSection.classList.remove('active-section');
+        formSection.classList.add('hidden-section');
+        loadingSection.classList.remove('active-section');
+        loadingSection.classList.add('hidden-section');
+        resultsSection.classList.remove('hidden-section');
+        resultsSection.classList.add('active-section');
+
+        progressBar.style.width = '100%';
+        processDisplayResults(aiMessage);
+
+    } catch (err) {
+        console.error(err);
+        formSection.classList.remove('active-section');
+        formSection.classList.add('hidden-section');
+        loadingSection.classList.remove('active-section');
+        loadingSection.classList.add('hidden-section');
+        resultsSection.classList.remove('hidden-section');
+        resultsSection.classList.add('active-section');
+        document.getElementById('ai-response-content').textContent = 'Error analyzing data. Please try again.';
+    }
 }
 
 // ====== RESULTS RENDERING ======
-const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
-const formatPercent = (val) => val.toFixed(1) + '%';
+const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val || 0);
+const formatPercent = (val) => (val || 0).toFixed(1) + '%';
 
 function processDisplayResults(fullResponse) {
     const { jsonData, cleanText, followUpQ } = parseAIResponse(fullResponse);
 
     if (jsonData) {
-        updateStats(jsonData);
-        updateCharts(jsonData);
+        const stats = jsonData.stats || jsonData;
+        updateStats(stats);
+        updateCharts(stats);
     }
 
     // Type out the AI text
@@ -319,10 +383,10 @@ function updateStats(data) {
     }
 
     const hrEl = document.getElementById('val-hourly-rate');
-    if (hrEl) hrEl.innerText = formatCurrency(data.hourlyRate || 0);
+    if (hrEl) hrEl.innerText = data.hourlyRate != null ? formatCurrency(data.hourlyRate) : 'N/A';
 
     const tcEl = document.getElementById('val-tax-country');
-    if (tcEl) tcEl.innerText = `(${formData.country})`;
+    if (tcEl) tcEl.innerText = '';
 
     const trEl = document.getElementById('val-tax-reserve');
     if (trEl) trEl.innerText = formatCurrency(data.taxReserve || 0);
@@ -332,23 +396,23 @@ function updateStats(data) {
         let score = data.financialHealthScore || 0;
         hsEl.innerText = score + '/100';
         hsEl.className = 'health-badge ';
-        if (score <= 40) hsEl.classList.add('bg-red');
-        else if (score <= 70) hsEl.classList.add('bg-yellow');
-        else hsEl.classList.add('bg-green');
+        if (score <= 40) hsEl.classList.add('bad');
+        else if (score <= 70) hsEl.classList.add('ok');
+        else hsEl.classList.add('good');
     }
 
     const pmEl = document.getElementById('val-profit-margin');
     if (pmEl) pmEl.innerText = formatPercent(data.profitMargin || 0);
 
     const rcEl = document.getElementById('val-rev-per-client');
-    if (rcEl) rcEl.innerText = formatCurrency(data.revenuePerClient || 0);
+    if (rcEl) rcEl.innerText = data.revenuePerClient != null ? formatCurrency(data.revenuePerClient) : 'N/A';
 }
 
 function updateCharts(data) {
     if (typeof Chart === 'undefined') return;
 
     Chart.defaults.color = '#666666';
-    Chart.defaults.font.family = "'DM Sans', sans-serif";
+    Chart.defaults.font.family = "'Inter', sans-serif";
 
     const commonOptions = {
         responsive: true,
@@ -357,6 +421,9 @@ function updateCharts(data) {
             legend: { position: 'bottom', labels: { color: '#111111', boxWidth: 12 } }
         }
     };
+
+    const revenue = data.monthlyRevenue || 0;
+    const expenses = data.monthlyExpenses || 0;
 
     // 1. Bar Chart
     const barEl = document.getElementById('barChart');
@@ -370,7 +437,7 @@ function updateCharts(data) {
                 labels: ['Revenue', 'Expenses', 'Tax Reserve', 'Net Profit'],
                 datasets: [{
                     label: 'Monthly Financials ($)',
-                    data: [formData.revenue, formData.expenses, data.taxReserve || 0, data.netProfit || 0],
+                    data: [revenue, expenses, data.taxReserve || 0, data.netProfit || 0],
                     backgroundColor: [
                         'rgba(255, 255, 255, 0.8)',
                         'rgba(255, 74, 74, 0.8)',
@@ -391,7 +458,6 @@ function updateCharts(data) {
     }
 
     // 2. Doughnut Chart
-    // Expenses / Tax / Savings / Investment / Available
     const available = (data.netProfit || 0) - (data.savingsRecommendation || 0) - (data.investmentRecommendation || 0);
 
     const dsEl = document.getElementById('doughnutChart');
@@ -405,18 +471,18 @@ function updateCharts(data) {
                 labels: ['Expenses', 'Tax Reserve', 'Savings', 'Investment', 'Available'],
                 datasets: [{
                     data: [
-                        formData.expenses,
+                        expenses,
                         data.taxReserve || 0,
                         data.savingsRecommendation || 0,
                         data.investmentRecommendation || 0,
                         Math.max(0, available)
                     ],
                     backgroundColor: [
-                        '#ff4a4a', // Expenses red
-                        '#ffcc00', // Tax yellow
-                        '#4a90e2', // Savings blue
-                        '#bd10e0', // Investment purple
-                        '#7DF9A6'  // Available green
+                        '#ff4a4a',
+                        '#ffcc00',
+                        '#4a90e2',
+                        '#bd10e0',
+                        '#7DF9A6'
                     ],
                     borderWidth: 0,
                     hoverOffset: 4
@@ -438,9 +504,6 @@ function typeText(text, elementId, callback) {
         return;
     }
 
-    // Instead of completely clearing to '' and losing old paragraphs,
-    // we only create new ones for the new text being typed, or if it's the first time
-    // For original AI response we clear, for followups we append
     if (elementId === 'ai-response-content') {
         el.innerHTML = '';
     }
@@ -469,15 +532,14 @@ function typeText(text, elementId, callback) {
         if (currentCharIndex < currentParaText.length) {
             pEl.innerHTML += currentParaText.charAt(currentCharIndex);
             currentCharIndex++;
-            setTimeout(typeChar, 18); // 18ms per char
+            setTimeout(typeChar, 18);
         } else {
-            // End of paragraph
             currentParaIndex++;
             currentCharIndex = 0;
             if (currentParaIndex < paragraphs.length) {
                 pEl = document.createElement('p');
                 el.appendChild(pEl);
-                setTimeout(typeChar, 200); // Small pause between paragraphs
+                setTimeout(typeChar, 200);
             } else {
                 if (callback) callback();
             }
@@ -485,6 +547,31 @@ function typeText(text, elementId, callback) {
     }
 
     typeChar();
+}
+
+// ====== PARSE AI RESPONSE ======
+function parseAIResponse(fullText) {
+    let jsonMatch = fullText.match(/\|\|\|JSON\s*([\s\S]*?)\s*\|\|\|/);
+    let jsonData = null;
+    let cleanText = fullText;
+
+    if (jsonMatch && jsonMatch[1]) {
+        try {
+            jsonData = JSON.parse(jsonMatch[1]);
+            cleanText = fullText.replace(/\|\|\|JSON\s*[\s\S]*?\s*\|\|\|/, '').trim();
+        } catch (e) {
+            console.error('Failed to parse JSON out of Claude response', e);
+        }
+    }
+
+    let followUpQ = null;
+    let followUpMatch = cleanText.match(/FOLLOWUP:\s*(.*)/i);
+    if (followUpMatch && followUpMatch[1]) {
+        followUpQ = followUpMatch[1].trim();
+        cleanText = cleanText.replace(/FOLLOWUP:\s*(.*)/i, '').trim();
+    }
+
+    return { jsonData, cleanText, followUpQ };
 }
 
 // ====== FOLLOW UP CHAT ======
@@ -516,10 +603,8 @@ async function handleFollowupRequest() {
 
     if (loadingInd) loadingInd.classList.add('hidden');
 
-    // Append a separator visually
     const contentEl = document.getElementById('ai-response-content');
     if (contentEl) {
-        // Also show user's message
         const userMsg = document.createElement('p');
         userMsg.innerHTML = '<strong>You:</strong> ' + val;
         userMsg.style.color = 'var(--text-secondary)';
@@ -535,8 +620,9 @@ async function handleFollowupRequest() {
     const { jsonData, cleanText, followUpQ } = parseAIResponse(aiMessage);
 
     if (jsonData) {
-        updateStats(jsonData);
-        updateCharts(jsonData);
+        const stats = jsonData.stats || jsonData;
+        updateStats(stats);
+        updateCharts(stats);
     }
 
     if (contentEl) {
@@ -572,7 +658,6 @@ const successMsg = document.getElementById('waitlist-success-msg');
 if (countEl) {
     let currentCount = localStorage.getItem('waitlistCount');
     if (!currentCount) {
-        // start at a random number between 847 and 923
         currentCount = Math.floor(Math.random() * (923 - 847 + 1)) + 847;
         localStorage.setItem('waitlistCount', currentCount);
     }
@@ -605,30 +690,6 @@ if (countEl) {
     }
 }
 
-// ====== TILE SELECTORS LOGIC ======
-function initTileSelectors() {
-    document.querySelectorAll('.tile-group').forEach(group => {
-        const input = group.querySelector('input[type="hidden"]');
-        const buttons = group.querySelectorAll('.tile-btn');
-
-        buttons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                // Remove selected from sisters
-                buttons.forEach(b => b.classList.remove('selected'));
-                // Select this one
-                btn.classList.add('selected');
-                // Update hidden input
-                input.value = btn.dataset.value;
-                // Clear error visually
-                group.classList.remove('invalid', 'shake');
-            });
-        });
-    });
-}
-
-initTileSelectors();
-
-// Initialize form
-if (formSection) {
-    updateFormView();
-}
+// ====== INITIALIZE ======
+if (btnBack) btnBack.style.visibility = 'hidden';
+progressBar.style.width = '0%';

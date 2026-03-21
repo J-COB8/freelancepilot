@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="assets/icon.png" type="image/png">
 
   <style>
     /* ── Reset ─────────────────────────────────────────────────────── */
@@ -62,13 +63,16 @@
     }
 
     .nav-logo {
-      font-size: 16px;
-      font-weight: 700;
-      color: #111827;
       text-decoration: none;
-      letter-spacing: -0.01em;
       flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #111827;
     }
+    .nav-logo .logo-gold { color: #B8960C; }
 
     .nav-links {
       display: flex;
@@ -119,7 +123,7 @@
       transition: background 0.15s ease, transform 0.1s ease;
       white-space: nowrap;
     }
-    .btn-primary:hover { background: #1f2937; }
+    .btn-primary:hover { background: #1f2937; box-shadow: 0 0 0 2px #B8960C; }
     .btn-primary:active { transform: scale(0.97); }
 
     .btn-outline {
@@ -133,13 +137,13 @@
       font-weight: 600;
       padding: 13px 27px;
       border-radius: 8px;
-      border: 1.5px solid #e5e7eb;
+      border: 1.5px solid #B8960C;
       cursor: pointer;
       text-decoration: none;
       transition: border-color 0.15s ease, transform 0.1s ease;
       white-space: nowrap;
     }
-    .btn-outline:hover { border-color: #111827; }
+    .btn-outline:hover { border-color: #8A6E09; }
     .btn-outline:active { transform: scale(0.97); }
 
     /* ── Pill badge ────────────────────────────────────────────────── */
@@ -147,8 +151,8 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: #eef2ff;
-      color: #4f46e5;
+      background: #F5E9A0;
+      color: #8A6E09;
       font-size: 13px;
       font-weight: 600;
       padding: 6px 14px;
@@ -157,7 +161,7 @@
     }
     .pill-dot {
       width: 6px; height: 6px;
-      background: #4f46e5;
+      background: #B8960C;
       border-radius: 50%;
       flex-shrink: 0;
     }
@@ -221,13 +225,35 @@
     .hero {
       padding: 140px 0 80px;
       text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg-mark {
+      position: absolute;
+      top: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1300px;
+      height: auto;
+      opacity: 0.07;
+      pointer-events: none;
+      z-index: 0;
+      user-select: none;
     }
 
     .hero-eyebrow {
       animation: hero-in 0.5s ease both;
       animation-delay: 0ms;
       margin-bottom: 28px;
+      position: relative;
+      z-index: 1;
     }
+
+    .hero h1,
+    .hero-sub,
+    .hero-ctas,
+    .hero-proof { position: relative; z-index: 1; }
 
     .hero h1 {
       font-size: clamp(44px, 7vw, 80px);
@@ -240,7 +266,7 @@
       animation-delay: 100ms;
     }
 
-    .hero-accent { color: #4f46e5; }
+    .hero-accent { color: #B8960C; }
 
     .hero-sub {
       font-size: 18px;
@@ -295,7 +321,7 @@
     .hero-glow {
       position: absolute;
       inset: -60px;
-      background: radial-gradient(ellipse at center, rgba(79,70,229,0.10) 0%, transparent 65%);
+      background: radial-gradient(ellipse at center, rgba(184,150,12,0.10) 0%, transparent 65%);
       border-radius: 50%;
       animation: glow-pulse 5s ease-in-out infinite;
       pointer-events: none;
@@ -326,8 +352,8 @@
       letter-spacing: -0.01em;
     }
     .mock-score {
-      background: #eef2ff;
-      color: #4f46e5;
+      background: #F5E9A0;
+      color: #7A5F08;
       font-size: 11px;
       font-weight: 700;
       padding: 4px 10px;
@@ -523,8 +549,8 @@
     }
     .feat-tag {
       display: inline-block;
-      background: #eef2ff;
-      color: #4f46e5;
+      background: #F5E9A0;
+      color: #7A5F08;
       font-size: 11px;
       font-weight: 600;
       letter-spacing: 0.06em;
@@ -558,7 +584,7 @@
       display: block;
       font-size: clamp(56px, 8vw, 96px);
       font-weight: 800;
-      color: #4f46e5;
+      color: #B8960C;
       letter-spacing: -0.04em;
       line-height: 1;
       margin-bottom: 16px;
@@ -617,8 +643,8 @@
 
     .price-badge {
       display: inline-block;
-      background: #eef2ff;
-      color: #4f46e5;
+      background: #F5E9A0;
+      color: #7A5F08;
       font-size: 11px;
       font-weight: 600;
       letter-spacing: 0.04em;
@@ -669,7 +695,7 @@
       gap: 10px;
     }
     .price-list li:last-child { border-bottom: none; }
-    .check { color: #4f46e5; font-weight: 700; flex-shrink: 0; }
+    .check { color: #B8960C; font-weight: 700; flex-shrink: 0; }
     .price-card .btn-primary,
     .price-card .btn-outline { width: 100%; justify-content: center; }
 
@@ -726,10 +752,14 @@
       gap: 16px;
     }
     .footer-logo {
+      display: flex;
+      align-items: center;
       font-size: 15px;
       font-weight: 700;
+      letter-spacing: -0.02em;
       color: #111827;
     }
+    .footer-logo .logo-gold { color: #B8960C; }
     .footer-center,
     .footer-right {
       font-size: 13px;
@@ -810,7 +840,7 @@
   <!-- ── NAV ─────────────────────────────────────────────────────── -->
   <nav class="nav" id="nav">
     <div class="nav-inner">
-      <a href="index.html" class="nav-logo">FounderLytics</a>
+      <a href="index.html" class="nav-logo">Founder<span class="logo-gold">Lytics</span></a>
       <ul class="nav-links">
         <li><a href="#how-it-works">How it works</a></li>
         <li><a href="#features">Features</a></li>
@@ -823,6 +853,8 @@
 
   <!-- ── HERO ────────────────────────────────────────────────────── -->
   <section class="hero">
+    <img src="assets/logo.png" alt="" class="hero-bg-mark" aria-hidden="true">
+
     <div class="wrap" style="max-width: 720px;">
       <div class="hero-eyebrow">
         <span class="pill"><span class="pill-dot"></span>AI-Powered Financial Advisor</span>
@@ -1058,7 +1090,7 @@
   <footer class="footer">
     <div class="wrap">
       <div class="footer-inner">
-        <div class="footer-logo">FounderLytics</div>
+        <div class="footer-logo">Founder<span class="logo-gold">Lytics</span></div>
         <p class="footer-center">Built at TETR Startup Hackathon · March 2026</p>
         <p class="footer-right">Powered by Claude AI</p>
       </div>
