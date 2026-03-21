@@ -242,9 +242,20 @@
       user-select: none;
     }
 
-    .hero-eyebrow {
+    .hero-icon {
+      display: block;
+      width: 96px;
+      height: auto;
+      margin: 0 auto 32px;
+      position: relative;
+      z-index: 1;
       animation: hero-in 0.5s ease both;
       animation-delay: 0ms;
+    }
+
+    .hero-eyebrow {
+      animation: hero-in 0.5s ease both;
+      animation-delay: 100ms;
       margin-bottom: 28px;
       position: relative;
       z-index: 1;
@@ -856,6 +867,8 @@
     <img src="assets/logo.png" alt="" class="hero-bg-mark" aria-hidden="true">
 
     <div class="wrap" style="max-width: 720px;">
+      <img src="assets/icon.png" alt="FounderLytics" class="hero-icon">
+
       <div class="hero-eyebrow">
         <span class="pill"><span class="pill-dot"></span>AI-Powered Financial Advisor</span>
       </div>
