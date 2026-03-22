@@ -1241,6 +1241,16 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
+    @keyframes bounceDown {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(10px); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
     /* ─── Scenario tabs ──────────────────────────────────────────── */
     .scenario-tabs {
       display: flex;
@@ -1338,6 +1348,10 @@
       .stat-card:hover, .tool-card-mini:hover { transform: none; }
     }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>
+    emailjs.init("YOUR_EMAILJS_PUBLIC_KEY");
+  </script>
 </head>
 <body>
 
@@ -1376,14 +1390,21 @@
         </div>
       </div>
 
+      <div id="no-refresh-notice" style="display:none; background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; padding:10px 16px; margin-bottom:20px; text-align:center;">
+        <p style="font-size:12px; color:#9ca3af; margin:0;">
+          <svg style="display:inline; vertical-align:middle; margin-right:4px;" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Don't refresh — your progress is being saved automatically.
+        </p>
+      </div>
+
       <div class="form-card">
 
         <!-- Step 1 — name collection -->
-        <div id="step-name" class="form-step active">
+        <div id="step-name" class="form-step" style="display:none;">
           <h2>What's your name?</h2>
           <p class="field-hint">We'll use it to make this feel less like a form and more like a conversation.</p>
           <div class="input-wrapper">
-            <input type="text" id="input-user-name" placeholder="Your first name..." autofocus>
+            <input type="text" id="input-user-name" placeholder="Your first name..." autocomplete="given-name">
             <span class="error-msg">Please tell us your name.</span>
           </div>
         </div>
@@ -1480,7 +1501,7 @@
 
         <!-- BLOCK 1: Your Numbers -->
         <div class="result-block" id="block-stats">
-          <div class="result-block-header" onclick="toggleBlock('block-stats')">
+          <div class="result-block-header" onclick="toggleBlock('block-stats', false)">
             <div class="result-block-header-left">
               <span class="result-block-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="18" y="3" width="4" height="18"/><rect x="10" y="8" width="4" height="13"/><rect x="2" y="13" width="4" height="8"/></svg></span>
               <div>
@@ -1522,7 +1543,7 @@
 
         <!-- BLOCK 2: Financial Breakdown -->
         <div class="result-block" id="block-charts">
-          <div class="result-block-header" onclick="toggleBlock('block-charts')">
+          <div class="result-block-header" onclick="toggleBlock('block-charts', false)">
             <div class="result-block-header-left">
               <span class="result-block-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></span>
               <div>
@@ -1550,12 +1571,12 @@
 
         <!-- BLOCK 3: Explore Scenarios -->
         <div class="result-block" id="block-interactive">
-          <div class="result-block-header" onclick="toggleBlock('block-interactive')">
+          <div class="result-block-header" onclick="toggleBlock('block-interactive', false)">
             <div class="result-block-header-left">
               <span class="result-block-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></span>
               <div>
                 <h3 class="result-block-title">Explore Scenarios</h3>
-                <p class="result-block-subtitle">Simulate changes and see the impact in real time</p>
+                <p class="result-block-subtitle">See how small changes to your numbers change your financial future</p>
               </div>
             </div>
             <button class="result-block-toggle" id="toggle-block-interactive">Show →</button>
@@ -1572,8 +1593,8 @@
             <div class="scenario-panel active" id="panel-projection">
               <div class="interactive-card-header">
                 <div class="interactive-card-header-left">
-                  <h4>Revenue Projection</h4>
-                  <p class="card-subtitle">What if your business grows every month?</p>
+                  <h4>What if your revenue grows?</h4>
+                  <p class="card-subtitle">Move the slider to see how consistent monthly growth changes your annual income</p>
                 </div>
                 <span class="card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span>
               </div>
@@ -1592,8 +1613,8 @@
             <div class="scenario-panel" id="panel-compound">
               <div class="interactive-card-header">
                 <div class="interactive-card-header-left">
-                  <h4>Investment Growth Calculator</h4>
-                  <p class="card-subtitle">See how compound interest works for you</p>
+                  <h4>What if you start investing today?</h4>
+                  <p class="card-subtitle">See exactly how much your money grows over time with compound interest</p>
                 </div>
                 <span class="card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span>
               </div>
@@ -1622,8 +1643,8 @@
             <div class="scenario-panel" id="panel-optimizer">
               <div class="interactive-card-header">
                 <div class="interactive-card-header-left">
-                  <h4>Expense Optimizer</h4>
-                  <p class="card-subtitle">What happens to your profit if you cut costs?</p>
+                  <h4>What if you cut your biggest expense?</h4>
+                  <p class="card-subtitle">Reducing costs is often faster than increasing revenue — see the impact here</p>
                 </div>
                 <span class="card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v12"/><path d="M18 9v12"/><path d="M3 9h6"/><path d="M15 3h6"/><path d="M3 15h18"/></svg></span>
               </div>
@@ -1643,12 +1664,12 @@
 
         <!-- BLOCK 4: CFO Report -->
         <div class="result-block" id="block-ai">
-          <div class="result-block-header" onclick="toggleBlock('block-ai')">
+          <div class="result-block-header" onclick="toggleBlock('block-ai', false)">
             <div class="result-block-header-left">
               <span class="result-block-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg></span>
               <div>
-                <h3 class="result-block-title">Your CFO Report</h3>
-                <p class="result-block-subtitle">Personalized advice based on your specific numbers</p>
+                <h3 class="result-block-title">Why These Steps</h3>
+                <p class="result-block-subtitle">The reasoning behind your personalized action plan</p>
               </div>
             </div>
             <button class="result-block-toggle" id="toggle-block-ai">Show →</button>
@@ -1673,14 +1694,14 @@
           </div>
         </div>
 
-        <!-- BLOCK 5: FounderLytics Tools (hidden until AI reveals it) -->
-        <div class="result-block hidden" id="block-tools">
-          <div class="result-block-header" onclick="toggleBlock('block-tools')">
+        <!-- BLOCK 5: FounderLytics Tools -->
+        <div class="result-block" id="block-tools">
+          <div class="result-block-header" onclick="toggleBlock('block-tools', false)">
             <div class="result-block-header-left">
               <span class="result-block-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span>
               <div>
-                <h3 class="result-block-title">How FounderLytics Helps You</h3>
-                <p class="result-block-subtitle">Tools and strategies built for your business type</p>
+                <h3 class="result-block-title">Your Next Steps</h3>
+                <p class="result-block-subtitle">A prioritized action plan built from your specific numbers</p>
               </div>
             </div>
             <button class="result-block-toggle" id="toggle-block-tools">Show →</button>
@@ -1696,12 +1717,64 @@
           </div>
         </div>
 
+        <!-- BLOCK: Email Results -->
+        <div class="result-block" id="block-email-results">
+          <div class="result-block-header" onclick="toggleBlock('block-email-results', false)">
+            <div class="result-block-header-left">
+              <div class="result-block-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </div>
+              <div>
+                <h3 class="result-block-title">Get Your Results by Email</h3>
+                <p class="result-block-subtitle">We'll send your Next Steps and financial summary to your inbox</p>
+              </div>
+            </div>
+            <button class="result-block-toggle" id="toggle-block-email-results">Show →</button>
+          </div>
+          <div class="result-block-content hidden" id="content-block-email-results">
+            <div style="padding-top:8px;">
+              <p style="font-size:15px; color:#6b7280; margin-bottom:24px; line-height:1.7;">Enter your email and we'll send you a clean copy of your financial analysis and Next Steps — so you can reference it anytime, share it with a partner, or track your progress.</p>
+
+              <div id="email-results-form">
+                <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                  <input
+                    type="email"
+                    id="input-results-email"
+                    placeholder="your@email.com"
+                    style="flex:1; min-width:240px; background:#f9fafb; border:1.5px solid #e5e7eb; border-radius:10px; padding:13px 16px; font-size:15px; color:#111827; outline:none; font-family:'Inter',sans-serif; transition:border-color 0.2s, box-shadow 0.2s;"
+                    onfocus="this.style.borderColor='#111827'; this.style.boxShadow='0 0 0 3px rgba(17,24,39,0.08)'"
+                    onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'"
+                  >
+                  <button
+                    onclick="sendResultsByEmail()"
+                    id="btn-send-results"
+                    style="background:#111827; color:white; border:none; padding:13px 28px; border-radius:10px; font-size:15px; font-weight:700; cursor:pointer; font-family:'Inter',sans-serif; white-space:nowrap; transition:opacity 0.2s;"
+                    onmouseover="this.style.opacity='0.85'"
+                    onmouseout="this.style.opacity='1'"
+                  >Send My Results →</button>
+                </div>
+                <p id="email-results-error" style="display:none; font-size:13px; color:#dc2626; margin-top:8px; font-weight:600;"></p>
+              </div>
+
+              <div id="email-results-success" style="display:none; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px; padding:16px 20px;">
+                <p style="font-size:15px; font-weight:700; color:#16a34a; margin:0;">
+                  <svg style="display:inline; vertical-align:middle; margin-right:8px;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  Sent! Check your inbox in the next few minutes.
+                </p>
+                <p style="font-size:13px; color:#16a34a; margin:6px 0 0; opacity:0.8;">Your Next Steps and financial summary are on their way.</p>
+              </div>
+
+              <p style="font-size:12px; color:#9ca3af; margin-top:14px;">We never spam. This is a one-time email with your results only.</p>
+            </div>
+          </div>
+        </div>
+
         <!-- Waitlist -->
         <div class="waitlist-section">
           <div class="waitlist-badge">Preview Mode</div>
           <h2>You just saw an early preview.</h2>
-          <p>FounderLytics hasn't launched yet. What you experienced is a working prototype — the full product will include unlimited analyses, investment tracking, monthly reports, and much more.</p>
-          <p class="waitlist-cta-text">Join the waitlist to get early access and a lifetime discount when we launch.</p>
+          <p>FounderLytics hasn't launched yet. What you experienced is a working prototype — the full product will include full access to analyses, investment tracking, monthly reports, and much more.</p>
+          <p class="waitlist-cta-text">Join the waitlist to get early access and founding member pricing when we launch.</p>
           <iframe data-tally-src="https://tally.so/embed/Pd0qr5?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" loading="lazy" width="100%" height="177" frameborder="0" marginheight="0" marginwidth="0" title="Join the FounderLytics waitlist"></iframe>
           <script>var d=document,w="https://tally.so/widgets/embed.js",v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};if("undefined"!=typeof Tally)v();else if(d.querySelector('script[src="'+w+'"]')==null){var s=d.createElement("script");s.src=w,s.onload=v,s.onerror=v,d.body.appendChild(s);}</script>
         </div>
