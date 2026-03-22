@@ -166,11 +166,6 @@ if (btnNext) {
             saveSession();
 
             await getNextQuestion();
-
-            if (questionCount >= 6) {
-                const btnBackEl = document.getElementById('btn-back');
-                if (btnBackEl) btnBackEl.style.visibility = 'hidden';
-            }
         }
     });
 }
@@ -238,7 +233,7 @@ async function fetchWithTimeout(url, options, timeoutMs = 30000) {
 
 // ====== REFRESH WARNING ======
 function enableRefreshWarning() {
-    window.onbeforeunload = function(e) {
+    window.onbeforeunload = function (e) {
         if (currentStep === 'dynamic' || currentStep === 'currency' || currentStep === 'name') {
             const message = 'Your progress will be saved, but the AI conversation may restart. Are you sure?';
             e.returnValue = message;
@@ -303,8 +298,6 @@ async function getNextQuestion() {
     }, 15000);
 
     window._warningTimeout = warningTimeout;
-
-    if (btnBack) btnBack.style.visibility = 'hidden';
 
     const systemPrompt = `You are FounderLytics — a sharp, warm financial coach for early-stage entrepreneurs and freelancers. Your job is to have a short conversation that collects exactly the right information to generate a concrete, personalized action plan for their business.
 
@@ -688,11 +681,101 @@ function lockFormForSubmission() {
     disableRefreshWarning();
 }
 
+function calculateStatsLocally() {
+    // Extract numbers from conversation history
+    const allAnswers = conversationHistory
+        .filter(m => m.role === 'user')
+        .map(m => m.content);
+
+    // Try to find revenue, expenses, hours, clients from answers
+    let revenue = 0, expenses = 0, hours = 0, clients = 0;
+
+    allAnswers.forEach(answer => {
+        const nums = answer.match(/\d+(\.\d+)?/g);
+        if (!nums) return;
+        const val = parseFloat(nums[0]);
+
+        const lower = answer.toLowerCase();
+        if (lower.includes('revenue') || lower.includes('made') || lower.includes('earned') || lower.includes('income') || lower.includes('make')) {
+            if (val > revenue) revenue = val;
+        }
+        if (lower.includes('expense') || lower.includes('spend') || lower.includes('cost') || lower.includes('spent')) {
+            if (val > expenses) expenses = val;
+        }
+        if (lower.includes('hour')) {
+            if (val > hours) hours = val;
+        }
+        if (lower.includes('client') || lower.includes('customer') || lower.includes('order')) {
+            if (val > clients && val < 10000) clients = val;
+        }
+    });
+
+    // Also check collectedData questions
+    Object.values(collectedData).forEach(item => {
+        if (!item || !item.question || !item.answer) return;
+        const q = item.question.toLowerCase();
+        const a = item.answer.toString().toLowerCase();
+        const nums = a.match(/\d+(\.\d+)?/g);
+        if (!nums) return;
+        const val = parseFloat(nums[0]);
+
+        if (q.includes('revenue') || q.includes('make') || q.includes('earn') || q.includes('income')) {
+            if (val > 0 && val > revenue) revenue = val;
+        }
+        if (q.includes('expense') || q.includes('spend') || q.includes('cost')) {
+            if (val > 0 && val > expenses) expenses = val;
+        }
+        if (q.includes('hour')) {
+            if (val > 0 && val > hours) hours = val;
+        }
+        if (q.includes('client') || q.includes('customer') || q.includes('order')) {
+            if (val > 0 && val < 10000 && val > clients) clients = val;
+        }
+    });
+
+    // Fallback estimates if extraction failed
+    if (revenue === 0) revenue = 1000;
+    if (expenses === 0) expenses = revenue * 0.4;
+
+    const taxRates = { '$': 0.25, '£': 0.20, '€': 0.20, '₹': 0.18 };
+    const taxRate = taxRates[window.userCurrency] || 0.20;
+    const netProfit = revenue - expenses;
+    const taxReserve = Math.max(0, netProfit * taxRate);
+    const profitMargin = revenue > 0 ? (netProfit / revenue) * 100 : 0;
+    const hourlyRate = hours > 0 ? netProfit / hours : null;
+    const revenuePerClient = clients > 0 ? revenue / clients : null;
+
+    // Health score based on margin and profitability
+    let healthScore = 50;
+    if (profitMargin > 70) healthScore = 80;
+    else if (profitMargin > 50) healthScore = 65;
+    else if (profitMargin > 30) healthScore = 50;
+    else if (profitMargin > 10) healthScore = 35;
+    else healthScore = 20;
+
+    if (netProfit < 0) healthScore = 15;
+    if (revenue > 5000) healthScore = Math.min(healthScore + 10, 100);
+
+    const savingsRecommendation = Math.max(0, netProfit * 0.2);
+    const investmentRecommendation = Math.max(0, netProfit * 0.1);
+
+    return {
+        netProfit: Math.round(netProfit),
+        hourlyRate: hourlyRate ? Math.round(hourlyRate * 100) / 100 : null,
+        taxReserve: Math.round(taxReserve),
+        profitMargin: Math.round(profitMargin * 10) / 10,
+        revenuePerClient: revenuePerClient ? Math.round(revenuePerClient) : null,
+        financialHealthScore: healthScore,
+        savingsRecommendation: Math.round(savingsRecommendation),
+        investmentRecommendation: Math.round(investmentRecommendation),
+        monthlyRevenue: Math.round(revenue),
+        monthlyExpenses: Math.round(expenses)
+    };
+}
+
 async function submitAnalysis() {
-    // Lock form UI immediately
     lockFormForSubmission();
 
-    // Hide form navigation completely
     const btnBackEl = document.getElementById('btn-back');
     const btnNextEl = document.getElementById('btn-next');
     const btnSubmitEl = document.getElementById('btn-submit');
@@ -700,77 +783,185 @@ async function submitAnalysis() {
     if (btnNextEl) btnNextEl.style.display = 'none';
     if (btnSubmitEl) btnSubmitEl.style.display = 'none';
 
-    // Show scroll down arrow indicator
-    const scrollArrow = document.createElement('div');
-    scrollArrow.id = 'scroll-arrow-indicator';
-    scrollArrow.style.cssText = `
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 32px 0;
-        gap: 12px;
-        animation: fadeIn 0.4s ease both;
-    `;
-    scrollArrow.innerHTML = `
-        <p style="font-size:14px; font-weight:600; color:#9ca3af; letter-spacing:0.02em;">Analyzing your answers...</p>
-        <div style="animation: bounceDown 1.2s ease-in-out infinite;">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="12" y1="5" x2="12" y2="19"/>
-                <polyline points="19 12 12 19 5 12"/>
-            </svg>
-        </div>
-    `;
-
-    const formCard = document.querySelector('.form-card');
-    if (formCard) {
-        const thinkingMsg = document.getElementById('thinking-msg');
-        if (thinkingMsg) thinkingMsg.remove();
-        formCard.appendChild(scrollArrow);
-    }
-
-    // Remove scroll arrow before transitioning
     const arrow = document.getElementById('scroll-arrow-indicator');
     if (arrow) arrow.remove();
 
-    // Transition to loading
+    // PHASE 1: Show results immediately with local calculations
+    const localStats = calculateStatsLocally();
+
+    const localData = {
+        stats: localStats,
+        businessType: collectedData.businessType || 'other',
+        businessSummary: 'Calculating your personalized analysis...',
+        projectionBase: localStats.netProfit,
+        nextSteps: [],
+        whyTheseSteps: ''
+    };
+
+    window.analysisData = localData;
+
+    // Transition to results immediately
     document.getElementById('form-section').classList.remove('active-section');
     document.getElementById('form-section').classList.add('hidden-section');
-    document.getElementById('loading-section').classList.remove('hidden-section');
-    document.getElementById('loading-section').classList.add('active-section');
+    document.getElementById('results-section').classList.remove('hidden-section');
+    document.getElementById('results-section').classList.add('active-section');
 
-    // Increment usage counter
+    // Render stats and charts right away
+    updateStats(localStats);
+    updateCharts(localStats);
+    setTimeout(() => initInteractiveCharts(), 100);
+
+    // Open blocks
+    toggleBlock('block-stats', true);
+    toggleBlock('block-charts', true);
+
+    // Set date
+    const dateEl = document.getElementById('results-date');
+    if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-US', {
+        month: 'long', day: 'numeric', year: 'numeric'
+    });
+
+    // Show loading state in AI block
+    toggleBlock('block-ai', true);
+    const aiContent = document.getElementById('ai-response-content');
+    if (aiContent) {
+        aiContent.innerHTML = `
+      <div style="display:flex; align-items:center; gap:10px; color:#9ca3af; font-size:14px; padding:8px 0;">
+        <div style="display:flex; gap:4px;">
+          <div style="width:6px;height:6px;background:#9ca3af;border-radius:50%;animation:pulse 1.4s ease-in-out infinite;"></div>
+          <div style="width:6px;height:6px;background:#9ca3af;border-radius:50%;animation:pulse 1.4s ease-in-out 0.2s infinite;"></div>
+          <div style="width:6px;height:6px;background:#9ca3af;border-radius:50%;animation:pulse 1.4s ease-in-out 0.4s infinite;"></div>
+        </div>
+        Building your personalized Next Steps...
+      </div>
+    `;
+    }
+
+    // Show loading state in tools block
+    toggleBlock('block-tools', true);
+    const toolsContent = document.getElementById('content-block-tools');
+    if (toolsContent) {
+        toolsContent.innerHTML = `
+      <div style="padding:24px; text-align:center; color:#9ca3af; font-size:14px;">
+        Your AI-powered Next Steps are being generated...
+      </div>
+    `;
+    }
+
     incrementUsage();
+    saveSession();
 
-    // Build the final analysis message
-    const finalMessage = `
-I have now collected all the data needed. Here is a summary of what I know about this business:
+    // Show scroll notification
+    const scrollNotice = document.createElement('div');
+    scrollNotice.style.cssText = `
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #111827;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    animation: fadeIn 0.4s ease both;
+    cursor: pointer;
+  `;
+    scrollNotice.innerHTML = `
+    Your results are ready
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="12" y1="5" x2="12" y2="19"/>
+      <polyline points="19 12 12 19 5 12"/>
+    </svg>
+  `;
+    scrollNotice.onclick = () => {
+        document.getElementById('results-section').scrollIntoView({ behavior: 'smooth' });
+        scrollNotice.remove();
+    };
+    document.body.appendChild(scrollNotice);
+    setTimeout(() => { if (scrollNotice.parentNode) scrollNotice.remove(); }, 5000);
 
-${conversationHistory
-    .filter(m => m.role === 'user')
-    .map(m => m.content)
-    .join('\n')}
+    // Scroll to results
+    setTimeout(() => {
+        document.getElementById('results-section').scrollIntoView({ behavior: 'smooth' });
+    }, 200);
 
-Please analyze this completely and return the full JSON with nextSteps and the written analysis.
-Business type context: ${collectedData.businessType || 'not specified'}
-Currency: ${window.userCurrencyLabel || 'USD'}
-User name: ${window.userName || 'not provided'}
-    `.trim();
+    // PHASE 2: Call AI for next steps only
+    const nextStepsPrompt = `You are FounderLytics — a sharp financial coach. Based on this entrepreneur's conversation data, generate their personalized Next Steps action plan.
 
-    // Build messages for analysis — include full conversation for context
-    const analysisMessages = [
-        ...conversationHistory,
-        { role: 'user', content: finalMessage }
-    ];
+Conversation data:
+${conversationHistory.filter(m => m.role === 'user').map(m => `- ${m.content}`).join('\n')}
+
+Local calculations already shown to user:
+- Monthly Revenue: $${localStats.monthlyRevenue}
+- Monthly Expenses: $${localStats.monthlyExpenses}
+- Net Profit: $${localStats.netProfit}
+- Profit Margin: ${localStats.profitMargin}%
+- Financial Health Score: ${localStats.financialHealthScore}/100
+- Business Type: ${collectedData.businessType || 'unknown'}
+- User Name: ${window.userName || 'Entrepreneur'}
+
+Generate EXACTLY this JSON structure, then 2-3 paragraphs of analysis, then a FOLLOWUP question:
+
+|||JSON
+{
+  "businessSummary": "One honest sentence about their business state",
+  "nextSteps": [
+    {
+      "priority": 1,
+      "timeline": "This Week",
+      "title": "Specific action under 8 words",
+      "urgency": "Why this can't wait — one sentence",
+      "action": "Exactly what to do, step by step",
+      "impact": "Concrete expected outcome with numbers"
+    },
+    {
+      "priority": 2,
+      "timeline": "This Month",
+      "title": "...",
+      "urgency": "...",
+      "action": "...",
+      "impact": "..."
+    },
+    {
+      "priority": 3,
+      "timeline": "This Month",
+      "title": "...",
+      "urgency": "...",
+      "action": "...",
+      "impact": "..."
+    },
+    {
+      "priority": 4,
+      "timeline": "Next 90 Days",
+      "title": "...",
+      "urgency": "...",
+      "action": "...",
+      "impact": "..."
+    }
+  ],
+  "whyTheseSteps": "2 sentences explaining the priority order"
+}
+|||
+
+[2-3 paragraphs of honest analysis]
+
+FOLLOWUP: [One specific follow-up question]`;
 
     try {
         const response = await fetch('/api/analyze', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                system: ANALYSIS_SYSTEM_PROMPT,
-                messages: analysisMessages
-            })
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            system: 'You are a financial advisor. You MUST respond with ONLY the |||JSON block first, then analysis paragraphs, then FOLLOWUP. Never add headers like ## Analysis. Never use markdown. Start your response immediately with |||JSON',
+            messages: [{ role: 'user', content: nextStepsPrompt }]
+          })
         });
 
         if (!response.ok) throw new Error(`API error: ${response.status}`);
@@ -779,30 +970,142 @@ User name: ${window.userName || 'not provided'}
         let aiMessage = '';
 
         if (data.content && Array.isArray(data.content) && data.content[0]?.text) {
-            aiMessage = data.content[0].text;
+          aiMessage = data.content[0].text;
         } else if (typeof data.content === 'string') {
-            aiMessage = data.content;
+          aiMessage = data.content;
         } else {
-            aiMessage = JSON.stringify(data);
+          aiMessage = JSON.stringify(data);
         }
+
+        console.log('[FounderLytics] Raw AI response (first 500 chars):', aiMessage.substring(0, 500));
 
         chatHistory.push({ role: 'assistant', content: aiMessage });
 
-        // Transition to results
-        document.getElementById('loading-section').classList.remove('active-section');
-        document.getElementById('loading-section').classList.add('hidden-section');
-        document.getElementById('results-section').classList.remove('hidden-section');
-        document.getElementById('results-section').classList.add('active-section');
+        // Try to extract JSON manually with brace counting
+        let jsonData = null;
+        let cleanText = aiMessage;
 
-        processDisplayResults(aiMessage);
+        // Method 1: standard delimiters
+        const delimMatch = aiMessage.match(/\|\|\|JSON\s*([\s\S]*?)\s*\|\|\|/);
+        if (delimMatch) {
+          try {
+            jsonData = JSON.parse(delimMatch[1].trim());
+            cleanText = aiMessage.replace(/\|\|\|JSON\s*[\s\S]*?\s*\|\|\|/, '').trim();
+            console.log('[FounderLytics] Parsed via delimiters. nextSteps:', jsonData?.nextSteps?.length);
+          } catch(e) { console.error('Delimiter parse failed:', e); }
+        }
+
+        // Method 2: brace counting from |||JSON
+        if (!jsonData) {
+          const openIdx = aiMessage.indexOf('|||JSON');
+          if (openIdx !== -1) {
+            let str = aiMessage.substring(openIdx + 7).trim();
+            let depth = 0, endIdx = -1;
+            for (let i = 0; i < str.length; i++) {
+              if (str[i] === '{') depth++;
+              else if (str[i] === '}') { depth--; if (depth === 0) { endIdx = i; break; } }
+            }
+            if (endIdx > 0) {
+              try {
+                jsonData = JSON.parse(str.substring(0, endIdx + 1));
+                cleanText = aiMessage.substring(0, openIdx) + aiMessage.substring(openIdx + 7 + endIdx + 1);
+                console.log('[FounderLytics] Parsed via brace counting. nextSteps:', jsonData?.nextSteps?.length);
+              } catch(e) { console.error('Brace count parse failed:', e); }
+            }
+          }
+        }
+
+        // Method 3: find any object with nextSteps key
+        if (!jsonData) {
+          const nsIdx = aiMessage.indexOf('"nextSteps"');
+          if (nsIdx !== -1) {
+            let searchFrom = nsIdx;
+            while (searchFrom > 0 && aiMessage[searchFrom] !== '{') searchFrom--;
+            let depth = 0, endIdx = -1;
+            for (let i = searchFrom; i < aiMessage.length; i++) {
+              if (aiMessage[i] === '{') depth++;
+              else if (aiMessage[i] === '}') { depth--; if (depth === 0) { endIdx = i; break; } }
+            }
+            if (endIdx > 0) {
+              try {
+                jsonData = JSON.parse(aiMessage.substring(searchFrom, endIdx + 1));
+                cleanText = aiMessage.substring(0, searchFrom) + aiMessage.substring(endIdx + 1);
+                console.log('[FounderLytics] Parsed via nextSteps search. nextSteps:', jsonData?.nextSteps?.length);
+              } catch(e) { console.error('nextSteps search parse failed:', e); }
+            }
+          }
+        }
+
+        // Clean display text
+        cleanText = cleanText
+          .replace(/\|\|\|JSON[\s\S]*?\|\|\|/g, '')
+          .replace(/\|\|\|JSON[\s\S]*/g, '')
+          .replace(/\|\|\|/g, '')
+          .replace(/##\s+\w+/g, '')
+          .replace(/\*\*/g, '')
+          .trim();
+
+        // Extract followup
+        let followUpQ = null;
+        const fuMatch = cleanText.match(/FOLLOWUP:\s*([\s\S]*?)(?:\n|$)/i);
+        if (fuMatch) {
+          followUpQ = fuMatch[1].trim();
+          cleanText = cleanText.replace(/FOLLOWUP:\s*[\s\S]*?(?:\n|$)/i, '').trim();
+        }
+
+        // Render next steps if we got them
+        if (jsonData && jsonData.nextSteps && jsonData.nextSteps.length > 0) {
+          const mergedData = {
+            stats: localStats,
+            businessType: collectedData.businessType || 'other',
+            businessSummary: jsonData.businessSummary || '',
+            projectionBase: localStats.netProfit,
+            nextSteps: jsonData.nextSteps.map((step, i) => ({
+              priority: step.priority || i + 1,
+              timeline: step.timeline || 'This Month',
+              title: step.title || 'Action required',
+              urgency: step.urgency || '',
+              action: step.action || '',
+              impact: step.impact || ''
+            })),
+            whyTheseSteps: jsonData.whyTheseSteps || ''
+          };
+          window.analysisData = mergedData;
+          renderNextSteps(mergedData);
+          console.log('[FounderLytics] Next steps rendered successfully:', mergedData.nextSteps.length);
+        } else {
+          console.warn('[FounderLytics] No nextSteps found. Showing fallback.');
+          const toolsContent = document.getElementById('content-block-tools');
+          if (toolsContent) {
+            toolsContent.innerHTML = `
+              <div style="padding:20px 0;">
+                <p style="font-size:15px; font-weight:600; color:#111827; margin-bottom:8px;">Analysis complete.</p>
+                <p style="font-size:14px; color:#6b7280; line-height:1.7;">Based on your ${localStats.profitMargin}% profit margin and $${localStats.netProfit.toLocaleString()}/month net profit, use the chat below to ask specific questions like "What should I focus on this week?" or "How do I reduce my expenses?"</p>
+              </div>`;
+          }
+        }
+
+        // Type analysis text
+        let analysisText = cleanText || 'Your financial picture is ready. Review the sections above.';
+        if (analysisText.length < 20) analysisText = 'Your numbers are ready above. Use the chat to ask specific questions about your business.';
+
+        typeText(analysisText, 'ai-response-content', () => {
+          if (followUpQ) {
+            const fqEl = document.getElementById('followup-question-text');
+            if (fqEl) fqEl.innerText = followUpQ;
+            const container = document.getElementById('followup-container');
+            if (container) container.classList.remove('hidden');
+          }
+        });
+
         saveSession();
 
     } catch (error) {
-        console.error('submitAnalysis error:', error);
-        document.getElementById('loading-section').classList.add('hidden-section');
-        document.getElementById('form-section').classList.remove('hidden-section');
-        document.getElementById('form-section').classList.add('active-section');
-        alert('Something went wrong with the analysis. Please try again.');
+        console.error('AI next steps error:', error);
+        const aiContent = document.getElementById('ai-response-content');
+        if (aiContent) {
+          aiContent.innerHTML = `<p style="color:#374151; font-size:15px; line-height:1.7;">Your numbers are ready above. Use the chat below to ask specific questions about your business.</p>`;
+        }
     }
 }
 
@@ -1102,7 +1405,13 @@ function parseAIResponse(fullText) {
     if (jsonMatch && jsonMatch[1]) {
         try {
             jsonData = JSON.parse(jsonMatch[1].trim());
-            cleanText = fullText.replace(/\|\|\|JSON\s*[\s\S]*?\s*\|\|\|/, '').trim();
+            cleanText = fullText
+                .replace(/\|\|\|JSON[\s\S]*?\|\|\|/g, '')
+                .replace(/\|\|\|JSON[\s\S]*/g, '')
+                .replace(/\|\|\|/g, '')
+                .replace(/```json[\s\S]*?```/gi, '')
+                .replace(/`{1,3}/g, '')
+                .trim();
 
             // Validate nextSteps structure
             if (jsonData.nextSteps && Array.isArray(jsonData.nextSteps)) {
@@ -1285,7 +1594,7 @@ function initInteractiveCharts() {
         const growthRate = parseFloat(document.getElementById('slider-growth').value) / 100;
         document.getElementById('growth-rate-label').textContent = `${Math.round(growthRate * 100)}%`;
 
-        const months = Array.from({length: 12}, (_, i) => `Month ${i + 1}`);
+        const months = Array.from({ length: 12 }, (_, i) => `Month ${i + 1}`);
         const values = months.map((_, i) => Math.round(baseProfit * Math.pow(1 + growthRate, i)));
         const year1Total = values.reduce((a, b) => a + b, 0);
 
@@ -1332,7 +1641,7 @@ function initInteractiveCharts() {
 
         document.getElementById('years-label').textContent = `${years} year${years > 1 ? 's' : ''}`;
 
-        const labels = Array.from({length: years}, (_, i) => `Year ${i + 1}`);
+        const labels = Array.from({ length: years }, (_, i) => `Year ${i + 1}`);
         const values = labels.map((_, i) => {
             const n = (i + 1) * 12;
             return Math.round(monthly * ((Math.pow(1 + monthlyRate, n) - 1) / monthlyRate));
@@ -1561,7 +1870,7 @@ function saveSession() {
         if (window.analysisData) {
             sessionStorage.setItem('fl_analysis', JSON.stringify(window.analysisData));
         }
-    } catch(e) {
+    } catch (e) {
         console.warn('Could not save session:', e);
     }
 }
@@ -1590,7 +1899,7 @@ function loadSession() {
             return true;
         }
         return false;
-    } catch(e) {
+    } catch (e) {
         console.warn('Could not load session:', e);
         return false;
     }
@@ -1626,6 +1935,7 @@ function showCurrencyStep() {
 // ====== USAGE LIMIT ======
 // DEV MODE — set to true to bypass usage limit during testing
 const DEV_MODE = true;
+sessionStorage.clear();
 
 function checkUsageLimit() {
     if (DEV_MODE) return true; // bypass limit in dev mode
