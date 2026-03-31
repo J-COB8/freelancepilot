@@ -26,6 +26,9 @@ const MAX_FOLLOWUPS = 3;
 // Chart Instances
 let barChartInst = null;
 let doughnutChartInst = null;
+// Expose chart instances for tab resize
+window._barChart = null;
+window._doughnutChart = null;
 
 // ====== DOM ELEMENTS ======
 const formSection = document.getElementById('form-section');
@@ -1149,6 +1152,22 @@ function processDisplayResults(fullResponse) {
         });
     }
 
+    // Set profile header
+    const profileName = document.getElementById('profile-display-name');
+    if (profileName && window.userName) profileName.textContent = window.userName;
+    const profileAvatar = document.getElementById('profile-avatar');
+    if (profileAvatar && window.userName) profileAvatar.textContent = window.userName[0].toUpperCase();
+    const profileTitle = document.getElementById('profile-title-el');
+    if (profileTitle && collectedData && collectedData.businessType) {
+        // Capitalize first letter
+        const btype = collectedData.businessType;
+        profileTitle.textContent = btype.charAt(0).toUpperCase() + btype.slice(1);
+    }
+
+    // Show email block after analysis
+    const emailBlock = document.getElementById('block-email-results');
+    if (emailBlock) emailBlock.style.display = '';
+
     // Type out the AI analysis text
     const analysisText = cleanText || 'Analysis complete. Review your Next Steps above.';
 
@@ -1198,11 +1217,18 @@ function updateStats(data) {
     const hsEl = document.getElementById('val-health-score');
     if (hsEl) {
         let score = data.financialHealthScore || 0;
-        hsEl.innerText = score + '/100';
-        hsEl.className = 'health-badge ';
-        if (score <= 40) hsEl.classList.add('bad');
-        else if (score <= 70) hsEl.classList.add('ok');
-        else hsEl.classList.add('good');
+        hsEl.textContent = score;
+        hsEl.className = 'health-score-number';
+        if (score <= 40) hsEl.classList.add('score-red');
+        else if (score <= 70) hsEl.classList.add('score-yellow');
+        else hsEl.classList.add('score-green');
+    }
+    // Also update finances tab badge
+    const hsFin = document.getElementById('val-health-score-finance');
+    if (hsFin) {
+        let score = data.financialHealthScore || 0;
+        hsFin.textContent = score + '/100';
+        hsFin.className = 'health-badge';
     }
 
     const pmEl = document.getElementById('val-profit-margin');
@@ -1823,23 +1849,9 @@ function renderNextSteps(jsonData) {
 
 // ====== ACCORDION + SCENARIO TABS ======
 function toggleBlock(blockId, forceOpen = true) {
-    const content = document.getElementById(`content-${blockId}`);
-    const toggle = document.getElementById(`toggle-${blockId}`);
-    if (!content) return;
-
-    if (forceOpen) {
-        content.classList.remove('hidden');
-        if (toggle) { toggle.textContent = 'Hide ↑'; toggle.classList.add('open'); }
-    } else {
-        const isOpen = !content.classList.contains('hidden');
-        if (isOpen) {
-            content.classList.add('hidden');
-            if (toggle) { toggle.textContent = 'Show →'; toggle.classList.remove('open'); }
-        } else {
-            content.classList.remove('hidden');
-            if (toggle) { toggle.textContent = 'Hide ↑'; toggle.classList.add('open'); }
-        }
-    }
+    // In the tab-based layout, blocks are always visible — just ensure content is shown
+    const content = document.getElementById('content-' + blockId);
+    if (content) content.classList.remove('hidden');
 }
 
 function switchScenario(panel) {
@@ -1998,6 +2010,17 @@ window.addEventListener('load', async () => {
             toggleBlock('block-stats', true);
             toggleBlock('block-ai', true);
             toggleBlock('block-tools', true);
+
+            // Restore profile header
+            const pName = document.getElementById('profile-display-name');
+            if (pName && window.userName) pName.textContent = window.userName;
+            const pAvatar = document.getElementById('profile-avatar');
+            if (pAvatar && window.userName) pAvatar.textContent = window.userName[0].toUpperCase();
+            const pTitle = document.getElementById('profile-title-el');
+            if (pTitle && collectedData && collectedData.businessType) {
+                const btype = collectedData.businessType;
+                pTitle.textContent = btype.charAt(0).toUpperCase() + btype.slice(1);
+            }
 
             const dateEl = document.getElementById('results-date');
             if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-US', {

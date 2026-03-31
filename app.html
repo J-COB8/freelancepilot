@@ -57,70 +57,59 @@
       color: var(--text);
     }
 
-    /* ─── Progress bar — full-width fixed at top ────────────────── */
+    /* ─── Progress bar ───────────────────────────────────────────── */
     .progress-bar-container {
       position: fixed;
       top: 0; left: 0; right: 0;
-      height: 4px;
-      background: var(--border);
+      height: 3px;
+      background: transparent;
       z-index: 200;
     }
-
     #progress-bar {
       height: 100%;
       background: var(--accent);
       width: 0%;
       transition: width 0.4s ease;
-      border-radius: 0 2px 2px 0;
     }
 
     /* ─── Site nav ───────────────────────────────────────────────── */
     .site-nav {
       position: sticky;
-      top: 4px; /* below the progress bar */
+      top: 3px;
       z-index: 100;
-      background: rgba(255,255,255,0.92);
+      background: rgba(255,255,255,0.95);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       border-bottom: 1px solid var(--border);
     }
-
     .nav-inner {
-      max-width: 1120px;
+      max-width: 1200px;
       margin: 0 auto;
       padding: 0 28px;
-      height: 60px;
+      height: 58px;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-
     .logo {
       text-decoration: none;
-      display: flex;
-      align-items: center;
-      flex-shrink: 0;
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 700;
       letter-spacing: -0.02em;
       color: #111827;
+      display: flex;
+      align-items: center;
     }
     .logo .logo-gold { color: #B8960C; }
-    .nav-logo-mark {
-      height: 52px;
-      width: auto;
-      margin-left: 8px;
-      display: block;
-      flex-shrink: 0;
-    }
+    .nav-logo-mark { height: 48px; width: auto; margin-left: 6px; display: block; }
 
     /* ─── Sections ───────────────────────────────────────────────── */
-    #app-container { padding-top: 0; }
-
     .active-section { display: block; }
-    .hidden-section  { display: none; }
+    .hidden-section  { display: none !important; }
 
-    /* ─── FORM SECTION ───────────────────────────────────────────── */
+    /* ──────────────────────────────────────────────────────────────
+       FORM SECTION
+    ─────────────────────────────────────────────────────────────── */
     #form-section {
       min-height: calc(100vh - 64px);
       display: flex;
@@ -132,62 +121,38 @@
     }
 
     .main-heading {
-      font-size: clamp(28px, 5vw, 42px);
+      font-size: clamp(26px, 4.5vw, 40px);
       font-weight: 700;
       letter-spacing: -0.025em;
       text-align: center;
       color: var(--text);
       margin-bottom: 10px;
-      max-width: 560px;
+      max-width: 540px;
     }
-
     .sub-heading {
       font-size: 16px;
       color: var(--text-muted);
       text-align: center;
       margin-bottom: 48px;
     }
-
-    /* ─── Form card — open feel, no visible border ──────────────── */
-    .form-card {
-      width: 100%;
-      max-width: 560px;
-    }
-
-    /* ─── Form steps ─────────────────────────────────────────────── */
+    .form-card { width: 100%; max-width: 560px; }
     .form-step { display: none; }
-    .form-step.active {
-      display: block;
-      animation: step-in 0.3s ease both;
-    }
-
+    .form-step.active { display: block; animation: step-in 0.3s ease both; }
     @keyframes step-in {
-      from { opacity: 0; transform: translateY(12px); }
+      from { opacity: 0; transform: translateY(10px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-
     .form-step h2 {
-      font-size: 26px;
+      font-size: 24px;
       font-weight: 700;
-      letter-spacing: -0.02em;
       color: var(--text);
       margin-bottom: 24px;
       line-height: 1.25;
     }
+    .field-hint { font-size: 13px; color: var(--text-muted); margin-top: -16px; margin-bottom: 20px; }
 
-    .field-hint {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-top: -16px;
-      margin-bottom: 20px;
-    }
-
-    /* ─── Inputs ─────────────────────────────────────────────────── */
-    .input-wrapper {
-      position: relative;
-      margin-bottom: 8px;
-    }
-
+    /* Inputs */
+    .input-wrapper { position: relative; margin-bottom: 8px; }
     .input-wrapper input[type="text"],
     .input-wrapper input[type="number"],
     .input-wrapper input[type="email"] {
@@ -198,7 +163,6 @@
       padding: 14px 16px;
       font-family: var(--font);
       font-size: 15px;
-      font-weight: 400;
       color: var(--text);
       outline: none;
       transition: border-color var(--transition), box-shadow var(--transition);
@@ -206,1162 +170,591 @@
     }
     .input-wrapper input::-webkit-inner-spin-button,
     .input-wrapper input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-
     .input-wrapper input:focus {
       border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(184,150,12,0.15);
+      box-shadow: 0 0 0 3px rgba(184,150,12,0.12);
       background: var(--bg);
     }
-
     .input-wrapper input::placeholder { color: #9ca3af; }
-
-    /* Currency prefix */
     .currency-symbol {
-      position: absolute;
-      left: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 15px;
-      font-weight: 500;
-      color: var(--text-muted);
-      pointer-events: none;
-      z-index: 1;
+      position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+      font-size: 15px; font-weight: 500; color: var(--text-muted); pointer-events: none; z-index: 1;
     }
     .with-symbol { padding-left: 28px !important; }
-
-    /* Error state */
     .input-wrapper.error input,
-    .input-wrapper.error input:focus {
-      border-color: var(--error);
-      box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
-    }
-
-    .error-msg {
-      display: none;
-      font-size: 12px;
-      color: var(--error);
-      margin-top: 6px;
-      font-weight: 500;
-    }
+    .input-wrapper.error input:focus { border-color: var(--error); box-shadow: 0 0 0 3px rgba(239,68,68,0.1); }
+    .error-msg { display: none; font-size: 12px; color: var(--error); margin-top: 6px; font-weight: 500; }
     .input-wrapper.error .error-msg { display: block; }
 
-    /* ─── Tile buttons ───────────────────────────────────────────── */
-    .tile-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 0;
-    }
-
+    /* Tile buttons */
+    .tile-group { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 0; }
     .tile-btn {
-      font-family: var(--font);
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text-body);
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 11px 18px;
-      cursor: pointer;
-      transition: all var(--transition);
-      outline: none;
+      font-family: var(--font); font-size: 14px; font-weight: 500; color: var(--text-body);
+      background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+      padding: 11px 18px; cursor: pointer; transition: all var(--transition); outline: none;
     }
-    .tile-btn:hover {
-      border-color: var(--accent);
-      background: var(--accent-bg);
+    .tile-btn:hover { border-color: var(--accent); background: var(--accent-bg); }
+    .tile-btn.selected, .tile-btn.active {
+      background: var(--accent-bg); border-color: var(--accent); color: var(--accent-dark); font-weight: 600;
     }
-    .tile-btn.selected,
-    .tile-btn.active {
-      background: var(--accent-bg);
-      border-color: var(--accent);
-      color: var(--accent-dark);
-      font-weight: 600;
-    }
+    .currency-tile { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 16px 12px; }
+    .currency-tile-symbol { font-size: 22px; font-weight: 800; color: #111827; line-height: 1; }
+    .currency-tile-name { font-size: 11px; color: #6b7280; font-weight: 500; text-align: center; }
 
-    .countries-grid { gap: 8px; }
-    .countries-grid .tile-btn { font-size: 13px; padding: 10px 14px; }
-
-    /* ─── Radio group ────────────────────────────────────────────── */
-    .radio-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
+    /* Radio group */
+    .radio-group { display: flex; flex-direction: column; gap: 8px; }
     .radio-label {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 16px;
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text-body);
-      transition: all var(--transition);
+      display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+      background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+      cursor: pointer; font-size: 14px; font-weight: 500; color: var(--text-body); transition: all var(--transition);
     }
-    .radio-label:hover {
-      border-color: var(--accent);
-      background: var(--accent-bg);
-    }
+    .radio-label:hover { border-color: var(--accent); background: var(--accent-bg); }
     .radio-label input[type="radio"] { display: none; }
-
     .radio-custom {
-      width: 18px; height: 18px;
-      border: 2px solid var(--border);
-      border-radius: 50%;
-      flex-shrink: 0;
-      position: relative;
-      transition: all var(--transition);
+      width: 18px; height: 18px; border: 2px solid var(--border); border-radius: 50%;
+      flex-shrink: 0; position: relative; transition: all var(--transition);
     }
-    .radio-label input[type="radio"]:checked ~ .radio-custom {
-      border-color: var(--accent);
-      background: var(--accent);
-      box-shadow: inset 0 0 0 4px var(--bg);
-    }
-    .radio-label:has(input:checked) {
-      border-color: var(--accent);
-      background: var(--accent-bg);
-      color: var(--accent-dark);
-    }
+    .radio-label input[type="radio"]:checked ~ .radio-custom { border-color: var(--accent); background: var(--accent); box-shadow: inset 0 0 0 4px var(--bg); }
+    .radio-label:has(input:checked) { border-color: var(--accent); background: var(--accent-bg); color: var(--accent-dark); }
 
-    /* ─── Form actions ───────────────────────────────────────────── */
-    .form-actions {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 32px;
-      gap: 12px;
-    }
-
-    /* Primary = dark pill */
+    /* Form actions */
+    .form-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 32px; gap: 12px; }
     .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-family: var(--font);
-      font-size: 14px;
-      font-weight: 600;
-      color: #fff;
-      background: var(--dark);
-      border: none;
-      border-radius: var(--radius-pill);
-      padding: 13px 32px;
-      cursor: pointer;
-      transition: all var(--transition);
-      white-space: nowrap;
+      display: inline-flex; align-items: center; gap: 6px; font-family: var(--font); font-size: 14px; font-weight: 600;
+      color: #fff; background: var(--dark); border: none; border-radius: var(--radius-pill); padding: 13px 32px;
+      cursor: pointer; transition: all var(--transition); white-space: nowrap;
     }
     .btn-primary:hover { background: var(--dark-2); box-shadow: 0 0 0 2px #B8960C; }
     .btn-primary:active { transform: scale(0.97); }
-
-    /* Secondary = ghost text */
     .btn-secondary {
-      display: inline-flex;
-      align-items: center;
-      font-family: var(--font);
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text-muted);
-      background: transparent;
-      border: none;
-      border-radius: var(--radius-pill);
-      padding: 13px 20px;
-      cursor: pointer;
-      transition: color var(--transition);
+      display: inline-flex; align-items: center; font-family: var(--font); font-size: 14px; font-weight: 500;
+      color: var(--text-muted); background: transparent; border: none; border-radius: var(--radius-pill);
+      padding: 13px 20px; cursor: pointer; transition: color var(--transition);
     }
     .btn-secondary:hover { color: var(--text); }
-    .btn-secondary:active { opacity: 0.7; }
+    .nav-cta { font-size: 13px; padding: 9px 20px; }
 
-    /* Nav CTA */
-    .nav-cta {
-      font-size: 13px;
-      padding: 9px 20px;
-    }
-
-    /* ─── LOADING SECTION ────────────────────────────────────────── */
+    /* ──────────────────────────────────────────────────────────────
+       LOADING SECTION
+    ─────────────────────────────────────────────────────────────── */
     #loading-section {
-      min-height: calc(100vh - 64px);
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 24px;
-      padding: 60px 28px;
+      min-height: calc(100vh - 64px); display: none; flex-direction: column;
+      align-items: center; justify-content: center; gap: 24px; padding: 60px 28px;
     }
-    #loading-section.active-section {
-      display: flex;
-    }
-
-    .loader {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-    }
-
-    /* Pulsing green ring */
+    #loading-section.active-section { display: flex; }
+    .loader { display: flex; flex-direction: column; align-items: center; gap: 20px; }
     .loader::before {
-      content: '';
-      width: 56px; height: 56px;
-      border-radius: 50%;
-      border: 3px solid var(--accent-border);
-      border-top-color: var(--accent);
+      content: ''; width: 52px; height: 52px; border-radius: 50%;
+      border: 3px solid var(--accent-border); border-top-color: var(--accent);
       animation: spin 1s linear infinite;
     }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .pulsing-text {
-      font-size: 18px;
-      font-weight: 500;
-      color: var(--text-muted);
-      text-align: center;
-      letter-spacing: -0.01em;
-    }
-
-    .dots {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-    }
-    .dot {
-      width: 7px; height: 7px;
-      background: var(--accent);
-      border-radius: 50%;
-      animation: dot-bounce 1.2s ease-in-out infinite;
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .pulsing-text { font-size: 17px; font-weight: 500; color: var(--text-muted); text-align: center; }
+    .dots { display: flex; gap: 6px; align-items: center; }
+    .dot { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; animation: dot-bounce 1.2s ease-in-out infinite; }
     .dot:nth-child(2) { animation-delay: 0.2s; }
     .dot:nth-child(3) { animation-delay: 0.4s; }
-
     @keyframes dot-bounce {
       0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
-      40%            { transform: scale(1);   opacity: 1; }
+      40%            { transform: scale(1); opacity: 1; }
     }
 
-    /* ─── RESULTS SECTION ────────────────────────────────────────── */
+    /* Analyzing indicator */
+    #analyzing-indicator { display: none; flex-direction: column; align-items: center; width: 100%; max-width: 560px; gap: 0; }
+    #analyzing-indicator.visible { display: flex; }
+    .analyze-back {
+      position: absolute; top: 24px; left: 28px; display: inline-flex; align-items: center; gap: 6px;
+      font-family: var(--font); font-size: 14px; font-weight: 500; color: var(--text-muted); background: transparent;
+      border: 1px solid var(--border); border-radius: var(--radius-pill); padding: 8px 16px; cursor: pointer;
+      transition: color var(--transition), border-color var(--transition); z-index: 10;
+    }
+    .analyze-back:hover { color: var(--text); border-color: #d1d5db; }
+    .analyze-arrow-wrap { position: relative; display: flex; flex-direction: column; align-items: center; gap: 32px; }
+    .analyze-glow {
+      position: absolute; width: 260px; height: 260px;
+      background: radial-gradient(circle, rgba(184,150,12,0.12) 0%, transparent 68%);
+      border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;
+    }
+    .analyze-arrow-svg {
+      width: 160px; height: 160px; color: var(--accent); animation: big-bounce 1.4s cubic-bezier(0.45,0,0.55,1) infinite;
+      filter: drop-shadow(0 6px 20px rgba(184,150,12,0.30)); position: relative; z-index: 1;
+    }
+    @keyframes big-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(22px); } }
+    .analyze-label { font-size: 17px; font-weight: 600; color: var(--text-muted); letter-spacing: -0.01em; text-align: center; }
+    @media (prefers-reduced-motion: reduce) { .analyze-arrow-svg { animation: none; } }
+
+    /* ──────────────────────────────────────────────────────────────
+       RESULTS SECTION — REDESIGNED
+    ─────────────────────────────────────────────────────────────── */
     #results-section {
       display: none;
-      background: #f9fafb;
+      background: #f5f5f5;
       min-height: 100vh;
-      padding: 40px 0 80px;
     }
-    #results-section.active-section {
-      display: block;
+    #results-section.active-section { display: block; }
+
+    /* ─── Dashboard profile bar ──────────────────────────────────── */
+    .dashboard-profile-bar {
+      background: #111827;
+      padding: 28px 0 0;
+    }
+    .profile-bar-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 32px 28px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
     }
 
-    .results-wrapper {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 0 24px;
+    /* Avatar + name + title */
+    .profile-left { display: flex; align-items: flex-end; gap: 20px; }
+    .profile-avatar {
+      width: 64px; height: 64px; border-radius: 16px;
+      background: linear-gradient(135deg, #B8960C, #8A6E09);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; font-weight: 800; color: white;
+      flex-shrink: 0; letter-spacing: -0.02em;
+    }
+    .profile-details { display: flex; flex-direction: column; gap: 4px; padding-bottom: 2px; }
+    .profile-name {
+      font-size: 32px;
+      font-weight: 800;
+      color: white;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+    .profile-title-row { display: flex; align-items: center; gap: 8px; }
+    .profile-title-field {
+      font-size: 15px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.55);
+      outline: none;
+      cursor: text;
+      border-bottom: 1px solid transparent;
+      padding-bottom: 1px;
+      transition: color 0.2s, border-color 0.2s;
+      min-width: 20px;
+    }
+    .profile-title-field:focus {
+      color: rgba(255,255,255,0.9);
+      border-bottom-color: rgba(255,255,255,0.3);
+    }
+    .profile-title-field:empty::before {
+      content: attr(data-placeholder);
+      color: rgba(255,255,255,0.25);
+    }
+    .edit-hint {
+      font-size: 11px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+      cursor: default;
+    }
+    .profile-title-row:hover .edit-hint { color: rgba(255,255,255,0.4); }
+    .profile-date { font-size: 12px; color: rgba(255,255,255,0.3); margin-top: 2px; }
+
+    /* Health score */
+    .health-score-widget {
       display: flex;
       flex-direction: column;
-      gap: 32px;
+      align-items: flex-end;
+      gap: 4px;
+      padding-bottom: 4px;
+    }
+    .health-score-number {
+      font-size: 56px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      color: white;
+      transition: color 0.4s ease;
+    }
+    .health-score-number.score-red   { color: #f87171; }
+    .health-score-number.score-yellow { color: #fbbf24; }
+    .health-score-number.score-green  { color: #34d399; }
+    .health-score-meta {
+      text-align: right;
+    }
+    .health-score-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.4);
+    }
+    .health-score-denom {
+      font-size: 11px;
+      color: rgba(255,255,255,0.25);
     }
 
-    .results-header {
+    /* Msg badge (right side, top-aligned) */
+    .msg-badge-wrapper {
+      display: flex;
+      align-items: flex-start;
+      padding-top: 4px;
+    }
+    .msg-limit-badge {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.45);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    /* ─── App Tab Bar ────────────────────────────────────────────── */
+    .app-tab-bar {
+      background: #111827;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .app-tab-bar-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 32px;
+      display: flex;
+      gap: 0;
+    }
+    .app-tab {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .results-header h2 {
-      font-size: 28px;
-      font-weight: 800;
-      color: #111827;
-      letter-spacing: -0.03em;
-    }
-
-    .msg-limit-badge {
-      background: white;
-      border: 1px solid #e5e7eb;
-      color: #6b7280;
-      font-size: 12px;
+      gap: 8px;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: 14px 20px;
+      font-family: var(--font);
+      font-size: 13px;
       font-weight: 600;
-      padding: 6px 14px;
-      border-radius: 999px;
+      color: rgba(255,255,255,0.4);
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+      margin-bottom: -1px;
+      white-space: nowrap;
     }
+    .app-tab svg { opacity: 0.6; transition: opacity 0.2s; }
+    .app-tab:hover { color: rgba(255,255,255,0.75); }
+    .app-tab:hover svg { opacity: 0.8; }
+    .app-tab.active {
+      color: white;
+      border-bottom-color: #B8960C;
+    }
+    .app-tab.active svg { opacity: 1; }
 
-    /* ─── Section header pattern ─────────────────────────────────── */
-    .result-section-header {
+    /* ─── Tab panels ─────────────────────────────────────────────── */
+    .tab-panels { max-width: 1120px; margin: 0 auto; padding: 28px 32px 60px; }
+    .tab-panel { display: none; animation: panel-in 0.2s ease both; }
+    .tab-panel.active { display: block; }
+    @keyframes panel-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ─── Panel layout helpers ───────────────────────────────────── */
+    .panel-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
       margin-bottom: 20px;
     }
+    .panel-row.single { grid-template-columns: 1fr; }
+    .panel-col { display: flex; flex-direction: column; gap: 20px; }
 
-    .result-section-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: #111827;
-      letter-spacing: -0.02em;
-      margin-bottom: 4px;
-    }
-
-    .result-section-subtitle {
-      font-size: 13px;
-      color: #9ca3af;
-      font-weight: 400;
-    }
-
-    /* ─── Stat cards ─────────────────────────────────────────────── */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-    }
-
-    .stat-card {
+    /* ─── Card ───────────────────────────────────────────────────── */
+    .panel-card {
       background: white;
       border: 1px solid #e5e7eb;
       border-radius: 16px;
-      padding: 24px 20px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-      position: relative;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      animation: stat-in 0.4s ease both;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
-
-    .stat-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    .card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid #f3f4f6;
     }
-
-    .stat-card::before { display: none; }
-
-    @keyframes stat-in {
-      from { opacity: 0; transform: translateY(12px); }
-      to   { opacity: 1; transform: translateY(0); }
+    .card-head-left { display: flex; align-items: center; gap: 12px; }
+    .card-head-icon {
+      width: 34px; height: 34px; border-radius: 8px; background: #f4f4f5;
+      display: flex; align-items: center; justify-content: center; color: #374151; flex-shrink: 0;
     }
-    .stats-grid .stat-card:nth-child(1) { animation-delay: 0ms; }
-    .stats-grid .stat-card:nth-child(2) { animation-delay: 60ms; }
-    .stats-grid .stat-card:nth-child(3) { animation-delay: 120ms; }
-    .stats-grid .stat-card:nth-child(4) { animation-delay: 180ms; }
-    .stats-grid .stat-card:nth-child(5) { animation-delay: 240ms; }
-    .stats-grid .stat-card:nth-child(6) { animation-delay: 300ms; }
+    .card-head-title { font-size: 15px; font-weight: 700; color: #111827; letter-spacing: -0.01em; }
+    .card-head-sub { font-size: 12px; color: #9ca3af; margin-top: 1px; }
+    .card-body { padding: 24px; }
+    .card-body-flush { padding: 0; }
 
+    /* ─── Stats grid ─────────────────────────────────────────────── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: #f3f4f6;
+    }
+    .stat-card {
+      background: white;
+      padding: 22px 20px;
+      transition: background 0.15s;
+    }
+    .stat-card:hover { background: #fafafa; }
     .stat-title {
       font-size: 11px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: #9ca3af;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
-
     .stat-value {
-      font-size: 28px;
+      font-size: 26px;
       font-weight: 800;
       color: #111827;
       letter-spacing: -0.03em;
       line-height: 1;
     }
-
     .value-positive { color: #059669; }
     .value-negative { color: #dc2626; }
 
-    /* Health badge */
-    .health-badge {
-      display: inline-block;
-      padding: 4px 14px;
-      border-radius: 999px;
-      font-size: 20px;
-      font-weight: 800;
-    }
-    .bg-red    { background: #fef2f2; color: #dc2626; }
-    .bg-yellow { background: #fffbeb; color: #d97706; }
-    .bg-green  { background: #f0fdf4; color: #059669; }
+    /* ─── Health badge (kept for script compatibility) ───────────── */
+    .health-badge { font-size: 26px; font-weight: 800; letter-spacing: -0.03em; }
+    .bg-red, .bg-yellow, .bg-green { background: none; }
 
     /* ─── Charts ─────────────────────────────────────────────────── */
     .charts-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-
-    .chart-card {
-      background: white;
-      border: 1px solid #e5e7eb;
-      border-radius: 16px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-      padding: 28px;
-    }
-
-    .chart-card h3 {
-      font-size: 15px;
-      font-weight: 700;
-      color: #111827;
-      margin-bottom: 4px;
-    }
-
-    .chart-card-subtitle {
-      font-size: 12px;
-      color: #9ca3af;
-      margin-bottom: 20px;
-    }
-
-    .chart-wrapper {
-      position: relative;
-      height: 220px;
-    }
-
-    /* ─── AI Advisor ─────────────────────────────────────────────── */
-    .ai-advisor-card {
-      background: white;
-      border: 1px solid #e5e7eb;
-      border-radius: 16px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-      padding: 36px;
-    }
-
-    .ai-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 24px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid #f3f4f6;
-    }
-
-    .ai-icon { font-size: 24px; }
-
-    .ai-header h3 {
-      font-size: 18px;
-      font-weight: 700;
-      color: #111827;
-      flex: 1;
-    }
-
-    .pulsing-indicator {
-      font-size: 12px;
-      font-weight: 500;
-      color: #6b7280;
+      gap: 1px;
       background: #f3f4f6;
-      padding: 4px 10px;
-      border-radius: 999px;
-      animation: pulse-indicator 1.5s ease-in-out infinite;
     }
-    @keyframes pulse-indicator {
-      0%, 100% { opacity: 0.6; }
-      50%       { opacity: 1; }
-    }
-
-    .ai-content {
-      font-size: 15px;
-      color: #374151;
-      line-height: 1.8;
-    }
-    .ai-content p { margin-bottom: 16px; }
-    .ai-content p:last-child { margin-bottom: 0; }
-    .ai-content strong { color: #111827; }
-    .ai-content ul { padding-left: 20px; margin: 8px 0; }
-    .ai-content li { margin-bottom: 6px; }
-
-    /* ─── Follow-up container ────────────────────────────────────── */
-    #followup-container {
-      margin-top: 24px;
-    }
-
-    .followup-question {
-      font-size: 15px;
-      font-weight: 600;
-      color: #111827;
-      margin-bottom: 16px;
-      padding: 16px 20px;
-      background: #f9fafb;
-      border-radius: 10px;
-      border-left: 3px solid #e5e7eb;
-      line-height: 1.5;
-    }
-
-    .followup-input-group {
-      display: flex;
-      gap: 10px;
-    }
-
-    .followup-input-group input[type="text"] {
-      flex: 1;
-      font-family: var(--font);
-      font-size: 14px;
-      color: #111827;
-      background: #f9fafb;
-      border: 1.5px solid #e5e7eb;
-      border-radius: 10px;
-      padding: 12px 16px;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .followup-input-group input:focus {
-      border-color: #111827;
-      box-shadow: 0 0 0 3px rgba(0,0,0,0.06);
-    }
-    .followup-input-group input::placeholder { color: #9ca3af; }
-
-    .limit-msg {
-      font-size: 13px;
-      color: #9ca3af;
-      margin-top: 12px;
-    }
-
-    /* ─── Waitlist section (in results) ─────────────────────────── */
-    .waitlist-badge {
-      display: inline-block;
-      background: #F5E9A0;
-      border: 1px solid #e8d47a;
-      color: #8A6E09;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 5px 14px;
-      border-radius: 999px;
-      margin-bottom: 16px;
-    }
-
-    .waitlist-cta-text {
-      font-size: 14px;
-      color: #6b7280;
-      margin-bottom: 24px;
-      font-weight: 500;
-    }
-
-    .waitlist-section {
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      border-radius: 20px;
-      padding: 48px 40px;
-      text-align: center;
-    }
-
-    .waitlist-section h2 {
-      font-size: 26px;
-      font-weight: 800;
-      color: #111827;
-      letter-spacing: -0.03em;
-      margin-bottom: 10px;
-    }
-
-    .waitlist-section > p {
-      font-size: 15px;
-      color: #6b7280;
-      margin-bottom: 32px;
-    }
-
-    .waitlist-form {
-      display: flex;
-      gap: 10px;
-      max-width: 400px;
-      margin: 0 auto 16px;
-    }
-    .waitlist-form input[type="email"] {
-      flex: 1;
-      font-family: var(--font);
-      font-size: 14px;
-      color: #111827;
-      -webkit-text-fill-color: #111827;
-      background: #ffffff;
-      border: 1.5px solid #e5e7eb;
-      border-radius: var(--radius-pill);
-      padding: 12px 20px;
-      outline: none;
-      transition: border-color var(--transition);
-    }
-    .waitlist-form input::placeholder { color: #9ca3af; }
-    .waitlist-form input:focus { border-color: #B8960C; }
-
-    .success-msg {
-      font-size: 14px;
-      font-weight: 500;
-      color: #9ca3af;
-      margin-top: 8px;
-    }
-
-    .waitlist-counter {
-      font-size: 13px;
-      color: #6b7280;
-      margin-top: 16px;
-    }
-
-    .waitlist-counter span { color: #111827; font-weight: 700; }
-
-    /* ─── Restart ────────────────────────────────────────────────── */
-    .restart-action {
-      text-align: center;
-      padding: 16px 0;
-    }
-
-    /* ─── Analyzing indicator ────────────────────────────────────── */
-    #analyzing-indicator {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-      max-width: 560px;
-      gap: 0;
-    }
-    #analyzing-indicator.visible { display: flex; }
-
-    .analyze-back {
-      position: absolute;
-      top: 24px;
-      left: 28px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-family: var(--font);
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text-muted);
-      background: transparent;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-pill);
-      padding: 8px 16px;
-      cursor: pointer;
-      transition: color var(--transition), border-color var(--transition);
-      z-index: 10;
-    }
-    .analyze-back:hover {
-      color: var(--text);
-      border-color: #d1d5db;
-    }
-
-    .analyze-arrow-wrap {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 32px;
-    }
-
-    .analyze-glow {
-      position: absolute;
-      width: 260px;
-      height: 260px;
-      background: radial-gradient(circle, rgba(184,150,12,0.12) 0%, transparent 68%);
-      border-radius: 50%;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-    }
-
-    .analyze-arrow-svg {
-      width: 160px;
-      height: 160px;
-      color: var(--accent);
-      animation: big-bounce 1.4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
-      filter: drop-shadow(0 6px 20px rgba(184,150,12,0.30));
-      position: relative;
-      z-index: 1;
-    }
-
-    @keyframes big-bounce {
-      0%, 100% { transform: translateY(0px); }
-      50%       { transform: translateY(22px); }
-    }
-
-    .analyze-label {
-      font-size: 17px;
-      font-weight: 600;
-      color: var(--text-muted);
-      letter-spacing: -0.01em;
-      text-align: center;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .analyze-arrow-svg { animation: none; }
-    }
-
-    /* ─── Interactive Charts Section ────────────────────────────── */
-    .interactive-section {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .interactive-cards-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
-
-    .interactive-card {
-      background: white;
-      border: 1px solid #e5e7eb;
-      border-radius: 16px;
-      padding: 32px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    }
-
-    .interactive-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      padding-bottom: 20px;
-      margin-bottom: 24px;
-      border-bottom: 1px solid #f3f4f6;
-    }
-
-    .interactive-card-header-left h4 {
-      font-size: 16px;
-      font-weight: 700;
-      color: #111827;
-      margin-bottom: 4px;
-    }
-
-    .card-subtitle { font-size: 13px; color: #9ca3af; }
-    .card-icon { font-size: 28px; }
-
-    .slider-control {
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      padding: 16px 20px;
-      margin-bottom: 20px;
-    }
-
-    .slider-control-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-    }
-
-    .slider-control-label {
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: #6b7280;
-    }
-
-    .slider-value-badge {
-      background: #111827;
-      color: white;
-      font-size: 13px;
-      font-weight: 700;
-      padding: 4px 14px;
-      border-radius: 999px;
-      min-width: 60px;
-      text-align: center;
-    }
-
-    input[type="range"] {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 100%;
-      height: 6px;
-      border-radius: 3px;
-      background: #e5e7eb;
-      outline: none;
-      cursor: pointer;
-    }
-
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: #111827;
-      cursor: pointer;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-      transition: transform 0.15s ease;
-      border: 3px solid white;
-    }
-
-    input[type="range"]::-webkit-slider-thumb:hover {
-      transform: scale(1.2);
-    }
-
-    input[type="range"]::-moz-range-thumb {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: #111827;
-      cursor: pointer;
-      border: 3px solid white;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    }
-
-    .projection-summary {
-      background: #f9fafb;
-      border-left: 3px solid #e5e7eb;
-      border-radius: 0 10px 10px 0;
-      padding: 14px 18px;
-      font-size: 14px;
-      font-weight: 600;
-      color: #374151;
-      line-height: 1.5;
-      min-height: 20px;
-    }
-
-    .extra-fields-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-bottom: 20px;
-    }
-
-    .extra-field label {
-      display: block;
-      font-size: 11px;
-      font-weight: 700;
-      color: #9ca3af;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 8px;
-    }
-
-    .extra-field input {
-      width: 100%;
-      background: #f9fafb;
-      border: 1.5px solid #e5e7eb;
-      border-radius: 10px;
-      padding: 12px 14px;
-      font-family: var(--font);
-      font-size: 15px;
-      font-weight: 500;
-      color: #111827;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-    .extra-field input:focus {
-      border-color: #111827;
-      box-shadow: 0 0 0 3px rgba(0,0,0,0.06);
-      background: white;
-    }
-
-    /* ─── Tools Section ──────────────────────────────────────────── */
-    .tools-section {
-      background: white;
-      border: 1px solid #e5e7eb;
-      border-radius: 16px;
-      padding: 36px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    }
-
-    .tools-header { margin-bottom: 28px; }
-
-    .tools-header h3 {
-      font-size: 20px;
-      font-weight: 800;
-      color: #111827;
-      letter-spacing: -0.02em;
-      margin-bottom: 6px;
-    }
-
-    .tools-subtitle { font-size: 14px; color: #9ca3af; }
-
-    .how-we-help {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 32px;
-    }
-
-    .help-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 16px;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      transition: box-shadow 0.2s ease;
-    }
-
-    .help-item:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
-    .help-item-icon {
-      width: 28px;
-      height: 28px;
-      background: #f4f4f5;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #374151;
-      flex-shrink: 0;
-    }
-
-    .help-item-text {
-      font-size: 13px;
-      font-weight: 500;
-      color: #374151;
-      line-height: 1.5;
-    }
-
-    .coming-tools h4 {
-      font-size: 15px;
-      font-weight: 700;
-      color: #111827;
-      margin-bottom: 14px;
-      padding-top: 28px;
-      border-top: 1px solid #f3f4f6;
-    }
-
-    .tools-grid-mini {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-      gap: 12px;
-    }
-
-    .tool-card-mini {
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      padding: 18px;
-      position: relative;
-      transition: all 0.2s ease;
-    }
-
-    .tool-card-mini:hover {
-      background: white;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      transform: translateY(-2px);
-    }
-
-    .tool-card-mini h5 {
-      font-size: 13px;
-      font-weight: 700;
-      color: #111827;
-      margin-bottom: 6px;
-      padding-right: 44px;
-      line-height: 1.3;
-    }
-
-    .tool-card-mini p {
-      font-size: 12px;
-      color: #9ca3af;
-      line-height: 1.5;
-    }
-
-    .coming-soon-badge {
-      position: absolute;
-      top: 12px; right: 12px;
-      background: #f3f4f6;
-      color: #6b7280;
-      font-size: 9px;
-      font-weight: 800;
-      padding: 3px 8px;
-      border-radius: 999px;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    /* ─── Accordion result blocks ────────────────────────────────── */
-    .result-block {
-      background: white;
-      border: 1px solid #e5e7eb;
-      border-radius: 16px;
-      overflow: hidden;
-      transition: box-shadow 0.2s ease;
-    }
-
-    .result-block:hover {
-      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-    }
-
-    .result-block-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 20px 24px;
-      cursor: pointer;
-      user-select: none;
-      transition: background 0.15s ease;
-    }
-
-    .result-block-header:hover { background: #fafafa; }
-
-    .result-block-header-left {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .result-block-icon {
-      width: 36px;
-      height: 36px;
-      background: #f4f4f5;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #374151;
-      flex-shrink: 0;
-    }
-
-    .result-block-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: #111827;
-      margin-bottom: 2px;
-      letter-spacing: -0.01em;
-    }
-
-    .result-block-subtitle {
-      font-size: 12px;
-      color: #9ca3af;
-      font-weight: 400;
-    }
-
-    .result-block-toggle {
-      background: #f4f4f5;
-      border: 1px solid #e5e7eb;
-      color: #374151;
-      font-size: 13px;
-      font-weight: 600;
-      padding: 8px 18px;
-      border-radius: 999px;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s ease;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .result-block-toggle:hover,
-    .result-block-toggle.open {
-      background: #111827;
-      color: white;
-      border-color: #111827;
-    }
-
-    .result-block-content {
-      padding: 0 24px 24px;
-      animation: fadeDown 0.3s ease both;
-    }
-
-    .result-block-content.hidden { display: none; }
-
-    @keyframes fadeDown {
-      from { opacity: 0; transform: translateY(-8px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes bounceDown {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(10px); }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 0.4; transform: scale(0.8); }
-      50% { opacity: 1; transform: scale(1.2); }
-    }
+    .chart-card { background: white; padding: 24px; }
+    .chart-card h3 { font-size: 13px; font-weight: 700; color: #111827; margin-bottom: 2px; }
+    .chart-card-subtitle { font-size: 12px; color: #9ca3af; margin-bottom: 16px; }
+    .chart-wrapper { position: relative; height: 200px; }
 
-    /* ─── Scenario tabs ──────────────────────────────────────────── */
+    /* ─── Scenarios ──────────────────────────────────────────────── */
     .scenario-tabs {
       display: flex;
-      gap: 8px;
+      gap: 6px;
+      flex-wrap: wrap;
+      padding: 20px 24px 0;
+    }
+    .scenario-tab {
+      display: flex; align-items: center; gap: 6px;
+      background: #f4f4f5; border: 1px solid #e5e7eb; color: #6b7280;
+      font-size: 12px; font-weight: 600; padding: 7px 14px; border-radius: 999px;
+      cursor: pointer; font-family: var(--font); transition: all 0.2s ease;
+    }
+    .scenario-tab.active, .scenario-tab:hover {
+      background: #111827; color: white; border-color: #111827;
+    }
+    .scenario-panel { display: none; padding: 20px 24px 24px; }
+    .scenario-panel.active { display: block; }
+    .interactive-card-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      padding-bottom: 16px; margin-bottom: 20px; border-bottom: 1px solid #f3f4f6;
+    }
+    .interactive-card-header-left h4 { font-size: 14px; font-weight: 700; color: #111827; margin-bottom: 3px; }
+    .card-subtitle { font-size: 12px; color: #9ca3af; }
+    .card-icon { color: #d1d5db; }
+    .slider-control { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 14px 18px; margin-bottom: 16px; }
+    .slider-control-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .slider-control-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #6b7280; }
+    .slider-value-badge { background: #111827; color: white; font-size: 12px; font-weight: 700; padding: 3px 12px; border-radius: 999px; min-width: 52px; text-align: center; }
+    input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 5px; border-radius: 3px; background: #e5e7eb; outline: none; cursor: pointer; }
+    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #111827; cursor: pointer; box-shadow: 0 1px 6px rgba(0,0,0,0.25); border: 3px solid white; transition: transform 0.15s; }
+    input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+    input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: #111827; cursor: pointer; border: 3px solid white; }
+    .projection-summary { background: #f9fafb; border-left: 3px solid #e5e7eb; border-radius: 0 8px 8px 0; padding: 12px 16px; font-size: 13px; font-weight: 600; color: #374151; line-height: 1.5; min-height: 18px; margin-top: 12px; }
+    .extra-fields-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+    .extra-field label { display: block; font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; }
+    .extra-field input { width: 100%; background: #f9fafb; border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 11px 13px; font-family: var(--font); font-size: 14px; font-weight: 500; color: #111827; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+    .extra-field input:focus { border-color: #111827; box-shadow: 0 0 0 3px rgba(0,0,0,0.05); background: white; }
+
+    /* ─── AI Analysis ────────────────────────────────────────────── */
+    .pulsing-indicator {
+      font-size: 11px; font-weight: 500; color: #6b7280; background: #f3f4f6;
+      padding: 3px 10px; border-radius: 999px; animation: pulse-ind 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse-ind { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+    .ai-content { font-size: 14px; color: #374151; line-height: 1.8; }
+    .ai-content p { margin-bottom: 14px; }
+    .ai-content p:last-child { margin-bottom: 0; }
+    .ai-content strong { color: #111827; }
+    .ai-content ul { padding-left: 18px; margin: 6px 0; }
+    .ai-content li { margin-bottom: 5px; }
+
+    /* Follow-up */
+    #followup-container { margin-top: 20px; padding-top: 20px; border-top: 1px solid #f3f4f6; }
+    .followup-question {
+      font-size: 14px; font-weight: 600; color: #111827; margin-bottom: 14px;
+      padding: 14px 16px; background: #f9fafb; border-radius: 8px; border-left: 3px solid #e5e7eb; line-height: 1.5;
+    }
+    .followup-input-group { display: flex; gap: 8px; }
+    .followup-input-group input[type="text"] {
+      flex: 1; font-family: var(--font); font-size: 14px; color: #111827; background: #f9fafb;
+      border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 11px 14px; outline: none; transition: border-color 0.2s;
+    }
+    .followup-input-group input:focus { border-color: #111827; }
+    .followup-input-group input::placeholder { color: #9ca3af; }
+    .limit-msg { font-size: 13px; color: #9ca3af; margin-top: 10px; }
+
+    /* ─── Next Steps ─────────────────────────────────────────────── */
+    .how-we-help { display: flex; flex-direction: column; gap: 12px; }
+    .tools-grid-mini {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 10px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #f3f4f6;
+    }
+    .tool-card-mini {
+      background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 16px; position: relative; transition: all 0.2s ease;
+    }
+    .tool-card-mini:hover { background: white; box-shadow: 0 4px 16px rgba(0,0,0,0.07); transform: translateY(-2px); }
+    .tool-card-mini h5 { font-size: 13px; font-weight: 700; color: #111827; margin-bottom: 4px; padding-right: 40px; line-height: 1.3; }
+    .tool-card-mini p { font-size: 12px; color: #9ca3af; line-height: 1.5; }
+    .coming-soon-badge {
+      position: absolute; top: 10px; right: 10px;
+      background: #f3f4f6; color: #6b7280; font-size: 9px; font-weight: 800;
+      padding: 2px 7px; border-radius: 999px; letter-spacing: 0.06em; text-transform: uppercase;
+    }
+
+    /* ─── Log Entry ──────────────────────────────────────────────── */
+    .flint-banner {
+      background: linear-gradient(135deg, #1f2937, #111827);
+      border: 1px solid #374151;
+      border-radius: 16px;
+      padding: 24px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
       margin-bottom: 20px;
       flex-wrap: wrap;
     }
+    .flint-banner-left { display: flex; align-items: center; gap: 16px; }
+    .flint-icon {
+      width: 44px; height: 44px; background: rgba(184,150,12,0.15);
+      border: 1px solid rgba(184,150,12,0.3); border-radius: 12px;
+      display: flex; align-items: center; justify-content: center; color: #B8960C; flex-shrink: 0;
+    }
+    .flint-banner-text h3 { font-size: 16px; font-weight: 700; color: white; margin-bottom: 3px; }
+    .flint-banner-text p { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.4; }
+    .flint-connect-btn {
+      background: #B8960C; color: white; border: none; border-radius: 999px;
+      padding: 10px 22px; font-family: var(--font); font-size: 13px; font-weight: 700;
+      cursor: pointer; white-space: nowrap; transition: opacity 0.2s;
+    }
+    .flint-connect-btn:hover { opacity: 0.85; }
 
-    .scenario-tab {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: #f4f4f5;
-      border: 1px solid #e5e7eb;
-      color: #6b7280;
-      font-size: 13px;
-      font-weight: 600;
-      padding: 8px 18px;
-      border-radius: 999px;
-      cursor: pointer;
-      font-family: 'Inter', sans-serif;
-      transition: all 0.2s ease;
+    .log-add-form-row { display: grid; grid-template-columns: 1fr auto 140px auto; gap: 10px; align-items: end; }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-group label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #9ca3af; }
+    .form-group input, .form-group select {
+      font-family: var(--font); font-size: 14px; color: #111827; background: #f9fafb;
+      border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 10px 13px;
+      outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus { border-color: #111827; box-shadow: 0 0 0 3px rgba(0,0,0,0.05); background: white; }
+    .form-group input::placeholder { color: #9ca3af; }
+    .btn-add-entry {
+      font-family: var(--font); font-size: 13px; font-weight: 700; color: white;
+      background: #111827; border: none; border-radius: 8px; padding: 11px 20px;
+      cursor: pointer; white-space: nowrap; transition: opacity 0.2s; align-self: end;
+    }
+    .btn-add-entry:hover { opacity: 0.85; }
+
+    .log-table { width: 100%; border-collapse: collapse; }
+    .log-table th {
+      font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+      color: #9ca3af; padding: 10px 16px; text-align: left; background: #f9fafb; border-bottom: 1px solid #e5e7eb;
+    }
+    .log-table td { padding: 13px 16px; font-size: 13px; color: #374151; border-bottom: 1px solid #f3f4f6; }
+    .log-table tr:last-child td { border-bottom: none; }
+    .log-table tr:hover td { background: #fafafa; }
+    .log-category-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 999px;
+    }
+    .cat-income  { background: #f0fdf4; color: #16a34a; }
+    .cat-expense { background: #fef2f2; color: #dc2626; }
+    .log-amount-pos { font-weight: 700; color: #059669; }
+    .log-amount-neg { font-weight: 700; color: #dc2626; }
+    .log-source { font-size: 11px; color: #9ca3af; }
+    .log-empty {
+      text-align: center; padding: 40px 20px;
+      font-size: 14px; color: #9ca3af; border-bottom: none;
     }
 
-    .scenario-tab.active,
-    .scenario-tab:hover {
-      background: #111827;
-      color: white;
-      border-color: #111827;
+    /* ─── Email results ──────────────────────────────────────────── */
+    .email-form-inner { display: flex; gap: 10px; flex-wrap: wrap; }
+    .email-form-inner input[type="email"] {
+      flex: 1; min-width: 220px; font-family: var(--font); font-size: 14px; color: #111827;
+      background: #f9fafb; border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 11px 14px;
+      outline: none; transition: border-color 0.2s;
     }
-
-    .scenario-panel { display: none; }
-    .scenario-panel.active { display: block; }
-
-    .results-date {
-      font-size: 13px;
-      color: #9ca3af;
-      margin-top: 4px;
+    .email-form-inner input:focus { border-color: #111827; background: white; }
+    .email-form-inner input::placeholder { color: #9ca3af; }
+    .btn-send-email {
+      background: #111827; color: white; border: none; border-radius: 8px;
+      padding: 11px 24px; font-family: var(--font); font-size: 13px; font-weight: 700;
+      cursor: pointer; white-space: nowrap; transition: opacity 0.2s;
     }
+    .btn-send-email:hover { opacity: 0.85; }
 
-    /* ─── Currency step tiles ───────────────────────────────────── */
-    .currency-tile {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      padding: 16px 12px;
+    /* ─── Restart ────────────────────────────────────────────────── */
+    .restart-action { text-align: center; padding: 8px 0 0; }
+    .btn-restart-link {
+      background: none; border: none; font-family: var(--font); font-size: 13px; font-weight: 500;
+      color: #9ca3af; cursor: pointer; transition: color 0.2s; padding: 8px 16px;
     }
+    .btn-restart-link:hover { color: #374151; }
 
-    .currency-tile-symbol {
-      font-size: 22px;
-      font-weight: 800;
-      color: #111827;
-      line-height: 1;
-    }
-
-    .currency-tile-name {
-      font-size: 11px;
-      color: #6b7280;
-      font-weight: 500;
-      text-align: center;
-    }
+    /* ─── Block shims (kept for script.js compatibility) ─────────── */
+    .result-block { }
+    .result-block-header { display: none; }
+    .result-block-content.hidden { display: none; }
+    .result-block-content { display: block; }
 
     /* ─── Utility ────────────────────────────────────────────────── */
     .hidden { display: none !important; }
 
     /* ─── Responsive ─────────────────────────────────────────────── */
-    @media (max-width: 640px) {
-      #form-section { padding: 40px 20px 60px; }
-      .form-step h2 { font-size: 22px; }
+    @media (max-width: 768px) {
+      .profile-bar-inner { flex-direction: column; align-items: flex-start; gap: 20px; padding: 0 20px 24px; }
+      .health-score-widget { align-items: flex-start; }
+      .panel-row { grid-template-columns: 1fr; }
+      .tab-panels { padding: 20px 16px 48px; }
       .stats-grid { grid-template-columns: 1fr 1fr; }
       .charts-grid { grid-template-columns: 1fr; }
-      .followup-input-group { flex-direction: column; }
-      .waitlist-form { flex-direction: column; }
-      .results-wrapper { padding: 0 16px; }
-      .waitlist-section { padding: 36px 24px; }
-      .how-we-help { grid-template-columns: 1fr; }
-      .extra-fields-row { grid-template-columns: 1fr; }
-      .interactive-card { padding: 24px 20px; }
-      .ai-advisor-card { padding: 24px 20px; }
-      .tools-section { padding: 24px 20px; }
+      .log-add-form-row { grid-template-columns: 1fr 1fr; }
+      .app-tab-bar-inner { padding: 0 16px; overflow-x: auto; }
     }
-
-    @media (max-width: 400px) {
+    @media (max-width: 480px) {
       .stats-grid { grid-template-columns: 1fr; }
+      .profile-name { font-size: 26px; }
+      .health-score-number { font-size: 44px; }
+      .log-add-form-row { grid-template-columns: 1fr; }
+      .profile-bar-inner { padding: 0 16px 20px; }
     }
-
-    /* ─── Reduced motion ─────────────────────────────────────────── */
     @media (prefers-reduced-motion: reduce) {
-      .form-step.active { animation: none; }
-      .loader::before { animation: none; }
-      .dot { animation: none; opacity: 1; transform: scale(1); }
-      .pulsing-indicator { animation: none; }
-      .stat-card { animation: none; opacity: 1; transform: translateY(0); }
+      .form-step.active, .tab-panel.active { animation: none; }
+      .loader::before, .dot, .pulsing-indicator { animation: none; }
       .stat-card:hover, .tool-card-mini:hover { transform: none; }
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>
-    emailjs.init("YOUR_EMAILJS_PUBLIC_KEY");
+    try { emailjs.init("YOUR_EMAILJS_PUBLIC_KEY"); } catch(e) {}
   </script>
 </head>
 <body>
 
-  <!-- Progress bar — always visible at top -->
+  <!-- Progress bar -->
   <div class="progress-bar-container">
     <div id="progress-bar"></div>
   </div>
@@ -1370,7 +763,7 @@
   <header class="site-nav">
     <div class="nav-inner">
       <a href="index.html" class="logo">Founder<span class="logo-gold">Lytics</span><img src="assets/icon.png" alt="" class="nav-logo-mark"></a>
-      <a href="app.html" class="btn-primary nav-cta">Try for Free →</a>
+      <a href="app.html" class="btn-primary nav-cta">New Analysis</a>
     </div>
   </header>
 
@@ -1378,81 +771,69 @@
 
     <!-- ─── FORM SECTION ─────────────────────────────────────────── -->
     <section id="form-section" class="active-section">
-      <h1 class="main-heading">Is your business actually making money?</h1>
-      <p class="sub-heading">Or are you just busy? Let's find out.</p>
 
-      <!-- Back button — shown when analyzing, pinned top-left of section -->
-      <button id="analyze-back-btn" class="analyze-back" onclick="location.reload()" style="display:none">← Back to answers</button>
+      <!-- Back button — shown when analyzing -->
+      <button id="analyze-back-btn" class="analyze-back" onclick="location.reload()" style="display:none">← Back</button>
 
-      <!-- Analyzing indicator — replaces heading when form submits -->
+      <!-- Analyzing indicator -->
       <div id="analyzing-indicator">
         <div class="analyze-arrow-wrap">
           <div class="analyze-glow"></div>
           <svg class="analyze-arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="12" y1="3" x2="12" y2="21"/>
-            <polyline points="6 15 12 21 18 15"/>
+            <line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/>
           </svg>
-          <p class="analyze-label">Analyzing your finances...</p>
         </div>
+        <p class="analyze-label">Analyzing your finances...</p>
       </div>
 
-      <div id="no-refresh-notice" style="display:none; background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; padding:10px 16px; margin-bottom:20px; text-align:center;">
-        <p style="font-size:12px; color:#9ca3af; margin:0;">
-          <svg style="display:inline; vertical-align:middle; margin-right:4px;" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          Don't refresh — your progress is being saved automatically.
-        </p>
+      <div id="no-refresh-notice" style="display:none; background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; padding:10px 16px; margin-bottom:20px; text-align:center; font-size:13px; color:#6b7280;">
+        Please don't refresh the page while we analyze your data.
       </div>
 
       <div class="form-card">
 
-        <!-- Step 1 — name collection -->
+        <!-- Step 1: name -->
         <div id="step-name" class="form-step" style="display:none;">
-          <h2>What's your name?</h2>
-          <p class="field-hint">We'll use it to make this feel less like a form and more like a conversation.</p>
+          <h2>What's your first name?</h2>
+          <p class="field-hint">We'll use it to personalize your analysis.</p>
           <div class="input-wrapper">
             <input type="text" id="input-user-name" placeholder="Your first name..." autocomplete="given-name">
             <span class="error-msg">Please tell us your name.</span>
           </div>
         </div>
 
-        <!-- Step 2 — business type -->
+        <!-- Step 2: business type -->
         <div class="form-step" id="step-initial" style="display:none;">
-          <h2>What type of business do you run?</h2>
-          <p class="field-hint">Be specific — e.g. "freelance graphic designer", "dropshipping store", "local bakery", "SaaS startup"</p>
+          <h2>What kind of business do you run?</h2>
+          <p class="field-hint">Be specific — e.g. "freelance graphic designer", "dropshipping store", "local bakery"</p>
           <div class="input-wrapper">
             <input type="text" id="input-business-type" placeholder="Describe your business...">
             <span class="error-msg">Please tell us what you do.</span>
           </div>
         </div>
 
-        <!-- Step 3 — currency selection -->
+        <!-- Step 3: currency -->
         <div id="step-currency" class="form-step" style="display:none;">
-          <h2>What currency do you work in?</h2>
+          <h2>Which currency do you work in?</h2>
           <p class="field-hint">We'll use this for all your financial calculations.</p>
           <div class="input-wrapper tile-group" id="currency-tiles">
             <button class="tile-btn currency-tile" data-value="$" data-label="US Dollar (USD)">
-              <span class="currency-tile-symbol">$</span>
-              <span class="currency-tile-name">US Dollar</span>
+              <span class="currency-tile-symbol">$</span><span class="currency-tile-name">US Dollar</span>
             </button>
             <button class="tile-btn currency-tile" data-value="$" data-label="Mexican Peso (MXN)">
-              <span class="currency-tile-symbol">$</span>
-              <span class="currency-tile-name">Mexican Peso</span>
+              <span class="currency-tile-symbol">$</span><span class="currency-tile-name">Mexican Peso</span>
             </button>
             <button class="tile-btn currency-tile" data-value="₹" data-label="Indian Rupee (INR)">
-              <span class="currency-tile-symbol">₹</span>
-              <span class="currency-tile-name">Indian Rupee</span>
+              <span class="currency-tile-symbol">₹</span><span class="currency-tile-name">Indian Rupee</span>
             </button>
             <button class="tile-btn currency-tile" data-value="£" data-label="British Pound (GBP)">
-              <span class="currency-tile-symbol">£</span>
-              <span class="currency-tile-name">British Pound</span>
+              <span class="currency-tile-symbol">£</span><span class="currency-tile-name">British Pound</span>
             </button>
             <button class="tile-btn currency-tile" data-value="€" data-label="Euro (EUR)">
-              <span class="currency-tile-symbol">€</span>
-              <span class="currency-tile-name">Euro</span>
+              <span class="currency-tile-symbol">€</span><span class="currency-tile-name">Euro</span>
             </button>
             <button class="tile-btn currency-tile" data-value="other" data-label="Other">
-              <span class="currency-tile-symbol">?</span>
-              <span class="currency-tile-name">Other</span>
+              <span class="currency-tile-symbol">?</span><span class="currency-tile-name">Other</span>
             </button>
             <input type="hidden" id="input-currency" value="">
             <span class="error-msg">Please select your currency.</span>
@@ -1462,12 +843,12 @@
           </div>
         </div>
 
-        <!-- Dynamic steps — generated by AI -->
+        <!-- Dynamic steps (AI-generated questions) -->
         <div id="dynamic-step" class="form-step" style="display:none;">
           <h2 id="dynamic-question-text"></h2>
           <p class="field-hint" id="dynamic-question-hint"></p>
           <div class="input-wrapper" id="dynamic-input-wrapper">
-            <!-- Input rendered dynamically by JS -->
+            <!-- Input rendered dynamically -->
           </div>
         </div>
 
@@ -1476,7 +857,6 @@
           <button class="btn-primary" id="btn-next">Continue →</button>
           <button class="btn-primary" id="btn-submit" style="display:none">Analyze My Finances →</button>
         </div>
-
       </div>
     </section>
 
@@ -1494,305 +874,521 @@
 
     <!-- ─── RESULTS SECTION ──────────────────────────────────────── -->
     <section id="results-section" class="hidden-section">
-      <div class="results-wrapper">
 
-        <!-- Header -->
-        <div class="results-header">
-          <div>
-            <h2>Your Financial Analysis</h2>
-            <p class="results-date" id="results-date"></p>
+      <!-- Dashboard profile bar -->
+      <div class="dashboard-profile-bar">
+        <div class="profile-bar-inner">
+          <div class="profile-left">
+            <div class="profile-avatar" id="profile-avatar">A</div>
+            <div class="profile-details">
+              <h1 class="profile-name" id="profile-display-name">—</h1>
+              <div class="profile-title-row">
+                <span class="profile-title-field" id="profile-title-el"
+                      contenteditable="true" spellcheck="false"
+                      data-placeholder="Your title...">Freelancer</span>
+                <span class="edit-hint">click to edit</span>
+              </div>
+              <p class="profile-date" id="results-date"></p>
+            </div>
           </div>
-          <div class="msg-limit-badge" id="msg-limit-badge">0 / 10 messages used</div>
-        </div>
-
-        <!-- BLOCK 1: Your Numbers -->
-        <div class="result-block" id="block-stats">
-          <div class="result-block-header" onclick="toggleBlock('block-stats', false)">
-            <div class="result-block-header-left">
-              <span class="result-block-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="18" y="3" width="4" height="18"/><rect x="10" y="8" width="4" height="13"/><rect x="2" y="13" width="4" height="8"/></svg></span>
-              <div>
-                <h3 class="result-block-title">Your Numbers</h3>
-                <p class="result-block-subtitle">Your financial snapshot for this period</p>
+          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:12px;">
+            <div class="msg-badge-wrapper">
+              <div class="msg-limit-badge" id="msg-limit-badge">0 / 10 messages</div>
+            </div>
+            <div class="health-score-widget">
+              <div class="health-score-number" id="val-health-score">—</div>
+              <div class="health-score-meta">
+                <div class="health-score-label">Health Score</div>
+                <div class="health-score-denom">out of 100</div>
               </div>
             </div>
-            <button class="result-block-toggle" id="toggle-block-stats">Show →</button>
           </div>
-          <div class="result-block-content hidden" id="content-block-stats">
-            <div class="stats-grid">
+        </div>
+      </div>
+
+      <!-- Tab Bar -->
+      <div class="app-tab-bar">
+        <div class="app-tab-bar-inner">
+          <button class="app-tab active" onclick="switchTab('insights')" id="tab-btn-insights">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+            Insights
+          </button>
+          <button class="app-tab" onclick="switchTab('finances')" id="tab-btn-finances">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="18" y="3" width="4" height="18"/><rect x="10" y="8" width="4" height="13"/><rect x="2" y="13" width="4" height="8"/></svg>
+            Finances
+          </button>
+          <button class="app-tab" onclick="switchTab('log')" id="tab-btn-log">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            Log
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab Panels -->
+      <div class="tab-panels">
+
+        <!-- ── INSIGHTS TAB ──────────────────────────────────────── -->
+        <div class="tab-panel active" id="tab-insights">
+          <div class="panel-row">
+
+            <!-- Left: Next Steps -->
+            <div class="panel-col">
+              <div class="panel-card" id="block-tools">
+                <div class="card-head">
+                  <div class="card-head-left">
+                    <div class="card-head-icon">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+                    </div>
+                    <div>
+                      <div class="card-head-title">Next Steps</div>
+                      <div class="card-head-sub">Your personalized action plan</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body" id="content-block-tools">
+                  <div id="how-we-help-list"></div>
+                  <div id="tools-grid"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: AI Analysis + email -->
+            <div class="panel-col">
+              <!-- AI Analysis -->
+              <div class="panel-card" id="block-ai">
+                <div class="card-head">
+                  <div class="card-head-left">
+                    <div class="card-head-icon">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 1 4 4v1h1a3 3 0 0 1 0 6h-1v1a4 4 0 0 1-8 0v-1H7a3 3 0 0 1 0-6h1V6a4 4 0 0 1 4-4z"/></svg>
+                    </div>
+                    <div>
+                      <div class="card-head-title">AI Analysis</div>
+                      <div class="card-head-sub">Why these steps, and what it means for you</div>
+                    </div>
+                  </div>
+                  <div id="ai-loading-indicator" class="pulsing-indicator hidden">Thinking...</div>
+                </div>
+                <div class="card-body" id="content-block-ai">
+                  <div id="ai-response-content" class="ai-content"></div>
+                  <div id="followup-container" class="hidden">
+                    <div class="followup-question" id="followup-question-text"></div>
+                    <div class="followup-input-group">
+                      <input type="text" id="input-followup" placeholder="Type your response...">
+                      <button id="btn-send-followup" class="btn-primary" style="padding:11px 20px; border-radius:8px; font-size:13px;">Send</button>
+                    </div>
+                    <p id="followup-limit-msg" class="limit-msg hidden">Session complete. Start a new analysis to continue.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Email results -->
+              <div class="panel-card" id="block-email-results" style="display:none;">
+                <div class="card-head">
+                  <div class="card-head-left">
+                    <div class="card-head-icon">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    </div>
+                    <div>
+                      <div class="card-head-title">Get Results by Email</div>
+                      <div class="card-head-sub">Your action plan sent to your inbox</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body" id="content-block-email-results">
+                  <p style="font-size:13px; color:#6b7280; margin-bottom:16px; line-height:1.7;">Enter your email and we'll send your financial summary and Next Steps — reference them anytime.</p>
+                  <div id="email-results-form">
+                    <div class="email-form-inner">
+                      <input type="email" id="input-results-email" placeholder="your@email.com">
+                      <button onclick="sendResultsByEmail()" id="btn-send-results" class="btn-send-email">Send →</button>
+                    </div>
+                    <p id="email-results-error" style="display:none; font-size:12px; color:#dc2626; margin-top:8px; font-weight:600;"></p>
+                  </div>
+                  <div id="email-results-success" style="display:none; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:14px 16px; margin-top:8px;">
+                    <p style="font-size:13px; font-weight:700; color:#16a34a; margin:0;">Sent — check your inbox in a few minutes.</p>
+                  </div>
+                  <p style="font-size:11px; color:#9ca3af; margin-top:12px;">One-time email, no spam.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── FINANCES TAB ──────────────────────────────────────── -->
+        <div class="tab-panel" id="tab-finances">
+
+          <!-- Stats -->
+          <div class="panel-card" id="block-stats" style="margin-bottom:20px;">
+            <div class="card-head">
+              <div class="card-head-left">
+                <div class="card-head-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="18" y="3" width="4" height="18"/><rect x="10" y="8" width="4" height="13"/><rect x="2" y="13" width="4" height="8"/></svg>
+                </div>
+                <div>
+                  <div class="card-head-title">Your Numbers</div>
+                  <div class="card-head-sub">Financial snapshot for this period</div>
+                </div>
+              </div>
+            </div>
+            <div class="stats-grid" id="content-block-stats">
               <div class="stat-card">
                 <p class="stat-title">Net Profit</p>
-                <h3 class="stat-value" id="val-net-profit">--</h3>
+                <h3 class="stat-value" id="val-net-profit">—</h3>
               </div>
               <div class="stat-card">
                 <p class="stat-title">Effective Hourly Rate</p>
-                <h3 class="stat-value" id="val-hourly-rate">--</h3>
+                <h3 class="stat-value" id="val-hourly-rate">—</h3>
               </div>
               <div class="stat-card">
                 <p class="stat-title">Tax to Reserve <span id="val-tax-country"></span></p>
-                <h3 class="stat-value" id="val-tax-reserve">--</h3>
-              </div>
-              <div class="stat-card">
-                <p class="stat-title">Financial Health Score</p>
-                <h3 class="stat-value"><span id="val-health-score" class="health-badge">--</span></h3>
+                <h3 class="stat-value" id="val-tax-reserve">—</h3>
               </div>
               <div class="stat-card">
                 <p class="stat-title">Profit Margin</p>
-                <h3 class="stat-value" id="val-profit-margin">--</h3>
+                <h3 class="stat-value" id="val-profit-margin">—</h3>
               </div>
               <div class="stat-card">
                 <p class="stat-title">Revenue Per Client</p>
-                <h3 class="stat-value" id="val-rev-per-client">--</h3>
+                <h3 class="stat-value" id="val-rev-per-client">—</h3>
+              </div>
+              <div class="stat-card">
+                <p class="stat-title">Financial Health</p>
+                <h3 class="stat-value"><span id="val-health-score-finance" class="health-badge">—</span></h3>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- BLOCK 2: Financial Breakdown -->
-        <div class="result-block" id="block-charts">
-          <div class="result-block-header" onclick="toggleBlock('block-charts', false)">
-            <div class="result-block-header-left">
-              <span class="result-block-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></span>
-              <div>
-                <h3 class="result-block-title">Financial Breakdown</h3>
-                <p class="result-block-subtitle">Where your money is going and how it's distributed</p>
+          <!-- Charts -->
+          <div class="panel-card" id="block-charts" style="margin-bottom:20px;">
+            <div class="card-head">
+              <div class="card-head-left">
+                <div class="card-head-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+                </div>
+                <div>
+                  <div class="card-head-title">Financial Breakdown</div>
+                  <div class="card-head-sub">Where your money is going</div>
+                </div>
               </div>
             </div>
-            <button class="result-block-toggle" id="toggle-block-charts">Show →</button>
-          </div>
-          <div class="result-block-content hidden" id="content-block-charts">
-            <div class="charts-grid">
+            <div class="charts-grid" id="content-block-charts">
               <div class="chart-card">
-                <h3>Financial Overview</h3>
+                <h3>Revenue vs. Expenses</h3>
                 <p class="chart-card-subtitle">Revenue, expenses, tax and net profit</p>
                 <div class="chart-wrapper"><canvas id="barChart"></canvas></div>
               </div>
               <div class="chart-card">
-                <h3>Income Allocation</h3>
-                <p class="chart-card-subtitle">How every dollar is distributed</p>
+                <h3>Money Distribution</h3>
+                <p class="chart-card-subtitle">How every dollar is allocated</p>
                 <div class="chart-wrapper"><canvas id="doughnutChart"></canvas></div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- BLOCK 3: Explore Scenarios -->
-        <div class="result-block" id="block-interactive">
-          <div class="result-block-header" onclick="toggleBlock('block-interactive', false)">
-            <div class="result-block-header-left">
-              <span class="result-block-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></span>
-              <div>
-                <h3 class="result-block-title">Explore Scenarios</h3>
-                <p class="result-block-subtitle">See how small changes to your numbers change your financial future</p>
+          <!-- Explore Scenarios (at bottom of Finances) -->
+          <div class="panel-card" id="block-interactive">
+            <div class="card-head">
+              <div class="card-head-left">
+                <div class="card-head-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+                </div>
+                <div>
+                  <div class="card-head-title">Explore Scenarios</div>
+                  <div class="card-head-sub">See how small changes affect your financial future</div>
+                </div>
               </div>
             </div>
-            <button class="result-block-toggle" id="toggle-block-interactive">Show →</button>
-          </div>
-          <div class="result-block-content hidden" id="content-block-interactive">
+            <div id="content-block-interactive">
+              <div class="scenario-tabs">
+                <button class="scenario-tab active" onclick="switchScenario('projection')">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+                  Revenue Growth
+                </button>
+                <button class="scenario-tab" onclick="switchScenario('compound')">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                  Investment
+                </button>
+                <button class="scenario-tab" onclick="switchScenario('optimizer')">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v12"/><path d="M18 9v12"/><path d="M3 9h6"/><path d="M15 3h6"/><path d="M3 15h18"/></svg>
+                  Cut Expenses
+                </button>
+              </div>
 
-            <div class="scenario-tabs">
-              <button class="scenario-tab active" onclick="switchScenario('projection')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>Revenue Growth</button>
-              <button class="scenario-tab" onclick="switchScenario('compound')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Investment</button>
-              <button class="scenario-tab" onclick="switchScenario('optimizer')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v12"/><path d="M18 9v12"/><path d="M3 9h6"/><path d="M15 3h6"/><path d="M3 15h18"/></svg>Cut Expenses</button>
-            </div>
+              <!-- Revenue Projection -->
+              <div class="scenario-panel active" id="panel-projection">
+                <div class="interactive-card-header">
+                  <div class="interactive-card-header-left">
+                    <h4>Revenue Growth Projection</h4>
+                    <p class="card-subtitle">See how consistent monthly growth changes your annual income</p>
+                  </div>
+                  <span class="card-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+                  </span>
+                </div>
+                <div class="slider-control">
+                  <div class="slider-control-top">
+                    <span class="slider-control-label">Monthly growth rate</span>
+                    <span class="slider-value-badge" id="growth-rate-label">5%</span>
+                  </div>
+                  <input type="range" id="slider-growth" min="0" max="30" value="5" step="1">
+                </div>
+                <div class="chart-wrapper"><canvas id="projectionChart"></canvas></div>
+                <div class="projection-summary" id="projection-summary"></div>
+              </div>
 
-            <!-- Panel: Revenue Projection -->
-            <div class="scenario-panel active" id="panel-projection">
-              <div class="interactive-card-header">
-                <div class="interactive-card-header-left">
-                  <h4>What if your revenue grows?</h4>
-                  <p class="card-subtitle">Move the slider to see how consistent monthly growth changes your annual income</p>
+              <!-- Investment Growth -->
+              <div class="scenario-panel" id="panel-compound">
+                <div class="interactive-card-header">
+                  <div class="interactive-card-header-left">
+                    <h4>Investment Growth</h4>
+                    <p class="card-subtitle">How much your money grows over time with compound interest</p>
+                  </div>
+                  <span class="card-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                  </span>
                 </div>
-                <span class="card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span>
-              </div>
-              <div class="slider-control">
-                <div class="slider-control-top">
-                  <span class="slider-control-label">Monthly growth rate</span>
-                  <span class="slider-value-badge" id="growth-rate-label">5%</span>
+                <div class="extra-fields-row">
+                  <div class="extra-field">
+                    <label>Monthly investment</label>
+                    <input type="number" id="input-monthly-investment" placeholder="e.g. 200" min="0">
+                  </div>
+                  <div class="extra-field">
+                    <label>Annual return rate (%)</label>
+                    <input type="number" id="input-return-rate" placeholder="e.g. 8" min="0" max="100">
+                  </div>
                 </div>
-                <input type="range" id="slider-growth" min="0" max="30" value="5" step="1">
+                <div class="slider-control">
+                  <div class="slider-control-top">
+                    <span class="slider-control-label">Time horizon</span>
+                    <span class="slider-value-badge" id="years-label">5 years</span>
+                  </div>
+                  <input type="range" id="slider-years" min="1" max="20" value="5" step="1">
+                </div>
+                <div class="chart-wrapper"><canvas id="compoundChart"></canvas></div>
+                <div class="projection-summary" id="compound-summary"></div>
               </div>
-              <div class="chart-wrapper"><canvas id="projectionChart"></canvas></div>
-              <div class="projection-summary" id="projection-summary"></div>
-            </div>
 
-            <!-- Panel: Investment Growth -->
-            <div class="scenario-panel" id="panel-compound">
-              <div class="interactive-card-header">
-                <div class="interactive-card-header-left">
-                  <h4>What if you start investing today?</h4>
-                  <p class="card-subtitle">See exactly how much your money grows over time with compound interest</p>
+              <!-- Expense Optimizer -->
+              <div class="scenario-panel" id="panel-optimizer">
+                <div class="interactive-card-header">
+                  <div class="interactive-card-header-left">
+                    <h4>Expense Optimizer</h4>
+                    <p class="card-subtitle">Reducing costs is often faster than increasing revenue</p>
+                  </div>
+                  <span class="card-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v12"/><path d="M18 9v12"/><path d="M3 9h6"/><path d="M15 3h6"/><path d="M3 15h18"/></svg>
+                  </span>
                 </div>
-                <span class="card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span>
-              </div>
-              <div class="extra-fields-row">
-                <div class="extra-field">
-                  <label>Monthly investment ($)</label>
-                  <input type="number" id="input-monthly-investment" placeholder="e.g. 200" min="0">
+                <div class="slider-control">
+                  <div class="slider-control-top">
+                    <span class="slider-control-label">Reduce expenses by</span>
+                    <span class="slider-value-badge" id="expense-cut-label">10%</span>
+                  </div>
+                  <input type="range" id="slider-expense-cut" min="0" max="50" value="10" step="5">
                 </div>
-                <div class="extra-field">
-                  <label>Annual return rate (%)</label>
-                  <input type="number" id="input-return-rate" placeholder="e.g. 8" min="0" max="100">
-                </div>
-              </div>
-              <div class="slider-control">
-                <div class="slider-control-top">
-                  <span class="slider-control-label">Time horizon</span>
-                  <span class="slider-value-badge" id="years-label">5 years</span>
-                </div>
-                <input type="range" id="slider-years" min="1" max="20" value="5" step="1">
-              </div>
-              <div class="chart-wrapper"><canvas id="compoundChart"></canvas></div>
-              <div class="projection-summary" id="compound-summary"></div>
-            </div>
-
-            <!-- Panel: Expense Optimizer -->
-            <div class="scenario-panel" id="panel-optimizer">
-              <div class="interactive-card-header">
-                <div class="interactive-card-header-left">
-                  <h4>What if you cut your biggest expense?</h4>
-                  <p class="card-subtitle">Reducing costs is often faster than increasing revenue — see the impact here</p>
-                </div>
-                <span class="card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v12"/><path d="M18 9v12"/><path d="M3 9h6"/><path d="M15 3h6"/><path d="M3 15h18"/></svg></span>
-              </div>
-              <div class="slider-control">
-                <div class="slider-control-top">
-                  <span class="slider-control-label">Reduce expenses by</span>
-                  <span class="slider-value-badge" id="expense-cut-label">10%</span>
-                </div>
-                <input type="range" id="slider-expense-cut" min="0" max="50" value="10" step="5">
-              </div>
-              <div class="chart-wrapper"><canvas id="optimizerChart"></canvas></div>
-              <div class="projection-summary" id="optimizer-summary"></div>
-            </div>
-
-          </div>
-        </div>
-
-        <!-- BLOCK 4: CFO Report -->
-        <div class="result-block" id="block-ai">
-          <div class="result-block-header" onclick="toggleBlock('block-ai', false)">
-            <div class="result-block-header-left">
-              <span class="result-block-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg></span>
-              <div>
-                <h3 class="result-block-title">Why These Steps</h3>
-                <p class="result-block-subtitle">The reasoning behind your personalized action plan</p>
-              </div>
-            </div>
-            <button class="result-block-toggle" id="toggle-block-ai">Show →</button>
-          </div>
-          <div class="result-block-content hidden" id="content-block-ai">
-            <div class="ai-advisor-card">
-              <div class="ai-header">
-                <span class="ai-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg></span>
-                <h3>CFO Advisor</h3>
-                <div id="ai-loading-indicator" class="pulsing-indicator hidden">Still thinking...</div>
-              </div>
-              <div id="ai-response-content" class="ai-content"></div>
-              <div id="followup-container" class="hidden">
-                <div class="followup-question" id="followup-question-text"></div>
-                <div class="followup-input-group">
-                  <input type="text" id="input-followup" placeholder="Type your response...">
-                  <button id="btn-send-followup" class="btn-primary">Send</button>
-                </div>
-                <p id="followup-limit-msg" class="limit-msg hidden">Your session is complete. Great chat!</p>
+                <div class="chart-wrapper"><canvas id="optimizerChart"></canvas></div>
+                <div class="projection-summary" id="optimizer-summary"></div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- BLOCK 5: FounderLytics Tools -->
-        <div class="result-block" id="block-tools">
-          <div class="result-block-header" onclick="toggleBlock('block-tools', false)">
-            <div class="result-block-header-left">
-              <span class="result-block-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span>
-              <div>
-                <h3 class="result-block-title">Your Next Steps</h3>
-                <p class="result-block-subtitle">A prioritized action plan built from your specific numbers</p>
+        </div><!-- /tab-finances -->
+
+        <!-- ── LOG TAB ────────────────────────────────────────────── -->
+        <div class="tab-panel" id="tab-log">
+
+          <!-- Flint connection banner -->
+          <div class="flint-banner">
+            <div class="flint-banner-left">
+              <div class="flint-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+              </div>
+              <div class="flint-banner-text">
+                <h3>Connect with Flint, your mobile app</h3>
+                <p>Sync transactions automatically — no more manual entry. Available for iOS and Android.</p>
               </div>
             </div>
-            <button class="result-block-toggle" id="toggle-block-tools">Show →</button>
+            <button class="flint-connect-btn">Connect Flint</button>
           </div>
-          <div class="result-block-content hidden" id="content-block-tools">
-            <div id="founderlytics-tools-section">
-              <div class="how-we-help" id="how-we-help-list"></div>
-              <div class="coming-tools">
-                <h4>Tools Coming for Your Business Type</h4>
-                <div class="tools-grid-mini" id="tools-grid"></div>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <!-- BLOCK: Email Results -->
-        <div class="result-block" id="block-email-results" style="display:none;">
-          <div class="result-block-header" onclick="toggleBlock('block-email-results', false)">
-            <div class="result-block-header-left">
-              <div class="result-block-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-              </div>
-              <div>
-                <h3 class="result-block-title">Get Your Results by Email</h3>
-                <p class="result-block-subtitle">We'll send your Next Steps and financial summary to your inbox</p>
-              </div>
-            </div>
-            <button class="result-block-toggle" id="toggle-block-email-results">Show →</button>
-          </div>
-          <div class="result-block-content hidden" id="content-block-email-results">
-            <div style="padding-top:8px;">
-              <p style="font-size:15px; color:#6b7280; margin-bottom:24px; line-height:1.7;">Enter your email and we'll send you a clean copy of your financial analysis and Next Steps — so you can reference it anytime, share it with a partner, or track your progress.</p>
-
-              <div id="email-results-form">
-                <div style="display:flex; gap:12px; flex-wrap:wrap;">
-                  <input
-                    type="email"
-                    id="input-results-email"
-                    placeholder="your@email.com"
-                    style="flex:1; min-width:240px; background:#f9fafb; border:1.5px solid #e5e7eb; border-radius:10px; padding:13px 16px; font-size:15px; color:#111827; outline:none; font-family:'Inter',sans-serif; transition:border-color 0.2s, box-shadow 0.2s;"
-                    onfocus="this.style.borderColor='#111827'; this.style.boxShadow='0 0 0 3px rgba(17,24,39,0.08)'"
-                    onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'"
-                  >
-                  <button
-                    onclick="sendResultsByEmail()"
-                    id="btn-send-results"
-                    style="background:#111827; color:white; border:none; padding:13px 28px; border-radius:10px; font-size:15px; font-weight:700; cursor:pointer; font-family:'Inter',sans-serif; white-space:nowrap; transition:opacity 0.2s;"
-                    onmouseover="this.style.opacity='0.85'"
-                    onmouseout="this.style.opacity='1'"
-                  >Send My Results →</button>
+          <!-- Add transaction form -->
+          <div class="panel-card" style="margin-bottom:20px;">
+            <div class="card-head">
+              <div class="card-head-left">
+                <div class="card-head-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                 </div>
-                <p id="email-results-error" style="display:none; font-size:13px; color:#dc2626; margin-top:8px; font-weight:600;"></p>
+                <div>
+                  <div class="card-head-title">Add Transaction</div>
+                  <div class="card-head-sub">Record income or expenses manually</div>
+                </div>
               </div>
-
-              <div id="email-results-success" style="display:none; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px; padding:16px 20px;">
-                <p style="font-size:15px; font-weight:700; color:#16a34a; margin:0;">
-                  <svg style="display:inline; vertical-align:middle; margin-right:8px;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                  Sent! Check your inbox in the next few minutes.
-                </p>
-                <p style="font-size:13px; color:#16a34a; margin:6px 0 0; opacity:0.8;">Your Next Steps and financial summary are on their way.</p>
+            </div>
+            <div class="card-body">
+              <div class="log-add-form-row">
+                <div class="form-group" style="grid-column: 1 / -1;">
+                  <label>Description</label>
+                  <input type="text" id="log-desc" placeholder="e.g. Client payment, Adobe subscription...">
+                </div>
+                <div class="form-group">
+                  <label>Amount</label>
+                  <input type="number" id="log-amount" placeholder="0.00" min="0" step="0.01">
+                </div>
+                <div class="form-group">
+                  <label>Type</label>
+                  <select id="log-type">
+                    <option value="income">Income</option>
+                    <option value="expense">Expense</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Date</label>
+                  <input type="date" id="log-date">
+                </div>
+                <div style="display:flex; align-items:flex-end;">
+                  <button class="btn-add-entry" onclick="addLogEntry()">Add Entry</button>
+                </div>
               </div>
-
-              <p style="font-size:12px; color:#9ca3af; margin-top:14px;">We never spam. This is a one-time email with your results only.</p>
             </div>
           </div>
-        </div>
 
-        <!-- Waitlist -->
-        <div class="waitlist-section">
-          <div class="waitlist-badge">Preview Mode</div>
-          <h2>You just saw an early preview.</h2>
-          <p>FounderLytics hasn't launched yet. What you experienced is a working prototype — the full product will include full access to analyses, investment tracking, monthly reports, and much more.</p>
-          <p class="waitlist-cta-text">Join the waitlist to get early access and founding member pricing when we launch.</p>
-          <iframe data-tally-src="https://tally.so/embed/Pd0qr5?alignLeft=1&hideTitle=1&dynamicHeight=1" loading="lazy" width="100%" height="177" frameborder="0" marginheight="0" marginwidth="0" title="Join the FounderLytics waitlist"></iframe>
-          <script>var d=document,w="https://tally.so/widgets/embed.js",v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};if("undefined"!=typeof Tally)v();else if(d.querySelector('script[src="'+w+'"]')==null){var s=d.createElement("script");s.src=w,s.onload=v,s.onerror=v,d.body.appendChild(s);}</script>
-        </div>
+          <!-- Transaction history -->
+          <div class="panel-card">
+            <div class="card-head">
+              <div class="card-head-left">
+                <div class="card-head-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                </div>
+                <div>
+                  <div class="card-head-title">Transaction History</div>
+                  <div class="card-head-sub" id="log-count-label">No entries yet</div>
+                </div>
+              </div>
+              <div id="log-totals" style="font-size:12px; color:#6b7280; text-align:right; display:none;">
+                <div>Income: <strong id="log-total-income" style="color:#059669;">—</strong></div>
+                <div>Expenses: <strong id="log-total-expenses" style="color:#dc2626;">—</strong></div>
+              </div>
+            </div>
+            <div class="card-body-flush">
+              <table class="log-table">
+                <thead>
+                  <tr>
+                    <th>Description</th>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th style="text-align:right;">Amount</th>
+                  </tr>
+                </thead>
+                <tbody id="log-table-body">
+                  <tr>
+                    <td colspan="4" class="log-empty">No transactions logged yet. Add your first entry above, or connect Flint to sync automatically.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
 
-        <div class="restart-action">
-          <button id="btn-restart" class="btn-secondary">← Start Over</button>
-        </div>
+        </div><!-- /tab-log -->
 
+      </div><!-- /tab-panels -->
+
+      <!-- Restart -->
+      <div class="restart-action" style="padding-bottom:32px;">
+        <button id="btn-restart" class="btn-restart-link">Start Over</button>
       </div>
-    </section>
+
+    </section><!-- /results-section -->
   </main>
 
   <script src="script.js"></script>
+  <script>
+    // ── Tab switching ─────────────────────────────────────────────
+    function switchTab(name) {
+      document.querySelectorAll('.app-tab').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      const btn = document.getElementById('tab-btn-' + name);
+      const panel = document.getElementById('tab-' + name);
+      if (btn) btn.classList.add('active');
+      if (panel) panel.classList.add('active');
+      // Trigger chart resize so they render correctly when tab becomes visible
+      if (name === 'finances') {
+        setTimeout(() => {
+          [window._barChart, window._doughnutChart, window._projChart, window._compChart, window._optChart].forEach(c => {
+            if (c) { try { c.resize(); } catch(e){} }
+          });
+        }, 50);
+      }
+    }
+
+    // ── Log Entry ─────────────────────────────────────────────────
+    let logEntries = JSON.parse(localStorage.getItem('fl_log') || '[]');
+
+    function renderLogTable() {
+      const tbody = document.getElementById('log-table-body');
+      const countLabel = document.getElementById('log-count-label');
+      const totalsEl = document.getElementById('log-totals');
+      if (!tbody) return;
+
+      if (logEntries.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="log-empty">No transactions logged yet. Add your first entry above, or connect Flint to sync automatically.</td></tr>';
+        if (countLabel) countLabel.textContent = 'No entries yet';
+        if (totalsEl) totalsEl.style.display = 'none';
+        return;
+      }
+
+      let totalIncome = 0, totalExpenses = 0;
+      const rows = [...logEntries].reverse().map(e => {
+        const isIncome = e.type === 'income';
+        if (isIncome) totalIncome += e.amount; else totalExpenses += e.amount;
+        const dateStr = e.date ? new Date(e.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
+        const amountStr = (isIncome ? '+' : '-') + '$' + Number(e.amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        return `<tr>
+          <td style="font-weight:500; color:#111827;">${escapeHtml(e.desc)}</td>
+          <td style="color:#6b7280;">${dateStr}</td>
+          <td><span class="log-category-pill ${isIncome ? 'cat-income' : 'cat-expense'}">${isIncome ? 'Income' : 'Expense'}</span></td>
+          <td style="text-align:right;" class="${isIncome ? 'log-amount-pos' : 'log-amount-neg'}">${amountStr}</td>
+        </tr>`;
+      }).join('');
+
+      tbody.innerHTML = rows;
+      if (countLabel) countLabel.textContent = logEntries.length + ' transaction' + (logEntries.length !== 1 ? 's' : '');
+      if (totalsEl) {
+        totalsEl.style.display = 'block';
+        const incEl = document.getElementById('log-total-income');
+        const expEl = document.getElementById('log-total-expenses');
+        if (incEl) incEl.textContent = '$' + totalIncome.toLocaleString('en-US', { minimumFractionDigits: 2 });
+        if (expEl) expEl.textContent = '$' + totalExpenses.toLocaleString('en-US', { minimumFractionDigits: 2 });
+      }
+    }
+
+    function addLogEntry() {
+      const desc = document.getElementById('log-desc').value.trim();
+      const amount = parseFloat(document.getElementById('log-amount').value);
+      const type = document.getElementById('log-type').value;
+      const date = document.getElementById('log-date').value;
+      if (!desc || isNaN(amount) || amount <= 0) return;
+      logEntries.push({ desc, amount, type, date: date || new Date().toISOString().split('T')[0] });
+      localStorage.setItem('fl_log', JSON.stringify(logEntries));
+      renderLogTable();
+      document.getElementById('log-desc').value = '';
+      document.getElementById('log-amount').value = '';
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // Set today's date as default for log date input
+    const logDateInput = document.getElementById('log-date');
+    if (logDateInput) logDateInput.value = new Date().toISOString().split('T')[0];
+
+    // Allow Enter key in log form
+    document.addEventListener('DOMContentLoaded', () => {
+      renderLogTable();
+      ['log-desc','log-amount','log-date'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('keypress', e => { if (e.key === 'Enter') addLogEntry(); });
+      });
+    });
+  </script>
 </body>
 </html>
